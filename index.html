@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chatao.cz – Chaty, chalupy a glamping po celé ČR</title>
+  <meta name="description" content="Chatao.cz – vyhledávač chat, chalup a glampingů po celé České republice. Přímý kontakt na majitele, žádné zbytečné provize."/>
+
+  <!-- Google Fonts (CZ diakritika) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Roboto','ui-sans-serif','system-ui'] },
+          colors: {
+            aoBlue: '#1f4aff',      // AO akcent
+            forest: '#2e7d32',      // přírodní zelená
+            moss: '#e8f3ea',        // světlé pozadí
+            wood: '#5d4037'         // dřevěný akcent
+          },
+          boxShadow: {
+            card: '0 6px 24px rgba(0,0,0,0.08)'
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .backdrop-blur-md{backdrop-filter: blur(10px);} /* fallback for older Tailwind CDN */
+  </style>
+</head>
+<body class="font-sans antialiased text-slate-900 bg-white">
+  <!-- Top bar -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-9 h-9 rounded-xl bg-forest text-white flex items-center justify-center shadow-sm ring-1 ring-forest/20">
+            <!-- minimalistické logo: střecha/chata -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="transition-transform group-hover:-translate-y-0.5">
+              <path d="M3 11L12 4l9 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 10.5V20h14v-9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="leading-none">
+            <div class="text-lg font-black tracking-tight">Chatao.cz</div>
+            <div class="text-[11px] uppercase tracking-wider text-slate-500">Chaty • Chalupy • Glamping</div>
+          </div>
+        </a>
+
+        <!-- Desktop nav -->
+        <nav class="hidden md:flex items-center gap-6">
+          <a href="#nabidky" class="text-sm font-medium hover:text-forest">Nabídky</a>
+          <a href="#mapa" class="text-sm font-medium hover:text-forest">Mapa</a>
+          <a href="#jak-to-funguje" class="text-sm font-medium hover:text-forest">Jak to funguje</a>
+          <a href="#kontakt" class="text-sm font-medium hover:text-forest">Kontakt</a>
+          <a href="#pridat" class="inline-flex items-center gap-2 bg-aoBlue text-white text-sm font-semibold px-3.5 py-2 rounded-xl shadow hover:opacity-90">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Přidat chatu
+          </a>
+        </nav>
+
+        <!-- Mobile hamburger -->
+        <button id="btnMenu" aria-label="Menu" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-300">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile sheet menu -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 hidden" aria-hidden="true">
+      <div class="absolute inset-0 bg-black/40" id="menuBackdrop"></div>
+      <div class="ml-auto h-full w-[86%] max-w-sm bg-white shadow-xl p-6 flex flex-col gap-4">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-lg font-bold">Menu</span>
+          <button id="btnCloseMenu" class="w-10 h-10 grid place-items-center rounded-xl border border-slate-200">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <nav class="flex flex-col text-base">
+          <a href="#nabidky" class="py-3 border-b" data-close>🏡 Nabídky</a>
+          <a href="#mapa" class="py-3 border-b" data-close>🗺️ Mapa</a>
+          <a href="#jak-to-funguje" class="py-3 border-b" data-close>ℹ️ Jak to funguje</a>
+          <a href="#kontakt" class="py-3 border-b" data-close>✉️ Kontakt</a>
+          <a href="#pridat" class="mt-4 inline-flex items-center gap-2 bg-aoBlue text-white px-4 py-3 rounded-xl justify-center" data-close>
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Přidat chatu
+          </a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-moss">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight">
+            Najdi svou <span class="text-forest">chatu snů</span> – bez zbytečných provizí
+          </h1>
+          <p class="mt-4 text-slate-700 text-lg">Chatao.cz propojuje hosty a majitele napřímo. Ušetři na poplatcích, vybírej z ověřených chat, chalup a glampingů po celé ČR.</p>
+
+          <!-- Search bar -->
+          <form id="frmSearch" class="mt-6 grid md:grid-cols-5 gap-3 bg-white p-3 rounded-2xl shadow-card border border-slate-100">
+            <div class="md:col-span-2">
+              <label class="text-xs font-semibold text-slate-500">Lokalita / kraj</label>
+              <div class="relative mt-1">
+                <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                <input type="text" placeholder="Krkonoše, Beskydy…" class="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-forest/30 focus:border-forest" />
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-500">Příjezd</label>
+              <input type="date" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-forest/30 focus:border-forest" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-500">Odjezd</label>
+              <input type="date" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-forest/30 focus:border-forest" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-500">Osoby</label>
+              <select class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-forest/30 focus:border-forest">
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5+</option>
+              </select>
+            </div>
+            <div class="md:col-span-5 flex items-center justify-between gap-2">
+              <div class="flex flex-wrap gap-2 text-sm">
+                <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-300 cursor-pointer">
+                  <input type="checkbox" class="accent-forest">
+                  <span>Sauna</span>
+                </label>
+                <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-300 cursor-pointer">
+                  <input type="checkbox" class="accent-forest">
+                  <span>Vířivka</span>
+                </label>
+                <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-300 cursor-pointer">
+                  <input type="checkbox" class="accent-forest">
+                  <span>U vody</span>
+                </label>
+                <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-300 cursor-pointer">
+                  <input type="checkbox" class="accent-forest">
+                  <span>Se psem</span>
+                </label>
+                <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-300 cursor-pointer">
+                  <input type="checkbox" class="accent-forest">
+                  <span>Krbařina</span>
+                </label>
+              </div>
+              <button type="submit" class="inline-flex items-center gap-2 bg-forest text-white font-semibold px-4 py-2.5 rounded-xl hover:opacity-90">
+                <i data-lucide="search" class="w-4 h-4"></i>
+                Hledat
+              </button>
+            </div>
+          </form>
+
+          <p class="mt-3 text-sm text-slate-500">Tip: Nemáš vlastní web? <a href="#" class="text-aoBlue font-semibold underline">StartAO.cz</a> ti vytvoří miniweb na pár kliků.</p>
+        </div>
+        <div class="relative">
+          <div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-card ring-1 ring-black/5">
+            <img src="https://images.unsplash.com/photo-1499696022970-88e7b0482563?q=80&w=1600&auto=format&fit=crop" alt="Chata v horách" class="w-full h-full object-cover"/>
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-card ring-1 ring-black/5">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-aoBlue text-white grid place-items-center">
+                <i data-lucide="shield" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-sm font-bold">Ověření majitelé</div>
+                <div class="text-xs text-slate-500">Bezpečná komunikace a platby</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nabídky -->
+  <section id="nabidky" class="py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-6">
+        <h2 class="text-2xl sm:text-3xl font-black">Doporučené chaty</h2>
+        <a href="#" class="text-sm font-semibold text-aoBlue">Zobrazit vše →</a>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <article class="rounded-2xl overflow-hidden border border-slate-200 shadow-card">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1508170754725-6f8b8cb9fe05?q=80&w=1200&auto=format&fit=crop" alt="Roubenka Krkonoše" class="h-52 w-full object-cover"/>
+            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2.5 py-1 rounded-lg text-xs font-semibold">Krkonoše</div>
+            <button class="absolute top-3 right-3 w-9 h-9 grid place-items-center rounded-full bg-white/90 backdrop-blur ring-1 ring-black/10" aria-label="Uložit">
+              <i data-lucide="heart" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg">Roubenka U smrku</h3>
+            <p class="text-sm text-slate-600 mt-1">Až 6 osob • sauna • u sjezdovky</p>
+            <div class="flex items-center justify-between mt-4">
+              <div class="text-forest font-extrabold text-lg">3 200 Kč<span class="text-slate-500 text-sm font-medium"> / noc</span></div>
+              <a href="#" class="text-sm font-semibold text-aoBlue">Detail →</a>
+            </div>
+          </div>
+        </article>
+        <!-- Card 2 -->
+        <article class="rounded-2xl overflow-hidden border border-slate-200 shadow-card">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1515266591878-f93e32bc5937?q=80&w=1200&auto=format&fit=crop" alt="Chata u jezera" class="h-52 w-full object-cover"/>
+            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2.5 py-1 rounded-lg text-xs font-semibold">Jižní Čechy</div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg">Chata U jezera</h3>
+            <p class="text-sm text-slate-600 mt-1">U vody • loďka • domácí mazlíčci vítáni</p>
+            <div class="flex items-center justify-between mt-4">
+              <div class="text-forest font-extrabold text-lg">2 590 Kč<span class="text-slate-500 text-sm font-medium"> / noc</span></div>
+              <a href="#" class="text-sm font-semibold text-aoBlue">Detail →</a>
+            </div>
+          </div>
+        </article>
+        <!-- Card 3 -->
+        <article class="rounded-2xl overflow-hidden border border-slate-200 shadow-card">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1521401830884-6c03c1c87ebb?q=80&w=1200&auto=format&fit=crop" alt="Glamping Domek" class="h-52 w-full object-cover"/>
+            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2.5 py-1 rounded-lg text-xs font-semibold">Beskydy</div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-bold text-lg">Glamping Domek</h3>
+            <p class="text-sm text-slate-600 mt-1">Design • výhledy • vířivka</p>
+            <div class="flex items-center justify-between mt-4">
+              <div class="text-forest font-extrabold text-lg">3 990 Kč<span class="text-slate-500 text-sm font-medium"> / noc</span></div>
+              <a href="#" class="text-sm font-semibold text-aoBlue">Detail →</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mapa -->
+  <section id="mapa" class="py-14 bg-slate-50 border-y">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-6">
+        <h2 class="text-2xl sm:text-3xl font-black">Mapa ubytování</h2>
+        <span class="text-sm text-slate-500">(Demo – statická výplň)</span>
+      </div>
+      <div class="aspect-[16/9] bg-[url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center rounded-3xl ring-1 ring-black/5 shadow-card grid place-items-center text-white">
+        <div class="backdrop-blur-md bg-black/30 px-4 py-2 rounded-xl">Interaktivní mapa bude napojena později</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jak to funguje -->
+  <section id="jak-to-funguje" class="py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl sm:text-3xl font-black mb-8">Jak to funguje</h2>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl border border-slate-200 shadow-card">
+          <div class="w-12 h-12 rounded-xl bg-moss grid place-items-center text-forest">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </div>
+          <h3 class="mt-4 font-bold text-lg">1) Najdi</h3>
+          <p class="text-slate-600 mt-1">Prozkoumej nabídky podle lokality, ceny a vybavení. Ukládej oblíbené.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-slate-200 shadow-card">
+          <div class="w-12 h-12 rounded-xl bg-moss grid place-items-center text-forest">
+            <i data-lucide="messages-square" class="w-5 h-5"></i>
+          </div>
+          <h3 class="mt-4 font-bold text-lg">2) Spoj se s majitelem</h3>
+          <p class="text-slate-600 mt-1">Přímá komunikace bez prostředníka a zbytečných provizí.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-slate-200 shadow-card">
+          <div class="w-12 h-12 rounded-xl bg-moss grid place-items-center text-forest">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <h3 class="mt-4 font-bold text-lg">3) Bezpečně rezervuj</h3>
+          <p class="text-slate-600 mt-1">Ověření majitelé, bezpečné platby a jasné podmínky.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Přidat chatu -->
+  <section id="pridat" class="py-14 bg-moss">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="p-8 lg:p-10 rounded-3xl bg-gradient-to-br from-white to-slate-50 border border-slate-200 shadow-card">
+        <div class="grid lg:grid-cols-3 gap-8 items-center">
+          <div class="lg:col-span-2">
+            <h2 class="text-2xl sm:text-3xl font-black">Pronajímáš chatu? Získej více poptávek.</h2>
+            <p class="mt-2 text-slate-600">Založ si inzerát zdarma během 5 minut. Možnost zvýraznění a napojení na tvůj kalendář obsazenosti.</p>
+          </div>
+          <div class="flex lg:justify-end">
+            <a href="#" class="inline-flex items-center gap-2 bg-aoBlue text-white font-semibold px-5 py-3 rounded-2xl shadow hover:opacity-90">
+              <i data-lucide="plus" class="w-5 h-5"></i>
+              Přidat chatu
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kontakt -->
+  <section id="kontakt" class="py-14">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl sm:text-3xl font-black mb-6">Kontakt</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <form class="p-6 rounded-2xl border border-slate-200 shadow-card bg-white">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-semibold text-slate-600">Jméno</label>
+              <input type="text" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-forest/30 focus:border-forest" placeholder="Tvoje jméno"/>
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-600">E‑mail</label>
+              <input type="email" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-forest/30 focus:border-forest" placeholder="např. ahoj@chatao.cz"/>
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="text-xs font-semibold text-slate-600">Zpráva</label>
+            <textarea rows="4" class="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-forest/30 focus:border-forest" placeholder="Jak ti můžeme pomoci?"></textarea>
+          </div>
+          <button class="mt-4 inline-flex items-center gap-2 bg-forest text-white font-semibold px-5 py-2.5 rounded-xl hover:opacity-90" type="button">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            Odeslat
+          </button>
+        </form>
+        <div class="p-6 rounded-2xl border border-slate-200 shadow-card bg-white">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-forest text-white grid place-items-center"><i data-lucide="phone" class="w-5 h-5"></i></div>
+            <div>
+              <div class="text-sm font-bold">+420 777 000 000</div>
+              <div class="text-xs text-slate-500">Po–Pá 9:00–16:00</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 mt-4">
+            <div class="w-10 h-10 rounded-xl bg-forest text-white grid place-items-center"><i data-lucide="mail" class="w-5 h-5"></i></div>
+            <div>
+              <div class="text-sm font-bold">info@chatao.cz</div>
+              <div class="text-xs text-slate-500">Ozveme se do 1 pracovního dne</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 mt-4">
+            <div class="w-10 h-10 rounded-xl bg-forest text-white grid place-items-center"><i data-lucide="map" class="w-5 h-5"></i></div>
+            <div>
+              <div class="text-sm font-bold">Uherské Hradiště / Zlínský kraj</div>
+              <div class="text-xs text-slate-500">AO Group</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid md:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-forest text-white grid place-items-center"><i data-lucide="home" class="w-4 h-4"></i></div>
+          <span class="font-extrabold">Chatao.cz</span>
+        </div>
+        <p class="text-sm text-slate-600 mt-3">Marketplace chat, chalup a glampingů po celé ČR. Přímý kontakt na majitele, žádné zbytečné provize.</p>
+      </div>
+      <div>
+        <h4 class="font-bold">Oblíbené lokality</h4>
+        <ul class="mt-3 space-y-2 text-sm text-slate-600">
+          <li><a href="#">Krkonoše</a></li>
+          <li><a href="#">Jeseníky</a></li>
+          <li><a href="#">Jižní Čechy</a></li>
+          <li><a href="#">Beskydy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold">Pro majitele</h4>
+        <ul class="mt-3 space-y-2 text-sm text-slate-600">
+          <li><a href="#">Přidat chatu</a></li>
+          <li><a href="#">Ceník a zvýraznění</a></li>
+          <li><a href="#">Pravidla inzerce</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold">O projektu</h4>
+        <ul class="mt-3 space-y-2 text-sm text-slate-600">
+          <li><a href="#">Blog / Magazín</a></li>
+          <li><a href="#">Ochrana soukromí</a></li>
+          <li><a href="#">Podmínky</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span>© <span id="year"></span> Chatao.cz – AO Group</span>
+        <span>Design & dev: AO</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS: ikony + menu + drobnosti -->
+  <script>
+    // Lucide init
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+      document.getElementById('year').textContent = new Date().getFullYear();
+    });
+
+    // Mobile menu logic (otevření, zavření, automatické zavírání po kliknutí)
+    (function(){
+      const btnMenu = document.getElementById('btnMenu');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const btnClose = document.getElementById('btnCloseMenu');
+      const backdrop = document.getElementById('menuBackdrop');
+
+      const openMenu = () => { mobileMenu.classList.remove('hidden'); document.body.style.overflow = 'hidden'; };
+      const closeMenu = () => { mobileMenu.classList.add('hidden'); document.body.style.overflow = ''; };
+
+      btnMenu?.addEventListener('click', openMenu);
+      btnClose?.addEventListener('click', closeMenu);
+      backdrop?.addEventListener('click', closeMenu);
+
+      mobileMenu?.querySelectorAll('[data-close]').forEach(a => {
+        a.addEventListener('click', closeMenu);
+      });
+
+      // Zavři na ESC
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu();});
+    })();
+
+    // Demo search submit
+    document.getElementById('frmSearch')?.addEventListener('submit', function(e){
+      e.preventDefault();
+      const btn = this.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.classList.add('opacity-60');
+      setTimeout(()=>{ btn.disabled=false; btn.classList.remove('opacity-60'); alert('Demo: zde proběhne vyhledávání a filtrování nabídek.'); }, 500);
+    });
+  </script>
+</body>
+</html>
