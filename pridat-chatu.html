@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CHATAO.cz – Přidat chatu</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {50:"#F3F7F5",100:"#E3EEE8",200:"#C5DCD1",300:"#9FC3B2",400:"#78A78F",500:"#568B71",600:"#3E6D58",700:"#2E5344",800:"#213D33",900:"#172A23"},
+            ember: {50:"#FFF7ED",100:"#FFEDD5",200:"#FED7AA",300:"#FDBA74",400:"#FB923C",500:"#F97316",600:"#EA580C",700:"#C2410C",800:"#9A3412",900:"#7C2D12"},
+            fog: {50:"#F6F7F9",100:"#ECEEF2",200:"#D7DBE4",300:"#B7BECE",400:"#8F9AB2",500:"#6E7A95",600:"#56607A",700:"#434C62",800:"#31384A",900:"#232838"},
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+            wood: "#2A211A",
+          },
+          boxShadow: {
+            soft: "0 22px 60px rgba(0,0,0,0.45)",
+            lift: "0 18px 40px rgba(0,0,0,0.30)",
+          },
+          borderRadius: { "4xl": "2rem" },
+          fontFamily: { sans: ["ui-sans-serif","system-ui","-apple-system","Segoe UI","Roboto","Arial"] },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    .grain::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');mix-blend-mode:overlay}
+    .glass{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+    .ringline{box-shadow:0 0 0 1px rgba(255,255,255,.10) inset}
+    .shimmer{position:relative;overflow:hidden}
+    .shimmer::after{content:"";position:absolute;inset:-60% -20%;transform:rotate(18deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);animation:shimmer 4.8s linear infinite;pointer-events:none}
+    @keyframes shimmer{0%{transform:translateX(-20%) rotate(18deg)}100%{transform:translateX(60%) rotate(18deg)}}
+    .fade-up{opacity:0;transform:translateY(10px);transition:all .7s cubic-bezier(.2,.8,.2,1)}
+    .fade-up.is-visible{opacity:1;transform:translateY(0)}
+    .hide-scrollbar::-webkit-scrollbar{height:0;width:0}
+    :focus-visible{outline:2px solid rgba(249,115,22,.55);outline-offset:3px;border-radius:18px}
+    /* slider */
+    input[type=range]{-webkit-appearance:none;appearance:none;height:10px;border-radius:999px;background:rgba(255,255,255,.08);outline:none}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:999px;background:rgba(249,115,22,.85);box-shadow:0 0 0 6px rgba(249,115,22,.18)}
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream">
+  <!-- Background -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%),radial-gradient(circle_at_60%_95%,rgba(142,154,178,0.14),transparent_46%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-40">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <a href="#" class="flex items-center gap-3 group">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center group-hover:bg-pine-700/55 transition">
+              <span class="text-lg">🏡</span>
+            </div>
+            <div class="leading-tight">
+              <div class="font-semibold tracking-wide">Přidat chatu</div>
+              <div class="text-xs text-cream/70">majitel / správce nabídky</div>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <button id="btnSaveDraft" class="px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Uložit koncept</button>
+            <button id="btnPreview" class="px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Náhled</button>
+            <button id="btnPublish" class="px-4 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer text-sm">Publikovat</button>
+          </div>
+        </div>
+
+        <!-- progress / steps -->
+        <div class="mt-3 flex items-center justify-between gap-3">
+          <div class="flex-1">
+            <div class="h-2 rounded-full bg-white/5 ringline overflow-hidden">
+              <div id="progressBar" class="h-full w-[10%] bg-ember-500/35"></div>
+            </div>
+            <div class="mt-2 text-xs text-cream/60"><span id="stepLabel">Krok 1/6</span> • <span id="stepTitle">Základ</span></div>
+          </div>
+          <div class="hidden md:flex items-center gap-2 text-xs text-cream/55">
+            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">⚡ rychlé</span>
+            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">🧠 chytré</span>
+            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">🧾 bez chaosu</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-4 md:px-6 py-8 md:py-10">
+    <div class="grid lg:grid-cols-[1.4fr_0.9fr] gap-6 items-start">
+
+      <!-- LEFT: form wizard -->
+      <section class="relative overflow-hidden rounded-4xl bg-white/5 ringline shadow-soft grain">
+        <div class="absolute -top-44 -right-44 h-[420px] w-[420px] rounded-full bg-pine-600/25 blur-3xl"></div>
+        <div class="absolute -bottom-44 -left-36 h-[420px] w-[420px] rounded-full bg-ember-500/15 blur-3xl"></div>
+
+        <div class="relative p-5 md:p-7">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">Vytvoř nabídku, co prodává.</h1>
+              <p class="mt-2 text-cream/75 max-w-2xl">Vyplň jen to nejdůležitější. Zbytek dopočítáme, navrhneme, a dáme do formátu, který lidi ukládají a sdílí.</p>
+            </div>
+            <div class="hidden md:block">
+              <div class="px-4 py-3 rounded-3xl bg-white/5 ringline text-sm">
+                <div class="text-xs text-cream/60">Kvalita nabídky</div>
+                <div class="mt-1 flex items-center gap-2">
+                  <div class="h-2 w-28 rounded-full bg-white/6 ringline overflow-hidden"><div id="qualityBar" class="h-full w-[30%] bg-pine-500/45"></div></div>
+                  <div id="qualityPct" class="text-xs">30%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step container -->
+          <div id="steps" class="mt-6 space-y-6">
+
+            <!-- STEP 1: Základ -->
+            <div class="step" data-step="0">
+              <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-cream/70">Název chaty*</label>
+                  <input id="name" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline placeholder:text-cream/35" placeholder="např. Samota u lesa" />
+                  <p class="mt-2 text-xs text-cream/55">Krátké, konkrétní. Bez CAPSLOCKU.</p>
+                </div>
+                <div>
+                  <label class="text-sm text-cream/70">Oblast / region*</label>
+                  <input id="region" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline placeholder:text-cream/35" placeholder="např. Šumava" />
+                  <p class="mt-2 text-xs text-cream/55">Lidi hledají podle regionu.</p>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                  <label class="text-sm text-cream/70">Cena od (Kč/noc)*</label>
+                  <input id="priceFrom" type="number" min="0" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="2490" />
+                  <p class="mt-2 text-xs text-cream/55">Stačí „od“ – přesné ceny v rezervačním kroku.</p>
+                </div>
+                <div>
+                  <label class="text-sm text-cream/70">Kapacita (osob)*</label>
+                  <input id="capacity" type="number" min="1" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="4" />
+                </div>
+                <div>
+                  <label class="text-sm text-cream/70">Typ ubytování</label>
+                  <select id="type" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline">
+                    <option value="chata">Chata</option>
+                    <option value="chalupa">Chalupa</option>
+                    <option value="tiny">Tiny house</option>
+                    <option value="glamping">Glamping</option>
+                    <option value="apartman">Apartmán</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="text-sm text-cream/70">Jednovětý „vibe“*</label>
+                <textarea id="vibe" rows="3" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline placeholder:text-cream/35" placeholder="např. Krb praská, les šumí, a svět se zpomalí."></textarea>
+                <div class="mt-2 flex items-center justify-between text-xs text-cream/55">
+                  <span>Neprodáváš metr čtvereční. Prodáváš pocit.</span>
+                  <span id="vibeCount">0/180</span>
+                </div>
+              </div>
+
+              <div class="rounded-4xl bg-white/4 ringline p-5">
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <div class="font-semibold">AI návrh tagů (demo)</div>
+                    <div class="mt-1 text-sm text-cream/70">Vyber 3–7 tagů. Ty rozhodují o feedu.</div>
+                  </div>
+                  <button id="btnSuggestTags" class="px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Navrhnout</button>
+                </div>
+                <div id="tags" class="mt-4 flex flex-wrap gap-2"></div>
+                <div class="mt-3 text-xs text-cream/55">Tagy: samota • oheň • sauna • pes • ticho • hory • voda • design…</div>
+              </div>
+            </div>
+
+            <!-- STEP 2: Fotky -->
+            <div class="step hidden" data-step="1">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="text-xl font-semibold">Fotky (tohle prodává)</div>
+                  <div class="mt-1 text-sm text-cream/70">Minimum 3. Doporučeno 8–12.</div>
+                </div>
+                <label class="px-4 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer text-sm cursor-pointer">
+                  Přidat fotky
+                  <input id="photos" type="file" accept="image/*" multiple class="hidden" />
+                </label>
+              </div>
+
+              <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-3" id="photoGrid"></div>
+
+              <div class="mt-4 rounded-4xl bg-white/4 ringline p-5">
+                <div class="font-semibold">Cover fotka</div>
+                <div class="mt-1 text-sm text-cream/70">Vyber, co se bude zobrazovat ve feedu.</div>
+                <div class="mt-4 flex flex-wrap gap-2" id="coverPick"></div>
+              </div>
+            </div>
+
+            <!-- STEP 3: Výbava -->
+            <div class="step hidden" data-step="2">
+              <div class="text-xl font-semibold">Výbava & pravidla</div>
+              <div class="mt-1 text-sm text-cream/70">Čím víc detailů, tím lepší konverze.</div>
+
+              <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div class="rounded-4xl bg-white/4 ringline p-5">
+                  <div class="font-medium">Vybavení</div>
+                  <div class="mt-3 grid grid-cols-2 gap-2" id="amenities"></div>
+                </div>
+                <div class="rounded-4xl bg-white/4 ringline p-5">
+                  <div class="font-medium">Pravidla</div>
+                  <div class="mt-3 grid gap-2" id="rules"></div>
+                </div>
+              </div>
+
+              <div class="mt-4 rounded-4xl bg-white/4 ringline p-5">
+                <div class="font-medium">Atmosféra (slider)</div>
+                <div class="mt-4 grid md:grid-cols-3 gap-4">
+                  <div>
+                    <div class="text-sm text-cream/70">Samota</div>
+                    <input id="slSolitude" type="range" min="0" max="10" value="7" class="mt-2 w-full" />
+                    <div class="mt-2 text-xs text-cream/60">Hodnota: <span id="slSolitudeV">7</span>/10</div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-cream/70">Design</div>
+                    <input id="slDesign" type="range" min="0" max="10" value="6" class="mt-2 w-full" />
+                    <div class="mt-2 text-xs text-cream/60">Hodnota: <span id="slDesignV">6</span>/10</div>
+                  </div>
+                  <div>
+                    <div class="text-sm text-cream/70">Wellness</div>
+                    <input id="slWellness" type="range" min="0" max="10" value="5" class="mt-2 w-full" />
+                    <div class="mt-2 text-xs text-cream/60">Hodnota: <span id="slWellnessV">5</span>/10</div>
+                  </div>
+                </div>
+                <p class="mt-3 text-xs text-cream/55">Tyhle slidery můžeme později použít pro doporučování ve feedu.</p>
+              </div>
+            </div>
+
+            <!-- STEP 4: Lokace -->
+            <div class="step hidden" data-step="3">
+              <div class="text-xl font-semibold">Lokace</div>
+              <div class="mt-1 text-sm text-cream/70">Nemusíš dávat přesnou adresu veřejně. Stačí oblast + bod pro mapu.</div>
+
+              <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-cream/70">Město / obec*</label>
+                  <input id="city" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="např. Kašperské Hory" />
+                </div>
+                <div>
+                  <label class="text-sm text-cream/70">PSČ</label>
+                  <input id="zip" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="např. 34192" />
+                </div>
+              </div>
+
+              <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-cream/70">Souřadnice (lat,lng)</label>
+                  <input id="coords" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="49.137, 13.556" />
+                  <div class="mt-2 text-xs text-cream/55">Tip: do budoucna sem dáme mapu a klikem nastavíš bod.</div>
+                </div>
+                <div class="rounded-4xl bg-white/4 ringline p-5">
+                  <div class="font-medium">Soukromí</div>
+                  <div class="mt-2 text-sm text-cream/70">Ve feedu zobrazíme jen oblast + vzdálenost. Přesná adresa až při potvrzení rezervace.</div>
+                  <div class="mt-3 flex items-center gap-2">
+                    <input id="privacy" type="checkbox" class="h-5 w-5" checked />
+                    <label for="privacy" class="text-sm">Skrýt přesnou adresu veřejně</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 5: Kontakt a platby -->
+            <div class="step hidden" data-step="4">
+              <div class="text-xl font-semibold">Kontakt & rezervace</div>
+              <div class="mt-1 text-sm text-cream/70">Jak tě mají lidi kontaktovat?</div>
+
+              <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-cream/70">Jméno / název*</label>
+                  <input id="ownerName" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="např. Jan Novák" />
+                </div>
+                <div>
+                  <label class="text-sm text-cream/70">Telefon</label>
+                  <input id="ownerPhone" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="+420 777 123 456" />
+                </div>
+              </div>
+
+              <div class="mt-4 grid md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm text-cream/70">E‑mail*</label>
+                  <input id="ownerEmail" type="email" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" placeholder="info@…" />
+                </div>
+                <div>
+                  <label class="text-sm text-cream/70">Preferovaný způsob</label>
+                  <select id="contactMode" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline">
+                    <option value="chat">CHATAO chat (doporučeno)</option>
+                    <option value="phone">Telefon</option>
+                    <option value="email">E‑mail</option>
+                    <option value="form">Poptávkový formulář</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mt-4 rounded-4xl bg-white/4 ringline p-5">
+                <div class="font-medium">Rezervační pravidla (rychlé)</div>
+                <div class="mt-3 grid md:grid-cols-3 gap-3">
+                  <div>
+                    <div class="text-sm text-cream/70">Min. počet nocí</div>
+                    <input id="minNights" type="number" min="1" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" value="2" />
+                  </div>
+                  <div>
+                    <div class="text-sm text-cream/70">Check‑in</div>
+                    <input id="checkIn" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" value="15:00" />
+                  </div>
+                  <div>
+                    <div class="text-sm text-cream/70">Check‑out</div>
+                    <input id="checkOut" class="mt-2 w-full px-4 py-3 rounded-3xl bg-white/5 ringline" value="10:00" />
+                  </div>
+                </div>
+                <div class="mt-3 text-xs text-cream/55">Později přidáme kalendář dostupnosti a ceny podle termínu.</div>
+              </div>
+            </div>
+
+            <!-- STEP 6: Shrnutí -->
+            <div class="step hidden" data-step="5">
+              <div class="text-xl font-semibold">Shrnutí & finální kontrola</div>
+              <div class="mt-1 text-sm text-cream/70">Tady uvidíš, jak bude nabídka vypadat ve feedu.</div>
+
+              <div class="mt-4 grid lg:grid-cols-2 gap-4">
+                <div class="rounded-4xl bg-white/4 ringline p-5">
+                  <div class="font-medium">Kontrola</div>
+                  <div class="mt-3 grid gap-2 text-sm" id="summary"></div>
+                  <div class="mt-4 text-xs text-cream/55">* Povinné údaje musí být vyplněné.</div>
+                </div>
+                <div class="rounded-4xl bg-white/4 ringline p-5">
+                  <div class="font-medium">Karta ve feedu (náhled)</div>
+                  <div class="mt-3" id="cardPreview"></div>
+                </div>
+              </div>
+
+              <div class="mt-4 rounded-4xl bg-white/4 ringline p-5">
+                <div class="font-medium">Právní minimum (demo)</div>
+                <div class="mt-3 flex items-start gap-3">
+                  <input id="agree" type="checkbox" class="mt-1 h-5 w-5" />
+                  <label for="agree" class="text-sm text-cream/75">Potvrzuji, že mám právo nabídku zveřejnit a údaje jsou pravdivé.</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Wizard nav -->
+          <div class="mt-8 flex items-center justify-between gap-3">
+            <button id="btnBack" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">← Zpět</button>
+            <div class="flex items-center gap-2">
+              <button id="btnNext" class="px-6 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Pokračovat →</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RIGHT: smart checklist + tips + live preview mini -->
+      <aside class="space-y-4">
+        <div class="rounded-4xl bg-white/5 ringline shadow-soft p-5 md:p-6">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-lg font-semibold">Checklist</div>
+              <div class="mt-1 text-sm text-cream/70">Dělá nabídku „uložitelnou“.</div>
+            </div>
+            <span id="checkScore" class="text-xs px-3 py-1.5 rounded-full bg-ember-500/20 ringline">0/10</span>
+          </div>
+          <div class="mt-4 grid gap-2 text-sm" id="checklist"></div>
+          <div class="mt-4 text-xs text-cream/55">Když dáš cover + vibe + 6+ fotek + výbavu, feed tě posune výš.</div>
+        </div>
+
+        <div class="rounded-4xl bg-white/5 ringline shadow-soft p-5 md:p-6">
+          <div class="text-lg font-semibold">Mini náhled</div>
+          <div class="mt-1 text-sm text-cream/70">Tohle je to, co uživatel uvidí za 0.3 s.</div>
+          <div class="mt-4" id="miniPreview"></div>
+        </div>
+
+        <div class="rounded-4xl bg-white/5 ringline shadow-soft p-5 md:p-6">
+          <div class="text-lg font-semibold">Tipy, co zvednou rezervace</div>
+          <ul class="mt-3 space-y-2 text-sm text-cream/75 list-disc pl-5">
+            <li>První fotka: <span class="text-cream">výhled / exteriér</span>, ne kuchyň.</li>
+            <li>Vibe věta: <span class="text-cream">ticho + benefit</span> („sauna + hvězdy“).</li>
+            <li>Tagy: vyber <span class="text-cream">samota / oheň / sauna</span> (best performers).</li>
+            <li>Uveď min. nocí a check‑in/out. Lidi milují jasno.</li>
+          </ul>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed top-20 right-4 z-[70] hidden">
+    <div class="px-4 py-3 rounded-3xl bg-white/8 ringline shadow-lift text-sm"></div>
+  </div>
+
+  <!-- Preview modal -->
+  <div id="modal" class="fixed inset-0 z-[80] hidden">
+    <div id="modalBackdrop" class="absolute inset-0 bg-black/70"></div>
+    <div class="absolute inset-0 overflow-y-auto">
+      <div class="min-h-full flex items-end md:items-center justify-center p-4 md:p-8">
+        <div id="modalPanel" class="w-full max-w-5xl rounded-4xl bg-ink/95 ringline shadow-soft overflow-hidden"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // =====================
+  // CHATAO – Přidat chatu (MVP)
+  // Lokální demo: ukládá do LocalStorage.
+  // =====================
+
+  const $ = (id) => document.getElementById(id);
+  const toast = $("toast");
+  const toastBox = toast.querySelector("div");
+
+  function showToast(t){
+    toastBox.textContent = t;
+    toast.classList.remove("hidden");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>toast.classList.add("hidden"), 1600);
+  }
+
+  // ----- Wizard -----
+  const steps = Array.from(document.querySelectorAll(".step"));
+  let step = 0;
+
+  const stepTitles = [
+    "Základ",
+    "Fotky",
+    "Výbava",
+    "Lokace",
+    "Kontakt & rezervace",
+    "Shrnutí",
+  ];
+
+  function setStep(n){
+    step = Math.max(0, Math.min(steps.length-1, n));
+    steps.forEach(s => s.classList.add("hidden"));
+    steps[step].classList.remove("hidden");
+
+    $("stepLabel").textContent = `Krok ${step+1}/${steps.length}`;
+    $("stepTitle").textContent = stepTitles[step];
+    $("progressBar").style.width = `${Math.round(((step+1)/steps.length)*100)}%`;
+
+    $("btnBack").disabled = step === 0;
+    $("btnBack").classList.toggle("opacity-40", step === 0);
+
+    // Next button label
+    $("btnNext").textContent = step === steps.length-1 ? "Dokončit →" : "Pokračovat →";
+
+    updateAllUI();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  // ----- Form state -----
+  const model = {
+    id: null,
+    name: "",
+    region: "",
+    priceFrom: "",
+    capacity: "",
+    type: "chata",
+    vibe: "",
+    tags: new Set(),
+    photos: [], // {id, file, url}
+    coverId: null,
+    amenities: new Set(),
+    rules: new Set(),
+    sliders: { solitude: 7, design: 6, wellness: 5 },
+    city: "",
+    zip: "",
+    coords: "",
+    privacy: true,
+    ownerName: "",
+    ownerPhone: "",
+    ownerEmail: "",
+    contactMode: "chat",
+    minNights: 2,
+    checkIn: "15:00",
+    checkOut: "10:00",
+    agree: false,
+  };
+
+  const TAG_LIBRARY = [
+    {key:"samota", icon:"🌲"}, {key:"oheň", icon:"🔥"}, {key:"sauna", icon:"🧖"}, {key:"pes", icon:"🐕"},
+    {key:"ticho", icon:"🌌"}, {key:"hory", icon:"🏔️"}, {key:"voda", icon:"🏞️"}, {key:"design", icon:"🏡"},
+    {key:"glamping", icon:"✨"}, {key:"zima", icon:"❄️"}, {key:"krb", icon:"🔥"}, {key:"výhled", icon:"👀"},
+  ];
+
+  const AMENITIES = [
+    {k:"sauna", i:"🧖"}, {k:"vířivka", i:"🛁"}, {k:"krb", i:"🔥"}, {k:"gril", i:"🍖"},
+    {k:"wifi", i:"📶"}, {k:"parkování", i:"🚗"}, {k:"pes vítán", i:"🐕"}, {k:"kávovar", i:"☕"},
+    {k:"výhled", i:"🌄"}, {k:"u vody", i:"🏞️"}, {k:"dětské", i:"🧸"}, {k:"lyže", i:"🎿"},
+  ];
+
+  const RULES = [
+    {k:"bez kouření", i:"🚭"}, {k:"ticho po 22:00", i:"🤫"}, {k:"bez párty", i:"🧊"},
+    {k:"zvířata povolena", i:"🐾"}, {k:"kauce", i:"💳"}, {k:"min. 2 noci", i:"🌙"},
+  ];
+
+  // ----- Bind inputs -----
+  const bind = (id, key, opts={}) => {
+    const el = $(id);
+    if(!el) return;
+    const isCheck = el.type === "checkbox";
+    const isNumber = el.type === "number";
+
+    const read = () => {
+      let v = isCheck ? el.checked : el.value;
+      if(isNumber) v = v === "" ? "" : Number(v);
+      model[key] = v;
+      updateAllUI();
+    };
+
+    el.addEventListener(opts.event || "input", read);
+    // init
+    if(isCheck) el.checked = !!model[key];
+    else el.value = model[key] ?? "";
+  };
+
+  bind("name","name");
+  bind("region","region");
+  bind("priceFrom","priceFrom");
+  bind("capacity","capacity");
+  bind("type","type",{event:"change"});
+  bind("vibe","vibe");
+  bind("city","city");
+  bind("zip","zip");
+  bind("coords","coords");
+  bind("privacy","privacy",{event:"change"});
+  bind("ownerName","ownerName");
+  bind("ownerPhone","ownerPhone");
+  bind("ownerEmail","ownerEmail");
+  bind("contactMode","contactMode",{event:"change"});
+  bind("minNights","minNights");
+  bind("checkIn","checkIn");
+  bind("checkOut","checkOut");
+  bind("agree","agree",{event:"change"});
+
+  // vibe counter
+  $("vibe").addEventListener("input", ()=>{
+    $("vibeCount").textContent = `${String($("vibe").value||"").length}/180`;
+  });
+
+  // sliders
+  const bindSlider = (id, key, outId) => {
+    const el = $(id);
+    el.addEventListener("input", ()=>{
+      model.sliders[key] = Number(el.value);
+      $(outId).textContent = String(el.value);
+      updateAllUI();
+    });
+  };
+  bindSlider("slSolitude","solitude","slSolitudeV");
+  bindSlider("slDesign","design","slDesignV");
+  bindSlider("slWellness","wellness","slWellnessV");
+
+  // ----- Render tags -----
+  function renderTags(){
+    const wrap = $("tags");
+    wrap.innerHTML = "";
+    TAG_LIBRARY.forEach(t=>{
+      const on = model.tags.has(t.key);
+      const btn = document.createElement("button");
+      btn.className = `px-4 py-2 rounded-3xl ringline transition text-sm flex items-center gap-2 ${on?"bg-ember-500/18":"bg-white/5 hover:bg-white/8"}`;
+      btn.innerHTML = `<span>${t.icon}</span><span>${t.key}</span>`;
+      btn.addEventListener("click", ()=>{
+        if(model.tags.has(t.key)) model.tags.delete(t.key);
+        else model.tags.add(t.key);
+        updateAllUI();
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  $("btnSuggestTags").addEventListener("click", ()=>{
+    const s = (model.vibe+" "+model.name+" "+model.region).toLowerCase();
+    const picks = [];
+    if(s.includes("saun")) picks.push("sauna");
+    if(s.includes("krb")||s.includes("oheň")||s.includes("ohen")) picks.push("oheň");
+    if(s.includes("les")||s.includes("samot")) picks.push("samota");
+    if(s.includes("hory")||s.includes("krkon")||s.includes("besk")) picks.push("hory");
+    if(s.includes("voda")||s.includes("jezer")||s.includes("ryb")) picks.push("voda");
+    while(picks.length < 4){
+      const r = TAG_LIBRARY[Math.floor(Math.random()*TAG_LIBRARY.length)].key;
+      if(!picks.includes(r)) picks.push(r);
+    }
+    picks.slice(0,6).forEach(k=>model.tags.add(k));
+    showToast("Navrženo ✅");
+    updateAllUI();
+  });
+
+  // ----- Amenities / rules -----
+  function toggleSet(set, key){ set.has(key) ? set.delete(key) : set.add(key); }
+
+  function renderPills(containerId, data, setRef){
+    const wrap = $(containerId);
+    wrap.innerHTML = "";
+    data.forEach(x=>{
+      const on = setRef.has(x.k);
+      const b = document.createElement("button");
+      b.className = `px-3 py-2 rounded-3xl ringline transition text-sm flex items-center justify-between gap-2 ${on?"bg-pine-700/26":"bg-white/5 hover:bg-white/8"}`;
+      b.innerHTML = `<span class="flex items-center gap-2"><span>${x.i}</span><span>${x.k}</span></span><span class="text-xs">${on?"✓":"+"}</span>`;
+      b.addEventListener("click", ()=>{ toggleSet(setRef,x.k); updateAllUI(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  // ----- Photos -----
+  $("photos").addEventListener("change", (e)=>{
+    const files = Array.from(e.target.files || []);
+    files.forEach(file=>{
+      const id = crypto.randomUUID ? crypto.randomUUID() : String(Date.now())+Math.random();
+      const url = URL.createObjectURL(file);
+      model.photos.push({id, file, url});
+    });
+    if(!model.coverId && model.photos[0]) model.coverId = model.photos[0].id;
+    showToast(files.length ? `Přidáno ${files.length} fotek` : "");
+    updateAllUI();
+    e.target.value = "";
+  });
+
+  function renderPhotos(){
+    const grid = $("photoGrid");
+    const coverPick = $("coverPick");
+    grid.innerHTML = "";
+    coverPick.innerHTML = "";
+
+    if(!model.photos.length){
+      grid.innerHTML = `<div class="rounded-4xl bg-white/4 ringline p-6 text-sm text-cream/70">Žádné fotky. Přidej minimálně 3. Doporučeno 8–12.</div>`;
+      return;
+    }
+
+    model.photos.forEach(p=>{
+      const isCover = model.coverId === p.id;
+      const card = document.createElement("div");
+      card.className = "relative rounded-4xl overflow-hidden ringline bg-white/5";
+      card.innerHTML = `
+        <img src="${p.url}" class="h-44 w-full object-cover" alt="Foto" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+        <div class="absolute left-3 right-3 bottom-3 flex items-center justify-between">
+          <button data-setcover="${p.id}" class="px-3 py-2 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition text-xs">${isCover?"⭐ Cover":"Nastavit cover"}</button>
+          <button data-del="${p.id}" class="h-9 w-9 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Smazat">🗑️</button>
+        </div>
+      `;
+      grid.appendChild(card);
+
+      const mini = document.createElement("button");
+      mini.className = `px-3 py-2 rounded-3xl ringline transition text-sm flex items-center gap-2 ${isCover?"bg-ember-500/18":"bg-white/5 hover:bg-white/8"}`;
+      mini.innerHTML = `<span>🖼️</span><span>${isCover?"Cover":"Foto"}</span>`;
+      mini.addEventListener("click", ()=>{ model.coverId = p.id; updateAllUI(); });
+      coverPick.appendChild(mini);
+    });
+
+    grid.querySelectorAll("button[data-setcover]").forEach(b=>b.addEventListener("click",()=>{ model.coverId=b.dataset.setcover; updateAllUI(); }));
+    grid.querySelectorAll("button[data-del]").forEach(b=>b.addEventListener("click",()=>{
+      const id=b.dataset.del;
+      const item=model.photos.find(x=>x.id===id);
+      if(item?.url) URL.revokeObjectURL(item.url);
+      model.photos = model.photos.filter(x=>x.id!==id);
+      if(model.coverId===id) model.coverId = model.photos[0]?.id || null;
+      updateAllUI();
+    }));
+  }
+
+  // ----- Quality / checklist -----
+  function computeChecklist(){
+    const checks = [
+      {k:"Název + region", ok: !!model.name.trim() && !!model.region.trim()},
+      {k:"Cena + kapacita", ok: !!model.priceFrom && !!model.capacity},
+      {k:"Vibe věta", ok: (model.vibe||"").trim().length >= 25},
+      {k:"Tagy (3+)", ok: model.tags.size >= 3},
+      {k:"Fotky (3+)", ok: model.photos.length >= 3},
+      {k:"Cover fotka", ok: !!model.coverId},
+      {k:"Výbava (4+)", ok: model.amenities.size >= 4},
+      {k:"Pravidla (1+)", ok: model.rules.size >= 1},
+      {k:"Lokace (město)", ok: !!model.city.trim()},
+      {k:"Kontakt (email)", ok: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(model.ownerEmail||"")},
+    ];
+    const score = checks.filter(x=>x.ok).length;
+    return {checks, score};
+  }
+
+  function renderChecklist(){
+    const {checks, score} = computeChecklist();
+    $("checkScore").textContent = `${score}/${checks.length}`;
+
+    const wrap = $("checklist");
+    wrap.innerHTML = "";
+    checks.forEach(c=>{
+      const row = document.createElement("div");
+      row.className = `flex items-center justify-between px-4 py-3 rounded-3xl ringline ${c.ok?"bg-pine-700/18":"bg-white/5"}`;
+      row.innerHTML = `<span>${c.ok?"✅":"⬜"} ${c.k}</span><span class="text-xs text-cream/55">${c.ok?"OK":"chybí"}</span>`;
+      wrap.appendChild(row);
+    });
+
+    // quality bar
+    const pct = Math.round((score/checks.length)*100);
+    $("qualityPct").textContent = `${pct}%`;
+    $("qualityBar").style.width = `${pct}%`;
+  }
+
+  // ----- Preview cards -----
+  function getCoverUrl(){
+    const p = model.photos.find(x=>x.id===model.coverId);
+    return p?.url || "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=80";
+  }
+
+  function cardTemplate(size="normal"){
+    const isMini = size === "mini";
+    const title = model.name.trim() || "Název chaty";
+    const region = model.region.trim() || "Region";
+    const price = model.priceFrom ? `${new Intl.NumberFormat("cs-CZ").format(model.priceFrom)} Kč` : "—";
+    const vibe = (model.vibe||"").trim() || "Jednovětý vibe…";
+    const tags = Array.from(model.tags).slice(0,4);
+
+    return `
+      <article class="group relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift">
+        <div class="absolute inset-0 grain"></div>
+        <div class="relative ${isMini?"aspect-[4/3]":"aspect-[4/3]"} overflow-hidden">
+          <img src="${getCoverUrl()}" class="h-full w-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">${region}</span>
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">👤 ${model.capacity||"—"}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="h-10 w-10 rounded-2xl bg-white/10 ringline grid place-items-center">❤️</span>
+              <span class="h-10 w-10 rounded-2xl bg-white/10 ringline grid place-items-center">🔖</span>
+            </div>
+          </div>
+          <div class="absolute left-4 right-4 bottom-4">
+            <div class="flex items-end justify-between gap-3">
+              <div>
+                <div class="text-lg font-semibold tracking-tight">${title}</div>
+                <div class="mt-1 text-xs text-cream/75">od <span class="font-semibold text-cream">${price}</span> / noc</div>
+              </div>
+              <span class="px-4 py-2 rounded-3xl bg-ember-500/15 ringline shimmer text-sm">Detail →</span>
+            </div>
+          </div>
+        </div>
+        <div class="relative p-4">
+          <p class="text-sm text-cream/75 line-clamp-2">${vibe}</p>
+          <div class="mt-3 flex flex-wrap gap-1.5">${tags.map(t=>`<span class="text-xs px-2.5 py-1 rounded-full bg-white/5 ringline">${t}</span>`).join("")}</div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderMini(){
+    $("miniPreview").innerHTML = cardTemplate("mini");
+  }
+
+  // ----- Summary -----
+  function renderSummary(){
+    const rows = [];
+    const req = (label, ok, val="") => `<div class="flex items-start justify-between gap-3 px-4 py-3 rounded-3xl ringline ${ok?"bg-pine-700/18":"bg-white/5"}"><div>${ok?"✅":"⚠️"} <span class="font-medium">${label}</span><div class="text-xs text-cream/55">${val}</div></div><div class="text-xs text-cream/55">${ok?"OK":"chybí"}</div></div>`;
+
+    rows.push(req("Název", !!model.name.trim(), model.name||""));
+    rows.push(req("Region", !!model.region.trim(), model.region||""));
+    rows.push(req("Cena od", !!model.priceFrom, model.priceFrom?`${model.priceFrom} Kč`:""));
+    rows.push(req("Kapacita", !!model.capacity, model.capacity?`${model.capacity} osob`:""));
+    rows.push(req("Vibe", (model.vibe||"").trim().length>=25, (model.vibe||"").trim().slice(0,80)));
+    rows.push(req("Tagy", model.tags.size>=3, Array.from(model.tags).join(", ")));
+    rows.push(req("Fotky", model.photos.length>=3, `${model.photos.length} ks`));
+    rows.push(req("Lokace (město)", !!model.city.trim(), model.city||""));
+    rows.push(req("Kontakt (email)", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(model.ownerEmail||""), model.ownerEmail||""));
+
+    $("summary").innerHTML = rows.join("");
+    $("cardPreview").innerHTML = cardTemplate();
+  }
+
+  // ----- Modal preview -----
+  const modal = $("modal");
+  const modalPanel = $("modalPanel");
+  $("modalBackdrop").addEventListener("click", ()=>{ modal.classList.add("hidden"); modalPanel.innerHTML=""; });
+  window.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && !modal.classList.contains("hidden")) { modal.classList.add("hidden"); modalPanel.innerHTML=""; }});
+
+  function openPreview(){
+    modalPanel.innerHTML = `
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-2xl font-semibold">Náhled nabídky</div>
+            <div class="mt-1 text-sm text-cream/70">Jak to uvidí uživatel ve feedu.</div>
+          </div>
+          <button id="close" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline grid place-items-center">✕</button>
+        </div>
+        <div class="mt-6 grid lg:grid-cols-2 gap-5">
+          <div>${cardTemplate()}</div>
+          <div class="rounded-4xl bg-white/4 ringline p-5">
+            <div class="font-medium">Krátká diagnostika</div>
+            <div class="mt-3 text-sm text-cream/75" id="diag"></div>
+          </div>
+        </div>
+      </div>
+    `;
+    $("close").addEventListener("click", ()=>{ modal.classList.add("hidden"); modalPanel.innerHTML=""; });
+
+    const {checks, score} = computeChecklist();
+    const pct = Math.round((score/checks.length)*100);
+    const bad = checks.filter(x=>!x.ok).map(x=>x.k);
+    $("diag").innerHTML = `
+      <div class="text-xs text-cream/60">Skóre kvality</div>
+      <div class="mt-1 text-2xl font-semibold">${pct}%</div>
+      <div class="mt-3 text-sm text-cream/75">${bad.length?`Doplň: <span class="text-cream">${bad.join(", ")}</span>`:"Vypadá to dobře. Publikuj."}</div>
+    `;
+
+    modal.classList.remove("hidden");
+  }
+
+  // ----- Save / publish (demo) -----
+  function normalize(){
+    // vygeneruj ID pokud není
+    if(!model.id){
+      model.id = (model.name||"chata").toLowerCase().replace(/[^a-z0-9]+/gi,"-").replace(/(^-|-$)/g,"") + "-" + Math.floor(1000+Math.random()*9000);
+    }
+  }
+
+  function validateRequired(){
+    const errs = [];
+    if(!model.name.trim()) errs.push("Název");
+    if(!model.region.trim()) errs.push("Region");
+    if(!model.priceFrom) errs.push("Cena od");
+    if(!model.capacity) errs.push("Kapacita");
+    if((model.vibe||"").trim().length < 25) errs.push("Vibe (min 25 znaků)");
+    if(model.tags.size < 3) errs.push("Tagy (min 3)");
+    if(model.photos.length < 3) errs.push("Fotky (min 3)");
+    if(!model.city.trim()) errs.push("Město/obec");
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(model.ownerEmail||"")) errs.push("E-mail");
+    if(step === 5 && !model.agree) errs.push("Souhlas (checkbox)");
+    return errs;
+  }
+
+  function saveDraft(){
+    normalize();
+    const payload = serialize();
+    const drafts = JSON.parse(localStorage.getItem("chatao_drafts")||"{}");
+    drafts[payload.id] = payload;
+    localStorage.setItem("chatao_drafts", JSON.stringify(drafts));
+    showToast("Koncept uložen ✅");
+  }
+
+  function publish(){
+    const errs = validateRequired();
+    if(errs.length){
+      showToast("Doplň: " + errs.slice(0,3).join(", ") + (errs.length>3?"…":""));
+      return;
+    }
+    normalize();
+    const payload = serialize();
+
+    // 1) uložit jako "publikovanou nabídku" (admin data)
+    const pub = JSON.parse(localStorage.getItem("chatao_listings")||"{}");
+    pub[payload.id] = payload;
+    localStorage.setItem("chatao_listings", JSON.stringify(pub));
+
+    // 2) uložit do FEED formátu (kompatibilní s CABINS)
+    const feed = JSON.parse(localStorage.getItem("chatao_feed")||"[]");
+    const feedItem = toFeedItem(payload);
+    const idx = feed.findIndex(x=>x.id===feedItem.id);
+    if(idx>=0) feed[idx] = feedItem; else feed.unshift(feedItem);
+    localStorage.setItem("chatao_feed", JSON.stringify(feed));
+
+    showToast("Publikováno ✅");
+
+    // 3) volitelný návrat na feed (když přidáš ?return=...)
+    const ret = new URLSearchParams(location.search).get("return");
+    if(ret){
+      setTimeout(()=>{ location.href = ret + (ret.includes("?")?"&":"?") + "newListing=" + encodeURIComponent(payload.id); }, 650);
+    }
+  }
+
+  function serialize(){
+    return {
+      id: model.id,
+      name: model.name.trim(),
+      region: model.region.trim(),
+      priceFrom: Number(model.priceFrom||0),
+      capacity: Number(model.capacity||0),
+      type: model.type,
+      vibe: (model.vibe||"").trim(),
+      tags: Array.from(model.tags),
+      coverUrl: getCoverUrl(),
+      photosCount: model.photos.length,
+      amenities: Array.from(model.amenities),
+      rules: Array.from(model.rules),
+      sliders: model.sliders,
+      city: model.city.trim(),
+      zip: model.zip.trim(),
+      coords: model.coords.trim(),
+      privacy: !!model.privacy,
+      ownerName: model.ownerName.trim(),
+      ownerPhone: model.ownerPhone.trim(),
+      ownerEmail: model.ownerEmail.trim(),
+      contactMode: model.contactMode,
+      minNights: Number(model.minNights||1),
+      checkIn: model.checkIn,
+      checkOut: model.checkOut,
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  // ===== FEED kompatibilita =====
+  // Cíl: aby se nová chata dala nacpat do stejného tvaru jako CABINS
+  function toFeedItem(p){
+    // vyrob bezpečné demo hodnocení (později skutečné)
+    const base = 4.6;
+    const bump = Math.min(0.35, (p.photosCount||0) * 0.02 + (p.tags?.length||0) * 0.01);
+    const rating = Math.round((base + bump) * 10) / 10;
+
+    // features = mix výbavy + pár pravidel
+    const features = [...(p.amenities||[]).slice(0,7)];
+    const rules = (p.rules||[]).slice(0,3).map(r=>`Pravidlo: ${r}`);
+
+    return {
+      id: p.id,
+      name: p.name,
+      region: p.region,
+      priceFrom: Number(p.priceFrom||0),
+      capacity: Number(p.capacity||0),
+      type: p.type,
+      vibe: p.vibe,
+      cover: p.coverUrl,
+      rating,
+      tags: p.tags || [],
+      features: [...features, ...rules].slice(0,10),
+      // extra metainfo (nezavadí ani když to feed ignoruje)
+      meta: {
+        city: p.city,
+        privacy: !!p.privacy,
+        sliders: p.sliders,
+        minNights: p.minNights,
+        checkIn: p.checkIn,
+        checkOut: p.checkOut,
+        createdAt: p.createdAt,
+      }
+    };
+  }
+
+  // veřejné API pro feed stránku (když chceš import bez duplikací)
+  window.CHATAO = window.CHATAO || {};
+  window.CHATAO.getFeedItems = function(){
+    try{ return JSON.parse(localStorage.getItem("chatao_feed")||"[]") || []; }
+    catch{ return []; }
+  };
+
+  // ----- Buttons -----
+  $("btnBack").addEventListener("click", ()=>setStep(step-1));
+  $("btnNext").addEventListener("click", ()=>{
+    // soft validation: pokud chybí zásadní věci, brzdí na klíčových přechodech
+    if(step === 0){
+      const errs = validateRequired().filter(e=>["Název","Region","Cena od","Kapacita","Vibe (min 25 znaků)","Tagy (min 3)"].includes(e));
+      if(errs.length){ showToast("Doplň: " + errs.slice(0,3).join(", ") + (errs.length>3?"…":"")); return; }
+    }
+    if(step === 1 && model.photos.length < 3){ showToast("Přidej aspoň 3 fotky"); return; }
+    if(step === 3 && !model.city.trim()){ showToast("Doplň město/obec"); return; }
+
+    if(step === steps.length-1){
+      publish();
+      return;
+    }
+    setStep(step+1);
+  });
+
+  $("btnSaveDraft").addEventListener("click", saveDraft);
+  $("btnPreview").addEventListener("click", openPreview);
+  $("btnPublish").addEventListener("click", ()=>{ setStep(5); openPreview(); });
+
+  // ----- Update UI -----
+  function updateAllUI(){
+    renderTags();
+    renderPills("amenities", AMENITIES, model.amenities);
+    renderPills("rules", RULES, model.rules);
+    renderPhotos();
+    renderChecklist();
+    renderMini();
+    if(step === 5) renderSummary();
+
+    // vibe count
+    $("vibeCount").textContent = `${String(model.vibe||"").length}/180`;
+
+    // progress color logic
+    const {checks, score} = computeChecklist();
+    const pct = Math.round((score/checks.length)*100);
+    $("qualityBar").className = "h-full " + (pct>=80?"bg-pine-500/55":pct>=50?"bg-ember-500/35":"bg-fog-500/35");
+
+    // update preview card on step changes
+    if(step === 5) renderSummary();
+  }
+
+  // init
+  setStep(0);
+  updateAllUI();
+</script>
+</body>
+</html>
