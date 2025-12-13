@@ -473,6 +473,13 @@ try {
   const money = (n) => new Intl.NumberFormat("cs-CZ").format(n);
 
   function showToast(text){
+    // návrat z pridat-chatu.html → zobrazit potvrzení
+const __newListingId = new URLSearchParams(location.search).get("newListing");
+if (__newListingId) {
+  history.replaceState({}, "", location.pathname); // uklidí URL
+  setTimeout(() => showToast("Chata přidána ✅"), 500);
+}
+
     toastBox.textContent = text;
     toast.classList.remove("hidden");
     toastBox.classList.add("fade-up");
