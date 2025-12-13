@@ -492,6 +492,93 @@
     checkOut: "10:00",
     agree: false,
   };
+  // ===== CHATAO: EDITACE EXISTUJÍCÍ CHATY =====
+const params = new URLSearchParams(location.search);
+const editId = params.get("edit");
+
+// Najde uloženou chatu (priorita: listings -> feed)
+function loadExisting(id){
+  // 1) plná data z listings (objekt)
+  const listings = JSON.parse(localStorage.getItem("chatao_listings") || "{}");
+  if (listings && listings[id]) return listings[id];
+
+  // 2) fallback: položka z feedu (pole)
+  const feed = JSON.parse(localStorage.getItem("chatao_feed") || "[]");
+  const found = Array.isArray(feed) ? feed.find(x => x && x.id === id) : null;
+  if (!found) return null;
+
+  // z feed itemu složíme minimum kompatibilní se serialize()
+  return {
+    id: found.id,
+    name: found.name || "",
+    region: found.region || "",
+    priceFrom: Number(found.priceFrom || 0),
+    capacity: Number(found.capacity || 0),
+    type: found.type || "chata",
+    vibe: found.vibe || "",
+    tags: found.tags || [],
+    coverUrl: found.cover || "",
+    photosCount: 0,
+    amenities: (found.features || []).filter(f => typeof f === "string" && !f.startsWith("Pravidlo: ")),
+    rules: (found.features || []).filter(f => typeof f === "string" && f.startsWith("Pravidlo: ")).map(x => x.replace("Pravidlo: ","")),
+    sliders: found.meta?.sliders || { solitude: 50, design: 50, wellness: 50 },
+    city: found.meta?.city || "",
+    zip: "",
+    coords: "",
+    privacy: !!found.meta?.privacy,
+    ownerName: "",
+    ownerPhone: "",
+    ownerEmail: "",
+    contactMode: "chat",
+    minNights: Number(found.meta?.minNights || 1),
+    checkIn: found.meta?.checkIn || "15:00",
+    checkOut: found.meta?.checkOut || "10:00",
+    createdAt: found.meta?.createdAt || new Date().toISOString(),
+  };
+}
+
+// Tohle se volá při načtení stránky
+if (editId){
+  const existing = loadExisting(editId);
+  if (existing){
+    // DŮLEŽITÉ: zachovej stejné ID (publish už pak jen přepíše záznam)
+    model.id = existing.id;
+
+    // přenes hodnoty do modelu
+    model.name = existing.name || "";
+    model.region = existing.region || "";
+    model.priceFrom = existing.priceFrom || 0;
+    model.capacity = existing.capacity || 0;
+    model.type = existing.type || "chata";
+    model.vibe = existing.vibe || "";
+    model.tags = new Set(existing.tags || []);
+    model.coverUrl = existing.coverUrl || existing.cover || "";
+    model.amenities = new Set(existing.amenities || []);
+    model.rules = new Set(existing.rules || []);
+    model.sliders = existing.sliders || model.sliders;
+    model.city = existing.city || "";
+    model.zip = existing.zip || "";
+    model.coords = existing.coords || "";
+    model.privacy = !!existing.privacy;
+    model.ownerName = existing.ownerName || "";
+    model.ownerPhone = existing.ownerPhone || "";
+    model.ownerEmail = existing.ownerEmail || "";
+    model.contactMode = existing.contactMode || model.contactMode;
+    model.minNights = existing.minNights || 1;
+    model.checkIn = existing.checkIn || model.checkIn;
+    model.checkOut = existing.checkOut || model.checkOut;
+
+    // pokud máš někde render/init, nech ho normálně proběhnout – načte už model
+    setTimeout(() => {
+      if (typeof showToast === "function") showToast("Upravuješ existující chatu ✏️");
+      if ((model.coverUrl || "").startsWith("blob:") && typeof showToast === "function"){
+        showToast("Pozor: fotky z prohlížeče je potřeba nahrát znovu.");
+      }
+    }, 350);
+  } else {
+    setTimeout(() => typeof showToast === "function" && showToast("Chata pro editaci nenalezena"), 350);
+  }
+}
 
   const TAG_LIBRARY = [
     {key:"samota", icon:"🌲"}, {key:"oheň", icon:"🔥"}, {key:"sauna", icon:"🧖"}, {key:"pes", icon:"🐕"},
