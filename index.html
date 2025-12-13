@@ -412,6 +412,21 @@
       features: ["Krb", "Velká kuchyň", "Zahrada", "Parkování"],
     },
   ];
+  // ===== CHATAO: import publikovaných chat z "Přidat chatu" =====
+// Stránka pridat-chatu.html ukládá feed do localStorage("chatao_feed")
+try {
+  const added = JSON.parse(localStorage.getItem("chatao_feed") || "[]") || [];
+  const ids = new Set(CABINS.map(c => c.id));
+
+  added.forEach(item => {
+    if (!item || !item.id) return;
+    if (!ids.has(item.id)) {
+      CABINS.unshift(item); // nová chata se objeví nahoře
+    }
+  });
+} catch (e) {
+  console.warn("CHATAO feed import fail:", e);
+}
 
   const EMOTION_CHIPS = [
     { key: "samota", label: "Chci samotu", icon: "🌲" },
