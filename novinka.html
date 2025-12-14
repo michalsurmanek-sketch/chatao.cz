@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hybrid vyhledávač budoucnosti – Demo</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            soft: "0 18px 45px rgba(15,23,42,0.25)",
+            glow: "0 0 0 1px rgba(236,72,153,.35), 0 20px 60px rgba(236,72,153,.20)",
+          },
+          borderRadius: {
+            "4xl": "2rem",
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Jemný "glass" bez knihoven */
+    .glass { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    /* Skrytí scrollbarů v karuselu */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-neutral-950 text-white selection:bg-fuchsia-500/40 selection:text-white">
+
+  <!-- Background */ -->
+  <div class="pointer-events-none fixed inset-0">
+    <div class="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-fuchsia-600/20 blur-3xl"></div>
+    <div class="absolute -bottom-48 -right-40 h-[620px] w-[620px] rounded-full bg-amber-500/15 blur-3xl"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(236,72,153,.12),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(245,158,11,.10),transparent_45%),radial-gradient(circle_at_50%_80%,rgba(16,185,129,.08),transparent_45%)]"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,.15),rgba(0,0,0,.85))]"></div>
+  </div>
+
+  <!-- Topbar -->
+  <header class="sticky top-0 z-40 border-b border-white/10 bg-neutral-950/60 glass">
+    <div class="mx-auto max-w-7xl px-4 py-3">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+          <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-fuchsia-500/80 via-neutral-950 to-amber-500/70 border border-white/10 shadow-glow grid place-items-center">
+            <span class="text-lg">⚡</span>
+          </div>
+          <div>
+            <div class="font-semibold leading-tight">Hybrid vyhledávač budoucnosti</div>
+            <div class="text-xs text-white/60 leading-tight">AI + feed + filtry + důvěra + mapa (demo)</div>
+          </div>
+        </div>
+
+        <div class="ml-auto flex items-center gap-2">
+          <button id="btnSaved" class="hidden sm:inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10">
+            <span>💾</span><span>Uložené</span>
+          </button>
+          <button id="btnLogin" class="inline-flex items-center gap-2 rounded-2xl bg-white text-black px-4 py-2 text-sm font-semibold hover:bg-white/90">
+            <span>👤</span><span>Přihlásit</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search row -->
+      <div class="mt-3 grid gap-3 md:grid-cols-[1fr_auto] items-start">
+        <div class="relative">
+          <input id="q" type="text" placeholder="Zeptej se jako člověk… (např. ‘romantická večeře v Brně do 600 Kč’, ‘chalupa pro 8 se saunou’)"
+            class="w-full rounded-3xl bg-white/5 border border-white/10 px-4 py-3 pr-28 text-sm outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-500/20" />
+          <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <button id="btnVoice" class="hidden sm:inline-flex rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10">🎙️ Hlas</button>
+            <button id="btnSearch" class="rounded-2xl bg-gradient-to-r from-fuchsia-500 to-amber-500 px-4 py-2 text-xs font-semibold text-black hover:opacity-95">Hledat</button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 justify-start md:justify-end">
+          <button data-mode="vse" class="modeBtn rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10">Vše</button>
+          <button data-mode="mista" class="modeBtn rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10">Místa</button>
+          <button data-mode="produkty" class="modeBtn rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10">Produkty</button>
+          <button data-mode="sluzby" class="modeBtn rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10">Služby</button>
+          <button data-mode="influ" class="modeBtn rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10">Influenceři</button>
+        </div>
+      </div>
+
+      <!-- Quick chips -->
+      <div class="mt-3 flex gap-2 overflow-x-auto no-scrollbar">
+        <button class="chip rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-chip="do 15 minut pěšky">⏱️ do 15 min</button>
+        <button class="chip rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-chip="levné">💸 levné</button>
+        <button class="chip rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-chip="nejlepší hodnocení">⭐ top</button>
+        <button class="chip rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-chip="novinky">🆕 novinky</button>
+        <button class="chip rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-chip="bez reklamy">🛡️ bez spamu</button>
+        <button class="chip rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-chip="ověřené">✅ ověřené</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="relative z-10 mx-auto max-w-7xl px-4 py-6">
+
+    <!-- AI answer + trust + controls -->
+    <section class="grid gap-4 lg:grid-cols-[1.3fr_.7fr]">
+      <div class="rounded-4xl border border-white/10 bg-white/5 p-4 md:p-5 shadow-soft">
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1.5 text-xs">
+            <span>🧠</span><span class="text-white/90">AI doporučení</span>
+          </div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/10 px-3 py-1.5 text-xs">
+            <span>✅</span><span class="text-white/80">Důvěra: ověřené profily</span>
+          </div>
+          <div class="ml-auto flex items-center gap-2">
+            <label class="flex items-center gap-2 text-xs text-white/70">
+              <input id="togglePersonal" type="checkbox" class="accent-fuchsia-500" checked />
+              Personalizace
+            </label>
+            <select id="sort" class="rounded-2xl border border-white/10 bg-neutral-950/60 px-3 py-2 text-xs outline-none">
+              <option value="relevance">Řazení: relevance</option>
+              <option value="rating">Řazení: hodnocení</option>
+              <option value="price">Řazení: cena</option>
+              <option value="near">Řazení: blízko</option>
+              <option value="new">Řazení: novinky</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="aiBox" class="mt-3 rounded-3xl border border-white/10 bg-neutral-950/40 p-4">
+          <div class="text-sm font-semibold">Doporučení na míru</div>
+          <p class="mt-1 text-sm text-white/75 leading-relaxed">
+            Napiš dotaz a já z toho udělám <span class="text-white">konkrétní shortlist</span> – s cenou, dostupností, hodnocením a „proč to sedí“.
+            V tomhle demu to jen simuluju na vzorových datech.
+          </p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button class="pill rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" data-prompt="Chci top 5 výsledků a vysvětli proč.">Top 5</button>
+            <button class="pill rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" data-prompt="Najdi nejlepší poměr cena/výkon.">Cena/výkon</button>
+            <button class="pill rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" data-prompt="Chci jen ověřené a bez reklamních triků.">Jen ověřené</button>
+            <button class="pill rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" data-prompt="Navrhni plán (1 den) a dej mapu tras.">Plán dne</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel: filters -->
+      <aside class="rounded-4xl border border-white/10 bg-white/5 p-4 md:p-5 shadow-soft">
+        <div class="flex items-center justify-between">
+          <div class="text-sm font-semibold">Filtry jako Booking</div>
+          <button id="btnReset" class="text-xs text-white/70 hover:text-white">Reset</button>
+        </div>
+
+        <div class="mt-4 space-y-4">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-white/60">Město</label>
+              <select id="city" class="mt-1 w-full rounded-2xl border border-white/10 bg-neutral-950/60 px-3 py-2 text-xs outline-none">
+                <option value="">Kdekoliv</option>
+                <option>Brno</option>
+                <option>Praha</option>
+                <option>Ostrava</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-white/60">Rozpočet</label>
+              <select id="budget" class="mt-1 w-full rounded-2xl border border-white/10 bg-neutral-950/60 px-3 py-2 text-xs outline-none">
+                <option value="">Bez limitu</option>
+                <option value="300">do 300 Kč</option>
+                <option value="600">do 600 Kč</option>
+                <option value="1200">do 1200 Kč</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs text-white/60">Důvěra</label>
+            <div class="mt-2 grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs">
+                <input id="onlyVerified" type="checkbox" class="accent-emerald-500" checked />
+                Ověřené
+              </label>
+              <label class="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs">
+                <input id="noAds" type="checkbox" class="accent-fuchsia-500" />
+                Bez reklamy
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs text-white/60">Typ obsahu</label>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <button class="tagBtn rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-tag="restaurace">🍽️ restaurace</button>
+              <button class="tagBtn rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-tag="ubytování">🏡 ubytování</button>
+              <button class="tagBtn rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-tag="služba">🛠️ služba</button>
+              <button class="tagBtn rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-tag="produkt">🛒 produkt</button>
+              <button class="tagBtn rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10" data-tag="influencer">👑 influencer</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs text-white/60">Hodnocení</label>
+            <input id="minRating" type="range" min="0" max="50" value="40" class="mt-2 w-full" />
+            <div class="mt-1 text-xs text-white/70">Min: <span id="minRatingLabel">4.0</span> ⭐</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Content grid: Feed + Map -->
+    <section class="mt-6 grid gap-4 lg:grid-cols-[1.4fr_.6fr]">
+
+      <!-- Feed -->
+      <div class="rounded-4xl border border-white/10 bg-white/5 shadow-soft overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-neutral-950/30">
+          <div class="text-sm font-semibold">Vizuální feed (Instagram styl) + karty</div>
+          <div class="text-xs text-white/60">Tip: klikni na kartu → detail</div>
+        </div>
+
+        <!-- Stories row -->
+        <div class="px-4 pt-4">
+          <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+            <button class="story group">
+              <div class="h-14 w-14 rounded-full bg-gradient-to-br from-fuchsia-500 to-amber-500 p-[2px]">
+                <div class="h-full w-full rounded-full bg-neutral-950 grid place-items-center text-lg">🔥</div>
+              </div>
+              <div class="mt-1 text-[11px] text-white/70 text-center">Trendy</div>
+            </button>
+            <button class="story group">
+              <div class="h-14 w-14 rounded-full bg-gradient-to-br from-emerald-500 to-sky-500 p-[2px]">
+                <div class="h-full w-full rounded-full bg-neutral-950 grid place-items-center text-lg">✅</div>
+              </div>
+              <div class="mt-1 text-[11px] text-white/70 text-center">Ověřené</div>
+            </button>
+            <button class="story group">
+              <div class="h-14 w-14 rounded-full bg-gradient-to-br from-amber-500 to-fuchsia-500 p-[2px]">
+                <div class="h-full w-full rounded-full bg-neutral-950 grid place-items-center text-lg">💸</div>
+              </div>
+              <div class="mt-1 text-[11px] text-white/70 text-center">Slevy</div>
+            </button>
+            <button class="story group">
+              <div class="h-14 w-14 rounded-full bg-gradient-to-br from-sky-500 to-fuchsia-500 p-[2px]">
+                <div class="h-full w-full rounded-full bg-neutral-950 grid place-items-center text-lg">🗺️</div>
+              </div>
+              <div class="mt-1 text-[11px] text-white/70 text-center">V okolí</div>
+            </button>
+            <button class="story group">
+              <div class="h-14 w-14 rounded-full bg-gradient-to-br from-fuchsia-500 to-emerald-500 p-[2px]">
+                <div class="h-full w-full rounded-full bg-neutral-950 grid place-items-center text-lg">👑</div>
+              </div>
+              <div class="mt-1 text-[11px] text-white/70 text-center">Influ</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="p-4 grid gap-4 md:grid-cols-2">
+          <!-- JS render -->
+        </div>
+
+        <div class="px-4 pb-4">
+          <button id="btnMore" class="w-full rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-sm hover:bg-white/10">
+            Načíst další výsledky
+          </button>
+        </div>
+      </div>
+
+      <!-- Map / right -->
+      <aside class="rounded-4xl border border-white/10 bg-white/5 shadow-soft overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-neutral-950/30">
+          <div class="text-sm font-semibold">Mapa + trasa</div>
+          <button id="btnRoute" class="rounded-2xl bg-white text-black px-3 py-1.5 text-xs font-semibold hover:bg-white/90">Vytvořit trasu</button>
+        </div>
+        <div class="p-4">
+          <div class="rounded-3xl border border-white/10 bg-neutral-950/40 p-4">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-semibold">Náhled mapy</div>
+              <div class="text-xs text-white/60">(placeholder)</div>
+            </div>
+            <div class="mt-3 h-56 rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_30%_25%,rgba(56,189,248,.18),transparent_55%),radial-gradient(circle_at_70%_65%,rgba(236,72,153,.18),transparent_55%),linear-gradient(to_bottom,rgba(255,255,255,.03),rgba(255,255,255,.01))] grid place-items-center">
+              <div class="text-center">
+                <div class="text-3xl">🗺️</div>
+                <div class="mt-1 text-sm text-white/75">Tady bude mapa (Mapy.cz / Google / vlastní)</div>
+                <div class="mt-1 text-xs text-white/60">V produkci: piny, klastr, trasa, dostupnost.</div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="text-xs text-white/60">Vybrané</div>
+              <div id="selected" class="mt-2 space-y-2">
+                <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70">Zatím nic – klikni na kartu ve feedu.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 rounded-3xl border border-white/10 bg-neutral-950/40 p-4">
+            <div class="text-sm font-semibold">Důkaz & sociální signál</div>
+            <div class="mt-2 grid gap-2">
+              <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/75">⭐ Hodnocení z více zdrojů (recenze, návštěvy, opakované nákupy)</div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/75">👑 Doporučení influencerů (ověřené spolupráce)</div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/75">✅ Ověření profilu (IČO / telefon / e-mail / provozovna)</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </section>
+
+    <!-- Footer note -->
+    <footer class="mt-8 text-center text-xs text-white/50">
+      Demo UI: AI odpověď + vizuální feed + filtry + důvěra + mapa. Připravené jako základ pro Mapao/Slevao/Gurmao/Chatao/Kartao.
+    </footer>
+  </main>
+
+  <!-- Modal (detail) -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/70" id="modalBg"></div>
+    <div class="relative mx-auto mt-10 w-[min(720px,92vw)] rounded-4xl border border-white/10 bg-neutral-950 shadow-soft overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/5">
+        <div class="text-sm font-semibold" id="modalTitle">Detail</div>
+        <button id="modalClose" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10">Zavřít</button>
+      </div>
+      <div class="p-4" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Demo data =====
+    const DATA = [
+      {
+        id: "r1",
+        type: "restaurace",
+        title: "Gurmao Bistro – degustační menu",
+        city: "Brno",
+        price: 590,
+        rating: 4.7,
+        verified: true,
+        ad: false,
+        distance: 1.2,
+        isNew: true,
+        badges: ["TOP", "Romantika"],
+        why: "Skvělý poměr cena/výkon, romantické posezení, ověřené recenze.",
+      },
+      {
+        id: "r2",
+        type: "ubytování",
+        title: "Chatao – chalupa pro 8 se saunou",
+        city: "Brno",
+        price: 1200,
+        rating: 4.8,
+        verified: true,
+        ad: false,
+        distance: 9.4,
+        isNew: false,
+        badges: ["Sauna", "Rodina"],
+        why: "Pro partu/rodinu, sauna, top hodnocení, bez reklamních triků.",
+      },
+      {
+        id: "r3",
+        type: "služba",
+        title: "Mapao Profi – instalatér do 60 min",
+        city: "Praha",
+        price: 300,
+        rating: 4.3,
+        verified: true,
+        ad: true,
+        distance: 2.8,
+        isNew: true,
+        badges: ["Rychle", "Pohotovost"],
+        why: "Dostupnost a rychlost, ověřený profil, ale je to sponzorované.",
+      },
+      {
+        id: "r4",
+        type: "produkt",
+        title: "Slevao – bezdrátová sluchátka (sleva 35%)",
+        city: "Ostrava",
+        price: 599,
+        rating: 4.1,
+        verified: false,
+        ad: true,
+        distance: 0.9,
+        isNew: false,
+        badges: ["Sleva", "Hit"],
+        why: "Dobrá cena, ale chybí ověření a kvalita se liší.",
+      },
+      {
+        id: "r5",
+        type: "influencer",
+        title: "Kartao Creator – food influencer (Brno)",
+        city: "Brno",
+        price: 800,
+        rating: 4.6,
+        verified: true,
+        ad: false,
+        distance: 3.1,
+        isNew: true,
+        badges: ["👑 VIP", "UGC"],
+        why: "Ověřený tvůrce, reálné výsledky kampaní, rychlá domluva.",
+      },
+      {
+        id: "r6",
+        type: "restaurace",
+        title: "Steak & Smoke – nejlepší maso",
+        city: "Praha",
+        price: 690,
+        rating: 4.9,
+        verified: true,
+        ad: false,
+        distance: 4.7,
+        isNew: false,
+        badges: ["⭐ 4.9", "Steak"],
+        why: "Špičkové hodnocení a konzistentní kvalita.",
+      },
+    ];
+
+    // ===== State =====
+    let state = {
+      q: "",
+      mode: "vse",
+      tag: "",
+      city: "",
+      budget: "",
+      minRating: 4.0,
+      onlyVerified: true,
+      noAds: false,
+      sort: "relevance",
+      personal: true,
+      selected: [],
+      page: 1,
+      perPage: 6,
+    };
+
+    // ===== Elements =====
+    const elQ = document.getElementById('q');
+    const elResults = document.getElementById('results');
+    const elSelected = document.getElementById('selected');
+    const elMinRating = document.getElementById('minRating');
+    const elMinRatingLabel = document.getElementById('minRatingLabel');
+    const elCity = document.getElementById('city');
+    const elBudget = document.getElementById('budget');
+    const elOnlyVerified = document.getElementById('onlyVerified');
+    const elNoAds = document.getElementById('noAds');
+    const elSort = document.getElementById('sort');
+    const elPersonal = document.getElementById('togglePersonal');
+    const elAiBox = document.getElementById('aiBox');
+    const elBtnMore = document.getElementById('btnMore');
+
+    // Modal
+    const modal = document.getElementById('modal');
+    const modalBg = document.getElementById('modalBg');
+    const modalClose = document.getElementById('modalClose');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+
+    function fmtKc(n){
+      const x = Number(n || 0);
+      return x.toLocaleString('cs-CZ') + " Kč";
+    }
+
+    function score(item){
+      // Jednoduchá "AI relevance" simulace
+      let s = 0;
+      if (state.personal) {
+        // osobní preference: preferuj ověřené, bez reklam a vyšší rating
+        s += item.verified ? 20 : -10;
+        s += item.ad ? -8 : 6;
+      }
+      s += Math.round(item.rating * 10);
+      if (state.city && item.city === state.city) s += 15;
+      if (state.mode !== 'vse' && state.mode !== item.type && !(state.mode==='mista' && (item.type==='restaurace' || item.type==='ubytování'))) s -= 20;
+      if (state.tag && item.type !== state.tag) s -= 10;
+      // dotaz (velmi hrubě)
+      const q = state.q.toLowerCase();
+      if (q && item.title.toLowerCase().includes(q)) s += 15;
+      // blízkost
+      s += Math.max(0, 10 - Math.round(item.distance));
+      // novinky
+      if (item.isNew) s += 4;
+      return s;
+    }
+
+    function filterData(){
+      let items = [...DATA];
+
+      // mode mapping
+      if (state.mode === 'mista') {
+        items = items.filter(x => x.type === 'restaurace' || x.type === 'ubytování');
+      } else if (state.mode !== 'vse') {
+        const map = { produkty: 'produkt', sluzby: 'služba', influ: 'influencer' };
+        const t = map[state.mode] || state.mode;
+        items = items.filter(x => x.type === t);
+      }
+
+      if (state.tag) items = items.filter(x => x.type === state.tag);
+      if (state.city) items = items.filter(x => x.city === state.city);
+      if (state.budget) items = items.filter(x => x.price <= Number(state.budget));
+      if (state.onlyVerified) items = items.filter(x => x.verified);
+      if (state.noAds) items = items.filter(x => !x.ad);
+      items = items.filter(x => x.rating >= state.minRating);
+
+      // sort
+      const sort = state.sort;
+      if (sort === 'rating') items.sort((a,b) => b.rating - a.rating);
+      else if (sort === 'price') items.sort((a,b) => a.price - b.price);
+      else if (sort === 'near') items.sort((a,b) => a.distance - b.distance);
+      else if (sort === 'new') items.sort((a,b) => (b.isNew===a.isNew?0:(b.isNew?1:-1)));
+      else items.sort((a,b) => score(b) - score(a));
+
+      return items;
+    }
+
+    function badgePill(text){
+      return `<span class="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-white/75">${text}</span>`;
+    }
+
+    function card(item){
+      const topLine = `
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <div class="text-sm font-semibold leading-snug">${item.title}</div>
+            <div class="mt-1 text-xs text-white/65">${item.city} • ${item.distance.toFixed(1)} km • ${item.type}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-semibold">${fmtKc(item.price)}</div>
+            <div class="text-xs text-white/70">⭐ ${item.rating.toFixed(1)}</div>
+          </div>
+        </div>
+      `;
+
+      const flags = `
+        <div class="mt-3 flex flex-wrap gap-2">
+          ${item.verified ? badgePill('✅ ověřeno') : badgePill('⚠️ neověřeno')}
+          ${item.ad ? badgePill('📣 sponzor') : badgePill('🛡️ bez reklamy')}
+          ${item.isNew ? badgePill('🆕 novinka') : ''}
+          ${(item.badges||[]).slice(0,3).map(b=>badgePill(b)).join('')}
+        </div>
+      `;
+
+      const thumb = `
+        <div class="relative overflow-hidden rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_30%_25%,rgba(236,72,153,.22),transparent_55%),radial-gradient(circle_at_70%_65%,rgba(245,158,11,.16),transparent_55%),linear-gradient(to_bottom,rgba(255,255,255,.04),rgba(255,255,255,.01))]">
+          <div class="aspect-[4/3] grid place-items-center">
+            <div class="text-4xl">${
+              item.type==='restaurace' ? '🍽️' :
+              item.type==='ubytování' ? '🏡' :
+              item.type==='služba' ? '🛠️' :
+              item.type==='produkt' ? '🛒' : '👑'
+            }</div>
+          </div>
+          <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
+            <div class="text-xs text-white/80">${item.why}</div>
+          </div>
+        </div>
+      `;
+
+      return `
+        <article class="group rounded-4xl border border-white/10 bg-neutral-950/35 p-3 md:p-4 hover:bg-neutral-950/55 transition shadow-soft">
+          ${thumb}
+          <div class="mt-3">${topLine}</div>
+          ${flags}
+          <div class="mt-4 flex items-center justify-between gap-2">
+            <button class="btnOpen rounded-2xl bg-white text-black px-3 py-2 text-xs font-semibold hover:bg-white/90" data-id="${item.id}">Detail</button>
+            <div class="flex items-center gap-2">
+              <button class="btnPick rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" data-id="${item.id}">➕ Vybrat</button>
+              <button class="btnSave rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" data-id="${item.id}">💾</button>
+              <button class="btnShare rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" data-id="${item.id}">🔗</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function render(){
+      const items = filterData();
+      const slice = items.slice(0, state.page * state.perPage);
+      elResults.innerHTML = slice.map(card).join('') || `
+        <div class="md:col-span-2 rounded-3xl border border-white/10 bg-neutral-950/40 p-6 text-center">
+          <div class="text-3xl">🫥</div>
+          <div class="mt-2 font-semibold">Nic nenalezeno</div>
+          <div class="mt-1 text-sm text-white/70">Zkus změnit filtry nebo dotaz.</div>
+        </div>
+      `;
+
+      elBtnMore.disabled = slice.length >= items.length;
+      elBtnMore.classList.toggle('opacity-50', elBtnMore.disabled);
+      elBtnMore.classList.toggle('cursor-not-allowed', elBtnMore.disabled);
+
+      wireCards();
+      renderAI(items);
+      renderSelected();
+    }
+
+    function renderAI(items){
+      const top = items.slice(0,5);
+      const q = state.q.trim();
+      const chip = q ? `<span class="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-white/75">Dotaz: ${escapeHtml(q)}</span>` : '';
+      const meta = `
+        <div class="mt-2 flex flex-wrap gap-2">
+          ${chip}
+          <span class="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-white/75">Režim: ${labelMode(state.mode)}</span>
+          <span class="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-white/75">Filtry: ${summaryFilters()}</span>
+        </div>
+      `;
+
+      if (!top.length){
+        elAiBox.innerHTML = `
+          <div class="text-sm font-semibold">Doporučení na míru</div>
+          <p class="mt-1 text-sm text-white/75">Teď nic neprošlo filtry. Zkus povolit reklamu nebo snížit minimum hodnocení.</p>
+          ${meta}
+        `;
+        return;
+      }
+
+      const lines = top.map((x,i)=>`
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <div class="text-sm font-semibold">${i+1}. ${x.title}</div>
+              <div class="mt-0.5 text-xs text-white/65">${x.city} • ${x.type} • ${x.distance.toFixed(1)} km</div>
+              <div class="mt-1 text-xs text-white/75">Proč: ${x.why}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-semibold">${fmtKc(x.price)}</div>
+              <div class="text-xs text-white/70">⭐ ${x.rating.toFixed(1)}</div>
+            </div>
+          </div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            ${x.verified ? badgePill('✅ ověřeno') : badgePill('⚠️ neověřeno')}
+            ${x.ad ? badgePill('📣 sponzor') : badgePill('🛡️ bez reklamy')}
+            ${x.isNew ? badgePill('🆕 novinka') : ''}
+          </div>
+        </div>
+      `).join('');
+
+      elAiBox.innerHTML = `
+        <div class="text-sm font-semibold">AI shortlist (Top 5)</div>
+        <p class="mt-1 text-sm text-white/75">Vybral jsem výsledky podle relevance (hodnocení, blízkost, ověření, filtry) a seřadil je.</p>
+        ${meta}
+        <div class="mt-3 grid gap-2">${lines}</div>
+      `;
+    }
+
+    function labelMode(m){
+      return ({vse:'Vše', mista:'Místa', produkty:'Produkty', sluzby:'Služby', influ:'Influenceři'})[m] || m;
+    }
+
+    function summaryFilters(){
+      const parts = [];
+      if (state.city) parts.push(state.city);
+      if (state.budget) parts.push("≤ " + state.budget + " Kč");
+      if (state.onlyVerified) parts.push("ověřené");
+      if (state.noAds) parts.push("bez reklamy");
+      parts.push("min ⭐ " + state.minRating.toFixed(1));
+      return parts.join(" • ");
+    }
+
+    function renderSelected(){
+      if (!state.selected.length){
+        elSelected.innerHTML = `<div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70">Zatím nic – klikni na kartu ve feedu.</div>`;
+        return;
+      }
+      const list = state.selected.map(id => DATA.find(x=>x.id===id)).filter(Boolean);
+      elSelected.innerHTML = list.map(x => `
+        <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <div class="text-xs font-semibold">${x.title}</div>
+              <div class="text-[11px] text-white/60">${x.city} • ${x.distance.toFixed(1)} km</div>
+            </div>
+            <button class="btnRemove text-xs text-white/70 hover:text-white" data-id="${x.id}">✖</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.btnRemove').forEach(btn => {
+        btn.onclick = () => {
+          state.selected = state.selected.filter(i => i !== btn.dataset.id);
+          renderSelected();
+        }
+      })
+    }
+
+    function wireCards(){
+      document.querySelectorAll('.btnPick').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.id;
+          if (!state.selected.includes(id)) state.selected.push(id);
+          renderSelected();
+        }
+      });
+      document.querySelectorAll('.btnOpen').forEach(btn => {
+        btn.onclick = () => openDetail(btn.dataset.id);
+      });
+      document.querySelectorAll('.btnSave').forEach(btn => {
+        btn.onclick = () => toast('Uloženo (demo) 💾');
+      });
+      document.querySelectorAll('.btnShare').forEach(btn => {
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          const item = DATA.find(x=>x.id===id);
+          const text = item ? `${item.title} – ${item.city} (⭐ ${item.rating.toFixed(1)})` : 'Odkaz';
+          try {
+            if (navigator.share) await navigator.share({ title: 'Hybrid demo', text });
+            else {
+              await navigator.clipboard.writeText(text);
+              toast('Zkopírováno do schránky 🔗');
+            }
+          } catch(e){ toast('Sdílení zrušeno'); }
+        }
+      });
+    }
+
+    function openDetail(id){
+      const x = DATA.find(i=>i.id===id);
+      if (!x) return;
+      modalTitle.textContent = x.title;
+      modalBody.innerHTML = `
+        <div class="grid gap-4 md:grid-cols-[.9fr_1.1fr]">
+          <div class="rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_30%_25%,rgba(236,72,153,.22),transparent_55%),radial-gradient(circle_at_70%_65%,rgba(245,158,11,.16),transparent_55%),linear-gradient(to_bottom,rgba(255,255,255,.04),rgba(255,255,255,.01))] p-4 grid place-items-center">
+            <div class="text-center">
+              <div class="text-5xl">${
+                x.type==='restaurace' ? '🍽️' :
+                x.type==='ubytování' ? '🏡' :
+                x.type==='služba' ? '🛠️' :
+                x.type==='produkt' ? '🛒' : '👑'
+              }</div>
+              <div class="mt-2 text-sm text-white/80">${x.city} • ${x.distance.toFixed(1)} km</div>
+              <div class="mt-1 text-sm font-semibold">${fmtKc(x.price)} • ⭐ ${x.rating.toFixed(1)}</div>
+            </div>
+          </div>
+          <div class="rounded-3xl border border-white/10 bg-white/5 p-4">
+            <div class="text-sm font-semibold">Proč to AI doporučuje</div>
+            <p class="mt-1 text-sm text-white/75 leading-relaxed">${x.why}</p>
+
+            <div class="mt-3 flex flex-wrap gap-2">
+              ${x.verified ? badgePill('✅ ověřeno') : badgePill('⚠️ neověřeno')}
+              ${x.ad ? badgePill('📣 sponzor') : badgePill('🛡️ bez reklamy')}
+              ${x.isNew ? badgePill('🆕 novinka') : ''}
+              ${(x.badges||[]).map(b=>badgePill(b)).join('')}
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <button class="rounded-2xl bg-white text-black px-3 py-2 text-xs font-semibold hover:bg-white/90" onclick="window.__pick('${x.id}')">➕ Vybrat</button>
+              <button class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" onclick="window.__toast('Zahájit chat/rezervaci (demo) 💬')">💬 Kontakt</button>
+              <button class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" onclick="window.__toast('Zobrazení dostupnosti (demo) 📅')">📅 Dostupnost</button>
+              <button class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10" onclick="window.__toast('Vygenerováno: nabídka spolupráce (demo) 🤝')">🤝 Spolupráce</button>
+            </div>
+
+            <div class="mt-4 rounded-2xl border border-white/10 bg-neutral-950/40 p-3">
+              <div class="text-xs text-white/70">Co je „hybrid“:</div>
+              <ul class="mt-1 text-xs text-white/65 list-disc pl-5 space-y-1">
+                <li>AI odpověď + shortlist</li>
+                <li>Vizuální feed + karty</li>
+                <li>Filtry jako Booking</li>
+                <li>Důvěra: ověření + sociální signál</li>
+                <li>Mapa + trasa</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal(){ modal.classList.add('hidden'); }
+    modalBg.onclick = closeModal;
+    modalClose.onclick = closeModal;
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    // Expose helper for modal buttons
+    window.__pick = (id) => {
+      if (!state.selected.includes(id)) state.selected.push(id);
+      renderSelected();
+      toast('Přidáno do vybraných ➕');
+    };
+    window.__toast = (t) => toast(t);
+
+    // ===== UI actions =====
+    document.getElementById('btnSearch').onclick = () => {
+      state.q = elQ.value || '';
+      state.page = 1;
+      render();
+      toast('Vyhledáno (demo)');
+    };
+
+    elQ.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter') document.getElementById('btnSearch').click();
+    });
+
+    document.querySelectorAll('.modeBtn').forEach(btn => {
+      btn.onclick = () => {
+        state.mode = btn.dataset.mode;
+        state.page = 1;
+        highlightModes();
+        render();
+      };
+    });
+
+    function highlightModes(){
+      document.querySelectorAll('.modeBtn').forEach(b => {
+        const active = b.dataset.mode === state.mode;
+        b.classList.toggle('bg-white', active);
+        b.classList.toggle('text-black', active);
+        b.classList.toggle('bg-white/5', !active);
+        b.classList.toggle('text-white', !active);
+      })
+    }
+
+    document.querySelectorAll('.chip').forEach(btn => {
+      btn.onclick = () => {
+        const text = btn.dataset.chip || '';
+        elQ.value = (elQ.value ? (elQ.value + ', ') : '') + text;
+        elQ.focus();
+      }
+    });
+
+    document.querySelectorAll('.pill').forEach(btn => {
+      btn.onclick = () => {
+        const p = btn.dataset.prompt || '';
+        elQ.value = (elQ.value ? (elQ.value + ' – ') : '') + p;
+        elQ.focus();
+      }
+    });
+
+    document.querySelectorAll('.tagBtn').forEach(btn => {
+      btn.onclick = () => {
+        const t = btn.dataset.tag;
+        state.tag = (state.tag === t) ? '' : t;
+        btn.classList.toggle('bg-white', state.tag === t);
+        btn.classList.toggle('text-black', state.tag === t);
+        state.page = 1;
+        render();
+      }
+    });
+
+    elMinRating.oninput = () => {
+      state.minRating = Number(elMinRating.value) / 10;
+      elMinRatingLabel.textContent = state.minRating.toFixed(1);
+      state.page = 1;
+      render();
+    };
+
+    elCity.onchange = () => { state.city = elCity.value; state.page=1; render(); };
+    elBudget.onchange = () => { state.budget = elBudget.value; state.page=1; render(); };
+    elOnlyVerified.onchange = () => { state.onlyVerified = elOnlyVerified.checked; state.page=1; render(); };
+    elNoAds.onchange = () => { state.noAds = elNoAds.checked; state.page=1; render(); };
+    elSort.onchange = () => { state.sort = elSort.value; state.page=1; render(); };
+    elPersonal.onchange = () => { state.personal = elPersonal.checked; state.page=1; render(); };
+
+    document.getElementById('btnReset').onclick = () => {
+      state = { ...state, q:"", mode:"vse", tag:"", city:"", budget:"", minRating:4.0, onlyVerified:true, noAds:false, sort:"relevance", personal:true, page:1 };
+      elQ.value = "";
+      elCity.value = "";
+      elBudget.value = "";
+      elOnlyVerified.checked = true;
+      elNoAds.checked = false;
+      elSort.value = "relevance";
+      elPersonal.checked = true;
+      elMinRating.value = 40;
+      elMinRatingLabel.textContent = "4.0";
+      document.querySelectorAll('.tagBtn').forEach(b=>{ b.classList.remove('bg-white','text-black'); });
+      highlightModes();
+      render();
+      toast('Reset hotový');
+    };
+
+    elBtnMore.onclick = () => { state.page += 1; render(); };
+
+    document.getElementById('btnRoute').onclick = () => {
+      if (!state.selected.length) return toast('Nejdřív něco vyber ve feedu.');
+      toast('Trasa vytvořena (demo) 🧭');
+    };
+
+    // ===== Toast =====
+    let toastT;
+    function toast(text){
+      clearTimeout(toastT);
+      let t = document.getElementById('toast');
+      if(!t){
+        t = document.createElement('div');
+        t.id = 'toast';
+        t.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] rounded-full border border-white/10 bg-neutral-950/80 glass px-4 py-2 text-xs text-white/85 shadow-soft';
+        document.body.appendChild(t);
+      }
+      t.textContent = text;
+      t.style.opacity = '1';
+      toastT = setTimeout(()=>{ t.style.opacity='0'; }, 1600);
+    }
+
+    function escapeHtml(str){
+      return (str||"")
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    // Init
+    highlightModes();
+    render();
+  </script>
+</body>
+</html>
