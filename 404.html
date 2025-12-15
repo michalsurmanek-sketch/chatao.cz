@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>404 – Stránka nenalezena | CHATAO.cz</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Stránka nebyla nalezena. Vraťte se na hlavní stránku CHATAO.cz." />
+  <meta name="robots" content="noindex, follow" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#568B71" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {500: "#568B71", 700: "#2E5344", 800: "#213D33"},
+            ember: {500: "#F97316"},
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream flex items-center justify-center p-4">
+  <!-- Background -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- 404 Content -->
+  <div class="max-w-2xl w-full text-center">
+    <div class="glass rounded-4xl p-8 md:p-12">
+      <div class="text-8xl md:text-9xl font-bold text-pine-500/30 mb-4">404</div>
+      
+      <h1 class="text-3xl md:text-4xl font-bold mb-4">Stránka nenalezena</h1>
+      
+      <p class="text-lg text-cream/70 mb-8">
+        Omlouváme se, ale stránka, kterou hledáte, neexistuje nebo byla přesunuta.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/" class="px-6 py-3 rounded-3xl bg-ember-500/20 hover:bg-ember-500/30 transition inline-flex items-center justify-center gap-2">
+          <span>🏡</span>
+          <span>Zpět na hlavní stránku</span>
+        </a>
+        
+        <a href="/pridat-chatu.html" class="px-6 py-3 rounded-3xl bg-white/5 hover:bg-white/8 transition inline-flex items-center justify-center gap-2">
+          <span>➕</span>
+          <span>Přidat chatu</span>
+        </a>
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-white/10">
+        <p class="text-sm text-cream/60">
+          Pokud si myslíte, že by zde měla být stránka, která tu není, kontaktujte nás prosím.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Optional: Track 404 errors
+    console.log('404 Error: ' + window.location.pathname);
+  </script>
+</body>
+</html>

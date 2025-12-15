@@ -3,7 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>CHATAO.cz – Instagramový booking chat</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="CHATAO.cz - Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb bez složitých formulářů." />
+  <meta name="keywords" content="booking, rezervace, instagram chat, chata, chalupa, rezervační systém, CHATAO" />
+  <meta name="author" content="CHATAO.cz" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://chatao.cz/" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://chatao.cz/" />
+  <meta property="og:title" content="CHATAO.cz – Instagramový booking chat" />
+  <meta property="og:description" content="Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb." />
+  <meta property="og:image" content="https://chatao.cz/og-image.jpg" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="CHATAO.cz" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://chatao.cz/" />
+  <meta name="twitter:title" content="CHATAO.cz – Instagramový booking chat" />
+  <meta name="twitter:description" content="Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb." />
+  <meta name="twitter:image" content="https://chatao.cz/og-image.jpg" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#568B71" />
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -1164,5 +1194,37 @@ if (typeof window.__chatao_finalized === "undefined") {
 // === KONEC LOGIKY APLIKACE ===
 
 </script>
+
+<!-- Google Analytics (placeholder - nahraďte svým GA4 Measurement ID) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "CHATAO.cz",
+  "description": "Moderní booking systém přímo přes Instagram chat pro rezervace chat, chalup a dalších služeb",
+  "url": "https://chatao.cz/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "category": "Booking Service"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "CHATAO.cz",
+    "url": "https://chatao.cz/"
+  }
+}
+</script>
+
 </body>
 </html>

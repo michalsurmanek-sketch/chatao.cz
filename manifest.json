@@ -1,0 +1,28 @@
+{
+  "name": "CHATAO.cz",
+  "short_name": "CHATAO",
+  "description": "Moderní booking systém přímo přes Instagram chat pro rezervace chat, chalup a dalších služeb",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0F0E",
+  "theme_color": "#568B71",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["business", "productivity", "travel"],
+  "lang": "cs",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
