@@ -6,8 +6,21 @@ Thumbs.db
 node_modules/
 dist/
 build/
+
+# Environment variables
 .env
 .env.local
+.env.production
+.env.development
+
+# Editor
 *.swp
 *.swo
 *~
+
+# Supabase local (pokud používáte Supabase CLI)
+.supabase/
+
+# Backups
+*.backup
+*.bak

@@ -14,6 +14,14 @@
 - ⚠️ apple-touch-icon.png (potřeba vygenerovat z favicon.svg - 180x180px)
 - ⚠️ og-image.jpg (doporučeno vytvořit pro sociální sítě - 1200x630px)
 
+### 🗄️ Backend & Databáze (Supabase)
+- ✅ supabase-config.js (konfigurace klienta)
+- ✅ supabase-schema.sql (databázové schéma)
+- ✅ SUPABASE_SETUP.md (kompletní návod)
+- ⚠️ **AKCE POTŘEBA**: Vytvořit Supabase projekt a vyplnit credentials
+- ⚠️ **AKCE POTŘEBA**: Spustit SQL schéma v Supabase SQL editoru
+- ⚠️ **AKCE POTŘEBA**: Vytvořit Storage buckets (chaty-images, user-avatars)
+
 ### 🔍 SEO & Vyhledávače
 - ✅ robots.txt
 - ✅ sitemap.xml
@@ -51,19 +59,40 @@
 
 ## ⚠️ Akční položky před spuštěním
 
-1. **Google Analytics**: Vytvořte GA4 property a nahraďte `G-XXXXXXXXXX` ve všech HTML souborech
-2. **Obrázky**: 
+### Priorita 1 - Kritické
+1. **Supabase Setup**:
+   - Vytvořte projekt na supabase.com
+   - Zkopírujte Project URL a Anon Key do `supabase-config.js`
+   - Spusťte `supabase-schema.sql` v SQL editoru
+   - Vytvořte Storage buckets: `chaty-images` a `user-avatars`
+   - Nastavte Storage policies (viz SUPABASE_SETUP.md)
+
+2. **Google Analytics**: 
+   - Vytvořte GA4 property
+   - Nahraďte `G-XXXXXXXXXX` ve všech HTML souborech
+
+### Priorita 2 - Důležité
+3. **Obrázky**: 
    - Vytvořte `apple-touch-icon.png` (180x180px) z favicon.svg
-   - Vytvořte `og-image.jpg` (1200x630px) pro sdílení na sociálních sítích
-3. **Testování**: 
-   - Otestujte web na mobilních zařízeních
-   - Zkontrolujte všechny odkazy
-   - Ověřte funkčnost formulářů
-4. **DNS**: Ujistěte se, že DNS nastavení pro chatao.cz je správné
-5. **HTTPS**: Ověřte platnost SSL certifikátu
+   - Vytvořte `og-image.jpg` (1200x630px) pro sociální sítě
+
+4. **DNS & SSL**:
+   - Ověřte DNS nastavení pro chatao.cz
+   - Ověřte platnost SSL certifikátu
+
+### Priorita 3 - Před spuštěním
+5. **Testování**: 
+   - Otestujte autentizaci (registrace, přihlášení)
+   - Ověřte načítání dat ze Supabase
+   - Otestujte upload obrázků do Storage
+   - Zkontrolujte web na mobilních zařízeních
+   - Ověřte funkčnost všech formulářů
+
 6. **Performance**: 
    - Spusťte Google PageSpeed Insights
    - Spusťte Lighthouse audit
+   - Optimalizujte obrázky
+
 7. **SEO validace**:
    - Google Search Console - submit sitemap
    - Ověřte strukturovaná data pomocí Rich Results Test
