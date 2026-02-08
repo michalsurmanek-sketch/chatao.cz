@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Ochrana osobních údajů | CHATAO.cz</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Ochrana osobních údajů na CHATAO.cz – co ukládáme, proč, jak dlouho a jaká máš práva." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://chatao.cz/ochrana-udaju.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://chatao.cz/ochrana-udaju.html" />
+  <meta property="og:title" content="Ochrana osobních údajů | CHATAO.cz" />
+  <meta property="og:description" content="Ochrana osobních údajů na CHATAO.cz – co ukládáme, proč, jak dlouho a jaká máš práva." />
+  <meta property="og:site_name" content="CHATAO.cz" />
+  <meta property="og:locale" content="cs_CZ" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#568B71" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {
+              50: "#F3F7F5",
+              100: "#E3EEE8",
+              200: "#C5DCD1",
+              300: "#9FC3B2",
+              400: "#78A78F",
+              500: "#568B71",
+              600: "#3E6D58",
+              700: "#2E5344",
+              800: "#213D33",
+              900: "#172A23",
+            },
+            ember: {
+              50: "#FFF7ED",
+              100: "#FFEDD5",
+              200: "#FED7AA",
+              300: "#FDBA74",
+              400: "#FB923C",
+              500: "#F97316",
+              600: "#EA580C",
+              700: "#C2410C",
+              800: "#9A3412",
+              900: "#7C2D12",
+            },
+            fog: {
+              50: "#F6F7F9",
+              100: "#ECEEF2",
+              200: "#D7DBE4",
+              300: "#B7BECE",
+              400: "#8F9AB2",
+              500: "#6E7A95",
+              600: "#56607A",
+              700: "#434C62",
+              800: "#31384A",
+              900: "#232838",
+            },
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+            wood: "#2A211A",
+          },
+          boxShadow: {
+            soft: "0 22px 60px rgba(0,0,0,0.45)",
+            lift: "0 18px 40px rgba(0,0,0,0.30)",
+          },
+          borderRadius: {
+            "4xl": "2rem",
+          },
+          fontFamily: {
+            sans: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+
+    .grain::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');
+      mix-blend-mode: overlay;
+    }
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .ringline{ box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset; }
+
+    .shimmer{ position: relative; overflow: hidden; }
+    .shimmer::after{
+      content:"";
+      position:absolute;
+      inset:-60% -20%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+      opacity: 0;
+      animation: none;
+      pointer-events:none;
+    }
+    @media (hover:hover){
+      .shimmer:hover::after{ opacity: .10; animation: shimmer 3.6s linear infinite; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .shimmer::after{ animation: none !important; }
+    }
+    @keyframes shimmer{ 0%{ transform: translateX(-20%) rotate(18deg);} 100%{ transform: translateX(60%) rotate(18deg);} }
+
+    :focus-visible{ outline: 2px solid rgba(249,115,22,0.55); outline-offset: 3px; border-radius: 18px; }
+
+    /* ===== HARD MODE: kurzor jen tam, kde se píše ===== */
+    html, body{ caret-color: transparent; -webkit-user-select: none; user-select: none; }
+    input, textarea, [contenteditable="true"], .allow-cursor{ caret-color: auto; -webkit-user-select: text; user-select: text; }
+    button, a, article, header, section, main, footer, div, span, p, h1, h2, h3, h4, h5, h6{ caret-color: transparent; }
+
+    /* typografie pro dlouhý text */
+    .prose-ao p{ margin-top: .85rem; color: rgba(245,241,232,.75); }
+    .prose-ao ul{ margin-top: .85rem; padding-left: 1.15rem; color: rgba(245,241,232,.75); }
+    .prose-ao li{ margin-top: .45rem; }
+    .prose-ao h2{ margin-top: 1.6rem; font-weight: 600; color: rgba(245,241,232,.92); font-size: 1.05rem; }
+    .prose-ao a{ color: rgba(245,241,232,.90); text-decoration: underline; text-decoration-color: rgba(249,115,22,.35); text-underline-offset: 3px; }
+    .prose-ao a:hover{ text-decoration-color: rgba(249,115,22,.65); }
+    .kbd{ display:inline-flex; align-items:center; gap:.25rem; padding:.15rem .5rem; border-radius: 999px; background: rgba(0,0,0,.32); backdrop-filter: blur(8px); box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset; font-size: .75rem; color: rgba(245,241,232,.78); }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
+
+  <!-- Background layers -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%),radial-gradient(circle_at_60%_95%,rgba(142,154,178,0.14),transparent_46%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <a href="/" class="flex items-center gap-3 hover:opacity-95 transition">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">
+              <span class="text-lg">🏡</span>
+            </div>
+            <div class="leading-tight">
+              <div class="font-semibold tracking-wide">CHATAO</div>
+              <div class="text-xs text-cream/70">Ochrana údajů</div>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <a href="/kontakt.html" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Kontakt</a>
+            <a href="/" class="px-3 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/20 ringline transition text-sm shimmer">Zpět do feedu →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="mx-auto max-w-4xl px-4 md:px-6 pt-8 md:pt-10 pb-10">
+    <section class="relative overflow-hidden rounded-4xl bg-black/32 backdrop-blur-sm ringline shadow-soft grain">
+      <div class="absolute -top-44 -right-40 h-[420px] w-[420px] rounded-full bg-pine-600/20 blur-3xl"></div>
+      <div class="absolute -bottom-44 -left-40 h-[420px] w-[420px] rounded-full bg-ember-500/12 blur-3xl"></div>
+
+      <div class="relative p-6 md:p-10">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 class="text-2xl md:text-4xl font-semibold tracking-tight">Ochrana osobních údajů</h1>
+            <p class="mt-2 text-cream/75 max-w-2xl">
+              Tohle je srozumitelný popis toho, jak CHATAO.cz pracuje s údaji. Teď je to prototyp,
+              ale text je psaný tak, aby seděl i pro ostrý provoz.
+            </p>
+          </div>
+
+          <div class="text-xs text-cream/60 flex flex-col items-start gap-2">
+            <span class="kbd">Aktualizace: <span id="policyDate" class="allow-cursor">2026-02-08</span></span>
+            <span class="kbd">Režim: prototyp (LocalStorage)</span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid gap-3 md:grid-cols-3">
+          <div class="rounded-4xl bg-white/4 ringline p-4">
+            <div class="text-sm font-medium">Co ukládáme</div>
+            <div class="mt-2 text-xs text-cream/70">Uložené, kolekce, případně termíny (demo rezervace).</div>
+          </div>
+          <div class="rounded-4xl bg-white/4 ringline p-4">
+            <div class="text-sm font-medium">Proč</div>
+            <div class="mt-2 text-xs text-cream/70">Aby se feed choval jako Instagram: vracíš se a máš své věci.</div>
+          </div>
+          <div class="rounded-4xl bg-white/4 ringline p-4">
+            <div class="text-sm font-medium">Kde</div>
+            <div class="mt-2 text-xs text-cream/70">V prototypu v prohlížeči (LocalStorage). V ostrém režimu na serveru.</div>
+          </div>
+        </div>
+
+        <div class="mt-8 prose-ao">
+          <h2>1) Kdo je správce</h2>
+          <p>
+            Správcem osobních údajů je provozovatel webu <strong>CHATAO.cz</strong>.
+            Kontaktní e‑mail: <a href="mailto:info@chatao.cz" class="allow-cursor">info@chatao.cz</a>.
+          </p>
+
+          <h2>2) Jaké údaje zpracováváme</h2>
+          <p>
+            Záleží na tom, jak CHATAO používáš. V prototypu se většina věcí ukládá jen do tvého zařízení.
+            Typicky to může být:
+          </p>
+          <ul>
+            <li><strong>Uložené položky</strong> (❤️) a <strong>kolekce</strong> (🔖) – aby ses mohl vracet k chatám.</li>
+            <li><strong>Volby filtrů</strong> a vyhledávání – pro pohodlné procházení.</li>
+            <li><strong>Demo termíny</strong> dostupnosti/rezervace – v prototypu se ukládají lokálně pro ukázku.</li>
+            <li><strong>Kontaktní údaje</strong> – pouze pokud je sám zadáš (např. ve formuláři na kontakt).</li>
+          </ul>
+
+          <h2>3) Účely zpracování</h2>
+          <ul>
+            <li><strong>Funkčnost služby</strong> (uložení, kolekce, návratnost uživatele).</li>
+            <li><strong>Komunikace</strong> (když nás kontaktuješ, odpovíme ti).</li>
+            <li><strong>Zabezpečení</strong> (prevence zneužití).</li>
+          </ul>
+
+          <h2>4) Právní základ</h2>
+          <p>
+            Podle situace půjde typicky o:
+            <strong>plnění smlouvy</strong> (poskytování služby), <strong>oprávněný zájem</strong> (zabezpečení a provoz),
+            nebo <strong>souhlas</strong> (pokud by byl potřeba – např. marketingové cookies).
+          </p>
+
+          <h2>5) Cookies a lokální úložiště</h2>
+          <p>
+            V prototypu používáme hlavně <strong>LocalStorage</strong> (uložené, kolekce, demo rezervace).
+            To jsou data uložená přímo v prohlížeči.
+          </p>
+          <ul>
+            <li>LocalStorage se dá smazat v prohlížeči (nastavení → data webů).</li>
+            <li>Pokud zapneš anonymní režim, chování může být jiné.</li>
+          </ul>
+          <div class="mt-3 rounded-4xl bg-white/4 ringline p-4 text-sm">
+            <div class="font-medium">Rychlé smazání prototyp dat</div>
+            <p class="mt-2">Kliknutím smažeš uložené položky, kolekce i demo termíny <span class="text-cream/60">(jen v prohlížeči)</span>.</p>
+            <button id="clearLocal" class="mt-3 px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Smazat prototyp data</button>
+            <div id="clearHint" class="mt-2 text-xs text-cream/60"></div>
+          </div>
+
+          <h2>6) Doba uložení</h2>
+          <p>
+            V prototypu je doba uložení daná tím, jak dlouho data necháš v prohlížeči.
+            V ostrém režimu budeme držet údaje jen po nezbytnou dobu – typicky po dobu účtu/rezervace
+            a následně dle zákonných povinností.
+          </p>
+
+          <h2>7) Komu údaje předáváme</h2>
+          <p>
+            V prototypu nikomu (běží to lokálně). V ostrém režimu mohou být zapojeni zpracovatelé (např. hosting,
+            e‑mail, analytika), vždy ale jen v nezbytném rozsahu.
+          </p>
+
+          <h2>8) Jaká máš práva</h2>
+          <ul>
+            <li>požádat o <strong>přístup</strong> k údajům</li>
+            <li>požádat o <strong>opravu</strong> nebo <strong>výmaz</strong></li>
+            <li>požádat o <strong>omezení</strong> zpracování</li>
+            <li>vznést <strong>námitku</strong></li>
+            <li>podat <strong>stížnost</strong> u dozorového úřadu</li>
+          </ul>
+          <p>
+            Napiš nám na <a href="mailto:info@chatao.cz" class="allow-cursor">info@chatao.cz</a>.
+          </p>
+
+          <h2>9) Bezpečnost</h2>
+          <p>
+            Dbáme na to, aby se údaje nezneužily. V prototypu jsou data lokálně v prohlížeči.
+            V ostrém režimu budou technická opatření posílená (šifrování, řízení přístupu, logování).
+          </p>
+
+          <h2>10) Změny dokumentu</h2>
+          <p>
+            Tenhle dokument můžeme aktualizovat. Datum poslední změny je uvedené nahoře.
+          </p>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-2">
+          <a href="/podminky.html" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Podmínky</a>
+          <a href="/kontakt.html" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Kontakt</a>
+          <a href="/" class="px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition text-sm shimmer">Zpět do feedu →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (ostrý režim – stejný styl jako index) -->
+  <footer id="siteFooter" class="mt-2 md:mt-6">
+    <div class="mx-auto max-w-7xl px-4 md:px-6 pb-10">
+      <div class="rounded-4xl bg-black/32 backdrop-blur-sm ringline overflow-hidden">
+        <div class="p-6 md:p-8 grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">🏡</div>
+              <div class="leading-tight">
+                <div class="font-semibold tracking-wide">CHATAO.cz</div>
+                <div class="text-sm text-cream/70">Najdi chatu podle pocitu.</div>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-cream/70 max-w-prose">
+              Vizuální prohlížeč chat a chalup s rezervací přes jednoduchý chat. Ukládej, porovnávej a vybírej termín bez zbytečných formulářů.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-2 text-xs text-cream/60">
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">❤️ Uložené</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🔖 Kolekce</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">📆 Dostupnost</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <div class="text-sm font-medium">Navigace</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/">Feed</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pridat-chatu.html">Přidat chatu</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pro-majitele.html">Pro majitele</a>
+              </nav>
+            </div>
+
+            <div>
+              <div class="text-sm font-medium">Právní</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/podminky.html">Podmínky</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/ochrana-udaju.html">Ochrana údajů</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/kontakt.html">Kontakt</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 md:px-8 py-4 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+          <div class="text-xs text-cream/55">© <span id="yearNow">2026</span> CHATAO.cz • Všechna práva vyhrazena.</div>
+          <div class="text-xs text-cream/55">E‑mail: <a class="text-cream/70 hover:text-cream transition allow-cursor" href="mailto:info@chatao.cz">info@chatao.cz</a></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // rok do footeru
+    (function(){
+      var y = document.getElementById('yearNow');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+
+    // datum dokumentu (můžeš změnit ručně)
+    (function(){
+      var d = document.getElementById('policyDate');
+      if (d && !d.textContent.trim()) d.textContent = new Date().toISOString().slice(0,10);
+    })();
+
+    // rychlé smazání prototyp dat
+    (function(){
+      var btn = document.getElementById('clearLocal');
+      var hint = document.getElementById('clearHint');
+      if (!btn) return;
+      btn.addEventListener('click', function(){
+        try{
+          localStorage.removeItem('chatao_saved');
+          localStorage.removeItem('chatao_collections');
+          localStorage.removeItem('chatao_bookings');
+          localStorage.removeItem('chatao_feed');
+          localStorage.removeItem('chatao_listings');
+          if (hint) hint.textContent = 'Smazáno ✅ (uložené, kolekce, demo termíny, feed).';
+        }catch(e){
+          if (hint) hint.textContent = 'Nepovedlo se smazat. Zkus to v nastavení prohlížeče.';
+        }
+      });
+    })();
+  </script>
+
+  <!-- JSON-LD (basic) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Ochrana osobních údajů",
+    "url": "https://chatao.cz/ochrana-udaju.html",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "CHATAO.cz",
+      "url": "https://chatao.cz/"
+    }
+  }
+  </script>
+
+</body>
+</html>
