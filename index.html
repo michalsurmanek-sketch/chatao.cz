@@ -178,6 +178,11 @@
       caret-color: transparent;
     }
 </style>
+
+  <style>
+    /* Cookie lišta (ostrý režim) */
+    .cookie-hidden{ display:none !important; }
+  </style>
 </head>
 
 <body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
@@ -1308,6 +1313,90 @@
   render();
 </script>
 
+  <!-- Cookie lišta (souhlas) -->
+  <div id="cookieBanner" class="fixed inset-x-0 bottom-0 z-[80] cookie-hidden">
+    <div class="mx-auto max-w-7xl px-4 md:px-6 pb-4">
+      <div class="rounded-4xl bg-black/40 backdrop-blur-md ringline shadow-soft overflow-hidden">
+        <div class="p-5 md:p-6 grid gap-4 md:grid-cols-[1.3fr_0.7fr] items-start">
+          <div>
+            <div class="text-sm font-semibold">Cookies & měření</div>
+            <p class="mt-2 text-sm text-cream/75 leading-relaxed">
+              Používáme nezbytné cookies pro chod webu. Volitelně nám můžeš povolit analytické cookies (Google Analytics) pro zlepšování služby.
+              <a href="/ochrana-udaju.html" class="text-cream hover:underline">Více informací</a>.
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2 text-xs text-cream/60">
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">Nezbytné: vždy</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">Analytické: volitelně</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2 md:items-end">
+            <div class="flex flex-wrap md:justify-end gap-2">
+              <button id="cookieReject" class="px-4 py-2 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Odmítnout</button>
+              <button id="cookieSettings" class="px-4 py-2 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Nastavení</button>
+              <button id="cookieAccept" class="px-4 py-2 rounded-3xl bg-ember-500/18 hover:bg-ember-500/24 ringline transition text-sm shimmer">Povolit vše</button>
+            </div>
+            <button id="cookieOpen" class="text-xs text-cream/55 hover:text-cream transition md:self-end underline underline-offset-4">Změnit souhlas později</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cookie nastavení (modal) -->
+  <div id="cookieModal" class="fixed inset-0 z-[90] hidden">
+    <div id="cookieModalBackdrop" class="absolute inset-0 bg-black/70"></div>
+    <div class="absolute inset-0 overflow-y-auto">
+      <div class="min-h-full flex items-end md:items-center justify-center p-4 md:p-8">
+        <div class="w-full max-w-2xl rounded-4xl bg-ink/95 ringline shadow-soft overflow-hidden">
+          <div class="p-6 md:p-7">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="text-xl md:text-2xl font-semibold">Nastavení cookies</div>
+                <div class="mt-1 text-sm text-cream/70">Vyber, co dovolíš. Nezbytné jsou vždy zapnuté.</div>
+              </div>
+              <button id="cookieModalClose" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center" title="Zavřít">✕</button>
+            </div>
+
+            <div class="mt-6 grid gap-3">
+              <div class="rounded-4xl bg-white/4 ringline p-5">
+                <div class="flex items-center justify-between gap-3">
+                  <div>
+                    <div class="font-medium">Nezbytné cookies</div>
+                    <div class="text-sm text-cream/70">Uložení základních preferencí a chod webu.</div>
+                  </div>
+                  <span class="text-xs px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">Vždy zapnuto</span>
+                </div>
+              </div>
+
+              <div class="rounded-4xl bg-white/4 ringline p-5">
+                <div class="flex items-center justify-between gap-3">
+                  <div>
+                    <div class="font-medium">Analytické cookies</div>
+                    <div class="text-sm text-cream/70">Google Analytics – anonymní statistiky pro zlepšování.</div>
+                  </div>
+                  <label class="inline-flex items-center gap-2 px-3 py-2 rounded-3xl bg-black/28 backdrop-blur-sm ringline cursor-pointer allow-cursor">
+                    <input id="cookieAnalytics" type="checkbox" class="h-4 w-4" />
+                    <span class="text-sm">Povolit</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-2">
+              <button id="cookieSave" class="px-6 py-3 rounded-3xl bg-ember-500/18 hover:bg-ember-500/24 ringline transition shimmer text-sm">Uložit nastavení</button>
+              <button id="cookieReject2" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Odmítnout vše</button>
+            </div>
+
+            <div class="mt-4 text-xs text-cream/55">
+              Souhlas lze kdykoliv změnit přes odkaz „Změnit souhlas později“.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer (ostrý režim) -->
   <footer id="siteFooter" class="mt-14 md:mt-20">
     <div class="mx-auto max-w-7xl px-4 md:px-6 pb-10">
@@ -1373,14 +1462,123 @@
     })();
   </script>
 
-<!-- Google Analytics (placeholder - nahraďte svým GA4 Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
+  <script>
+    // ===== Cookies / Consent (ostrý režim) =====
+    // localStorage: chatao_consent = { analytics: true|false, updatedAt: ISO }
+    (function(){
+      const KEY = 'chatao_consent';
+      const banner = document.getElementById('cookieBanner');
+      const modal = document.getElementById('cookieModal');
+      const modalBackdrop = document.getElementById('cookieModalBackdrop');
+      const modalClose = document.getElementById('cookieModalClose');
+      const openLater = document.getElementById('cookieOpen');
+
+      const btnAccept = document.getElementById('cookieAccept');
+      const btnReject = document.getElementById('cookieReject');
+      const btnSettings = document.getElementById('cookieSettings');
+
+      const cbAnalytics = document.getElementById('cookieAnalytics');
+      const btnSave = document.getElementById('cookieSave');
+      const btnReject2 = document.getElementById('cookieReject2');
+
+      function readConsent(){
+        try { return JSON.parse(localStorage.getItem(KEY) || 'null'); }
+        catch { return null; }
+      }
+      function writeConsent(data){
+        localStorage.setItem(KEY, JSON.stringify({
+          analytics: !!data.analytics,
+          updatedAt: new Date().toISOString()
+        }));
+      }
+
+      // ===== GA loader (pouze po souhlasu) =====
+      // TODO: nahraď svoje GA4 ID
+      const GA_ID = 'G-XXXXXXXXXX';
+      function enableGA(){
+        if (!GA_ID || GA_ID === 'G-XXXXXXXXXX') return; // dokud nedáš ID, nic neloadovat
+        if (window.__ga_loaded) return;
+        window.__ga_loaded = true;
+
+        // inject script
+        const s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
+        document.head.appendChild(s);
+
+        // gtag stub
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_ID, { anonymize_ip: true });
+      }
+
+      function showBanner(){ banner && banner.classList.remove('cookie-hidden'); }
+      function hideBanner(){ banner && banner.classList.add('cookie-hidden'); }
+
+      function openModal(){
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+      }
+      function closeModal(){
+        if (!modal) return;
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+      }
+
+      function applyConsent(consent){
+        if (consent && consent.analytics) enableGA();
+      }
+
+      function setAndApply(consent){
+        writeConsent(consent);
+        hideBanner();
+        closeModal();
+        applyConsent(readConsent());
+      }
+
+      // init
+      const consent = readConsent();
+      if (!consent){
+        showBanner();
+      } else {
+        hideBanner();
+        applyConsent(consent);
+      }
+
+      // banner actions
+      btnAccept?.addEventListener('click', ()=> setAndApply({ analytics: true }));
+      btnReject?.addEventListener('click', ()=> setAndApply({ analytics: false }));
+      btnSettings?.addEventListener('click', ()=>{
+        const c = readConsent();
+        if (cbAnalytics) cbAnalytics.checked = !!(c && c.analytics);
+        openModal();
+      });
+
+      // modal actions
+      btnSave?.addEventListener('click', ()=> setAndApply({ analytics: !!cbAnalytics?.checked }));
+      btnReject2?.addEventListener('click', ()=> setAndApply({ analytics: false }));
+      modalClose?.addEventListener('click', closeModal);
+      modalBackdrop?.addEventListener('click', closeModal);
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal && !modal.classList.contains('hidden')) closeModal(); });
+
+      // open banner later
+      openLater?.addEventListener('click', ()=>{
+        showBanner();
+        setTimeout(()=>btnAccept?.focus?.({preventScroll:true}), 50);
+      });
+
+      // veřejná utilita pro ostatní stránky (pokud chceš)
+      window.CHATAO = window.CHATAO || {};
+      window.CHATAO.openCookieSettings = function(){
+        const c = readConsent();
+        if (cbAnalytics) cbAnalytics.checked = !!(c && c.analytics);
+        openModal();
+      };
+    })();
+  </script>
 
 <!-- JSON-LD Structured Data -->
 <script type="application/ld+json">
