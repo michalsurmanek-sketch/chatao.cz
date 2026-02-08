@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>CHATAO.cz – Podmínky používání</title>
+
+  <meta name="description" content="Podmínky používání služby CHATAO.cz." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://chatao.cz/podminky.html" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#568B71" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {50:"#F3F7F5",100:"#E3EEE8",200:"#C5DCD1",300:"#9FC3B2",400:"#78A78F",500:"#568B71",600:"#3E6D58",700:"#2E5344",800:"#213D33",900:"#172A23"},
+            ember:{50:"#FFF7ED",100:"#FFEDD5",200:"#FED7AA",300:"#FDBA74",400:"#FB923C",500:"#F97316",600:"#EA580C",700:"#C2410C",800:"#9A3412",900:"#7C2D12"},
+            fog:{50:"#F6F7F9",100:"#ECEEF2",200:"#D7DBE4",300:"#B7BECE",400:"#8F9AB2",500:"#6E7A95",600:"#56607A",700:"#434C62",800:"#31384A",900:"#232838"},
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+            wood: "#2A211A",
+          },
+          boxShadow: {
+            soft: "0 22px 60px rgba(0,0,0,0.45)",
+            lift: "0 18px 40px rgba(0,0,0,0.30)",
+          },
+          borderRadius: { "4xl": "2rem" },
+          fontFamily: { sans: ["ui-sans-serif","system-ui","-apple-system","Segoe UI","Roboto","Arial"] },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    .grain::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');mix-blend-mode:overlay}
+    .glass{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+    .ringline{box-shadow:0 0 0 1px rgba(255,255,255,.10) inset}
+    :focus-visible{outline:2px solid rgba(249,115,22,.55);outline-offset:3px;border-radius:18px}
+
+    /* HARD MODE: kurzor jen tam, kde se píše */
+    html, body{ caret-color: transparent; -webkit-user-select:none; user-select:none; }
+    input, textarea, [contenteditable="true"], .allow-cursor{ caret-color:auto; -webkit-user-select:text; user-select:text; }
+    button, a, article, header, section, main, footer, div, span, p, h1, h2, h3, h4, h5, h6{ caret-color: transparent; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
+
+  <!-- Background layers -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%),radial-gradient(circle_at_60%_95%,rgba(142,154,178,0.14),transparent_46%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <a href="/" class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">
+              <span class="text-lg">🏡</span>
+            </div>
+            <div class="leading-tight">
+              <div class="font-semibold tracking-wide">CHATAO.cz</div>
+              <div class="text-xs text-cream/70">Podmínky používání</div>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <a href="/" class="px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">← Zpět na feed</a>
+            <a href="/kontakt.html" class="px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Kontakt</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <main class="mx-auto max-w-7xl px-4 md:px-6 py-8 md:py-10">
+    <section class="relative overflow-hidden rounded-4xl bg-black/32 backdrop-blur-sm ringline shadow-soft grain">
+      <div class="absolute -top-44 -right-44 h-[420px] w-[420px] rounded-full bg-pine-600/25 blur-3xl"></div>
+      <div class="absolute -bottom-44 -left-36 h-[420px] w-[420px] rounded-full bg-ember-500/15 blur-3xl"></div>
+
+      <div class="relative p-6 md:p-10">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 class="text-2xl md:text-4xl font-semibold tracking-tight">Podmínky používání CHATAO.cz</h1>
+            <p class="mt-2 text-sm md:text-base text-cream/75 max-w-3xl">
+              Tyto podmínky upravují používání webu CHATAO.cz a souvisejících funkcí (feed, uložení, kolekce, poptávka/rezervace).
+            </p>
+          </div>
+          <div class="text-xs text-cream/60">
+            Platné od: <span class="font-semibold text-cream">8. 2. 2026</span>
+          </div>
+        </div>
+
+        <div class="mt-8 grid lg:grid-cols-[0.9fr_1.1fr] gap-6 items-start">
+          <!-- TOC -->
+          <aside class="rounded-4xl bg-white/4 ringline p-5 md:p-6">
+            <div class="text-sm font-medium">Rychlá navigace</div>
+            <nav class="mt-3 grid gap-2 text-sm">
+              <a class="text-cream/75 hover:text-cream transition" href="#definice">1) Definice</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#sluzba">2) Služba a rozsah</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#uzivatel">3) Uživatelský účet a chování</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#obsah">4) Obsah a fotografie</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#rezervace">5) Poptávka / rezervace</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#platby">6) Platby a ceny</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#odpovednost">7) Odpovědnost</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#soukromi">8) Soukromí a údaje</a>
+              <a class="text-cream/75 hover:text-cream transition" href="#zaverecna">9) Závěrečná ustanovení</a>
+            </nav>
+          </aside>
+
+          <!-- BODY -->
+          <article class="rounded-4xl bg-white/4 ringline p-5 md:p-6 space-y-7">
+            <section id="definice" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">1) Definice</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p><span class="font-semibold text-cream">Služba</span> = web CHATAO.cz a jeho funkce (feed, detail nabídky, kolekce, uložení, poptávka/rezervace).</p>
+                <p><span class="font-semibold text-cream">Provozovatel</span> = subjekt, který službu provozuje (kontaktní údaje viz <a class="text-cream hover:underline" href="/kontakt.html">Kontakt</a>).</p>
+                <p><span class="font-semibold text-cream">Uživatel</span> = osoba, která službu používá.</p>
+                <p><span class="font-semibold text-cream">Majitel/Poskytovatel</span> = osoba či firma, která nabízí ubytování (chatu/chalupu apod.).</p>
+                <p><span class="font-semibold text-cream">Nabídka</span> = profil chaty/chalupy včetně textů, fotek, dostupnosti a pravidel.</p>
+              </div>
+            </section>
+
+            <section id="sluzba" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">2) Služba a rozsah</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>CHATAO.cz je platforma pro vyhledávání nabídek a odeslání poptávky/rezervace. Provozovatel není smluvní stranou ubytování (pokud není výslovně uvedeno jinak).</p>
+                <p>Konkrétní podmínky pobytu (cena, storno, kauce, pravidla) určuje Majitel/Poskytovatel u každé nabídky zvlášť.</p>
+                <p>Služba může být v režimu prototypu/MVP – některé funkce mohou být dočasně zjednodušené.</p>
+              </div>
+            </section>
+
+            <section id="uzivatel" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">3) Uživatelský účet a chování</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>Uživatel se zavazuje používat službu v souladu se zákony a těmito podmínkami.</p>
+                <p>Je zakázáno zejména: zneužívat službu, narušovat její chod, obcházet zabezpečení, vkládat škodlivý kód, vydávat se za jinou osobu, nebo zveřejňovat nepravdivé údaje.</p>
+                <p>Provozovatel může omezit nebo ukončit přístup uživatele, pokud poruší podmínky nebo ohrožuje bezpečnost služby.</p>
+              </div>
+            </section>
+
+            <section id="obsah" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">4) Obsah a fotografie</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>Majitel/Poskytovatel odpovídá za pravdivost a aktuálnost informací v nabídce (popis, fotky, výbava, pravidla, dostupnost).</p>
+                <p>Nahráním obsahu Majitel potvrzuje, že má práva k jeho užití (zejména autorská práva k fotografiím) a že obsah neporušuje práva třetích osob.</p>
+                <p>Provozovatel může obsah upravit, skrýt nebo odstranit, pokud je zjevně zavádějící, protiprávní, nebo poškozuje službu.</p>
+              </div>
+            </section>
+
+            <section id="rezervace" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">5) Poptávka / rezervace</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>Odesláním poptávky/rezervace Uživatel vyjadřuje zájem o pobyt v daném termínu. Potvrzení termínu a uzavření smlouvy probíhá přímo mezi Uživatelem a Majitelem/Poskytovatelem.</p>
+                <p>U nabídky mohou platit omezení (např. minimální počet nocí). Pokud vybraný termín neodpovídá pravidlům nebo je obsazený, nebude rezervace potvrzena.</p>
+                <p>Provozovatel může poskytovat technické nástroje pro komunikaci (chat/formulář), ale nenese odpovědnost za obsah komunikace ani za plnění pobytu.</p>
+              </div>
+            </section>
+
+            <section id="platby" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">6) Platby a ceny</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>Ceny u nabídek jsou orientační „od“ (pokud není uvedeno jinak). Konečná cena se může lišit dle termínu, počtu osob, délky pobytu a pravidel nabídky.</p>
+                <p>Platby (záloha, doplatek, kauce) se řídí pokyny Majitele/Poskytovatele. Pokud CHATAO.cz zavede platby přes platformu, budou doplněny samostatné platební podmínky.</p>
+              </div>
+            </section>
+
+            <section id="odpovednost" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">7) Odpovědnost</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>Služba je poskytována „tak jak je“ a Provozovatel negarantuje nepřetržitou dostupnost (např. údržba, výpadky, změny).</p>
+                <p>Provozovatel neodpovídá za škody vzniklé v souvislosti s pobytem, službami Majitele/Poskytovatele nebo spory mezi Uživatelem a Majitelem/Poskytovatelem.</p>
+                <p>Provozovatel odpovídá v rozsahu stanoveném právními předpisy a v přiměřené míře s ohledem na povahu služby.</p>
+              </div>
+            </section>
+
+            <section id="soukromi" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">8) Soukromí a údaje</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>Zpracování osobních údajů se řídí dokumentem <a class="text-cream hover:underline" href="/ochrana-udaju.html">Ochrana údajů</a>.</p>
+                <p>Služba může používat soubory cookies pro základní funkce a zlepšování uživatelského zážitku (např. uložení preferencí). Pokud přidáme pokročilé měření, doplníme lištu a nastavení.</p>
+              </div>
+            </section>
+
+            <section id="zaverecna" class="scroll-mt-24">
+              <h2 class="text-lg md:text-xl font-semibold">9) Závěrečná ustanovení</h2>
+              <div class="mt-3 space-y-3 text-sm md:text-base text-cream/80 leading-relaxed">
+                <p>Provozovatel může podmínky průběžně upravovat. Aktuální znění je vždy dostupné na této stránce.</p>
+                <p>Pokud je některé ustanovení neplatné, ostatní ustanovení tím nejsou dotčena.</p>
+                <p>Vztahy neupravené těmito podmínkami se řídí právním řádem České republiky.</p>
+                <p>Kontakt: <a class="text-cream hover:underline" href="mailto:info@chatao.cz">info@chatao.cz</a></p>
+              </div>
+            </section>
+
+            <div class="pt-2">
+              <div class="text-xs text-cream/55">Poslední aktualizace: 8. 2. 2026</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (ostrý režim) -->
+  <footer id="siteFooter" class="mt-14 md:mt-20">
+    <div class="mx-auto max-w-7xl px-4 md:px-6 pb-10">
+      <div class="rounded-4xl bg-black/32 backdrop-blur-sm ringline overflow-hidden">
+        <div class="p-6 md:p-8 grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">🏡</div>
+              <div class="leading-tight">
+                <div class="font-semibold tracking-wide">CHATAO.cz</div>
+                <div class="text-sm text-cream/70">Najdi chatu podle pocitu.</div>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-cream/70 max-w-prose">
+              Vizuální prohlížeč chat a chalup s rezervací přes jednoduchý chat. Ukládej, porovnávej a vybírej termín bez zbytečných formulářů.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-2 text-xs text-cream/60">
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">❤️ Uložené</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🔖 Kolekce</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">📆 Dostupnost</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <div class="text-sm font-medium">Navigace</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/">Feed</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pridat-chatu.html">Přidat chatu</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pro-majitele.html">Pro majitele</a>
+              </nav>
+            </div>
+
+            <div>
+              <div class="text-sm font-medium">Právní</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/podminky.html">Podmínky</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/ochrana-udaju.html">Ochrana údajů</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/kontakt.html">Kontakt</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 md:px-8 py-4 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+          <div class="text-xs text-cream/55">© <span id="yearNow">2026</span> CHATAO.cz • Všechna práva vyhrazena.</div>
+          <div class="text-xs text-cream/55">E‑mail: <a class="text-cream/70 hover:text-cream transition" href="mailto:info@chatao.cz">info@chatao.cz</a></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      var y = document.getElementById('yearNow');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+  </script>
+
+</body>
+</html>
