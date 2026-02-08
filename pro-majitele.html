@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Pro majitele • CHATAO.cz</title>
+  <meta name="description" content="CHATAO.cz – stránka pro majitele chat. Jak přidat chatu, jak funguje feed, kolekce, poptávky a rezervace." />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#568B71" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {
+              50: "#F3F7F5",
+              100: "#E3EEE8",
+              200: "#C5DCD1",
+              300: "#9FC3B2",
+              400: "#78A78F",
+              500: "#568B71",
+              600: "#3E6D58",
+              700: "#2E5344",
+              800: "#213D33",
+              900: "#172A23",
+            },
+            ember: {
+              50: "#FFF7ED",
+              100: "#FFEDD5",
+              200: "#FED7AA",
+              300: "#FDBA74",
+              400: "#FB923C",
+              500: "#F97316",
+              600: "#EA580C",
+              700: "#C2410C",
+              800: "#9A3412",
+              900: "#7C2D12",
+            },
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+          },
+          boxShadow: {
+            soft: "0 22px 60px rgba(0,0,0,0.45)",
+            lift: "0 18px 40px rgba(0,0,0,0.30)",
+          },
+          borderRadius: { "4xl": "2rem" },
+          fontFamily: {
+            sans: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    .ringline{ box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset; }
+    .glass{ background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .grain::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');
+      mix-blend-mode: overlay;
+    }
+
+    /* HARD MODE: kurzor jen tam, kde se píše */
+    html, body{ caret-color: transparent; -webkit-user-select:none; user-select:none; }
+    input, textarea, [contenteditable="true"], .allow-cursor{ caret-color:auto; -webkit-user-select:text; user-select:text; }
+    button, a, article, header, section, main, footer, div, span, p, h1, h2, h3, h4, h5, h6{ caret-color: transparent; }
+
+    :focus-visible{ outline: 2px solid rgba(249,115,22,0.55); outline-offset: 3px; border-radius: 18px; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
+
+  <!-- Background layers -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%),radial-gradient(circle_at_60%_95%,rgba(142,154,178,0.14),transparent_46%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <a href="/" class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">
+              <span class="text-lg">🏡</span>
+            </div>
+            <div class="leading-tight">
+              <div class="font-semibold tracking-wide">CHATAO</div>
+              <div class="text-xs text-cream/70">Pro majitele</div>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <a href="/pridat-chatu.html" class="px-3 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/20 ringline transition flex items-center gap-2 hover:scale-[1.03] active:scale-[0.97]">
+              <span>🏡</span><span class="text-sm">Přidat chatu</span>
+            </a>
+            <a href="/kontakt.html" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition flex items-center gap-2">
+              <span>✉️</span><span class="text-sm">Kontakt</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8 md:pt-10">
+    <div class="relative overflow-hidden rounded-4xl bg-black/32 backdrop-blur-sm ringline shadow-soft grain">
+      <div class="absolute -top-40 -right-40 h-[420px] w-[420px] rounded-full bg-pine-600/25 blur-3xl"></div>
+      <div class="absolute -bottom-44 -left-32 h-[420px] w-[420px] rounded-full bg-ember-500/15 blur-3xl"></div>
+
+      <div class="relative p-6 md:p-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-start">
+        <div>
+          <h1 class="text-3xl md:text-5xl font-semibold tracking-tight">Majitel chaty?</h1>
+          <p class="mt-3 text-cream/75 max-w-xl">
+            Přidej chatu do feedu, nech lidi ukládat do kolekcí a poptávat termín bez stresu. CHATAO je „Instagramový" výběr – ale s dostupností a rezervací.
+          </p>
+
+          <div class="mt-6 flex flex-wrap gap-2">
+            <a href="/pridat-chatu.html" class="px-6 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition">
+              Přidat chatu →
+            </a>
+            <a href="#jak-to-funguje" class="px-6 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">
+              Jak to funguje
+            </a>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-2 text-xs text-cream/60">
+            <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🔖 Kolekce = návraty</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">❤️ Uložené = zájem</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">📆 Dostupnost = rychlé rozhodnutí</span>
+          </div>
+        </div>
+
+        <!-- Quick panel -->
+        <aside class="rounded-4xl bg-white/4 ringline p-6 md:p-7">
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-semibold">Rychlý start</div>
+            <div class="text-xs text-cream/55">demo</div>
+          </div>
+
+          <ol class="mt-4 grid gap-3 text-sm text-cream/80">
+            <li class="rounded-3xl bg-black/32 backdrop-blur-sm ringline p-4">
+              <div class="font-semibold">1) Přidáš chatu</div>
+              <div class="mt-1 text-cream/65 text-xs">Fotky + region + vibe + výbava + cena od.</div>
+            </li>
+            <li class="rounded-3xl bg-black/32 backdrop-blur-sm ringline p-4">
+              <div class="font-semibold">2) Lidi ukládají ❤️ / 🔖</div>
+              <div class="mt-1 text-cream/65 text-xs">Měříme zájem. V produkci budou statistiky.</div>
+            </li>
+            <li class="rounded-3xl bg-black/32 backdrop-blur-sm ringline p-4">
+              <div class="font-semibold">3) Poptávka termínu</div>
+              <div class="mt-1 text-cream/65 text-xs">Vyberou příjezd/odjezd → napíšou ti.</div>
+            </li>
+          </ol>
+
+          <div class="mt-5 text-xs text-cream/55">
+            V prototypu se vše ukládá lokálně (LocalStorage). V ostré verzi: účty majitelů, kalendář, notifikace.
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="jak-to-funguje" class="mx-auto max-w-7xl px-4 md:px-6 pt-10 md:pt-14">
+    <div class="grid lg:grid-cols-3 gap-5">
+      <div class="rounded-4xl bg-white/4 ringline p-6">
+        <div class="text-sm text-cream/60">Co CHATAO řeší</div>
+        <h2 class="mt-2 text-xl font-semibold">Lidi vybírají očima.</h2>
+        <p class="mt-2 text-sm text-cream/70">Feed je rychlejší než formuláře. Uživatel vybere vibe, uloží si to a vrátí se.</p>
+      </div>
+
+      <div class="rounded-4xl bg-white/4 ringline p-6">
+        <div class="text-sm text-cream/60">Proč kolekce</div>
+        <h3 class="mt-2 text-xl font-semibold">Uložení = budoucí rezervace.</h3>
+        <p class="mt-2 text-sm text-cream/70">Kolekce fungují jako Pinterest/Instagram. V ostré verzi ukážeme majitelům „zájem" a konverze.</p>
+      </div>
+
+      <div class="rounded-4xl bg-white/4 ringline p-6">
+        <div class="text-sm text-cream/60">Dostupnost</div>
+        <h3 class="mt-2 text-xl font-semibold">Jasný termín = rychlé ano.</h3>
+        <p class="mt-2 text-sm text-cream/70">V detailu chaty uživatel vybere příjezd a odjezd. V ostré verzi napojení na kalendář + pravidla.</p>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-4xl bg-black/32 backdrop-blur-sm ringline p-6 md:p-8">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <div class="text-sm text-cream/60">Co bude v ostré verzi</div>
+          <h3 class="mt-2 text-2xl font-semibold">Majitelský profil + správa</h3>
+          <p class="mt-2 text-sm text-cream/70 max-w-3xl">
+            Přihlášení majitele, ověření, správa fotek, ceník podle sezóny, minimální počet nocí, storno podmínky, kalendář, notifikace a statistiky.
+          </p>
+        </div>
+        <a href="/kontakt.html" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Chci být u toho →</a>
+      </div>
+
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div class="rounded-4xl bg-white/4 ringline p-5">
+          <div class="font-semibold">Co od tebe budeme chtít</div>
+          <ul class="mt-3 grid gap-2 text-sm text-cream/70 list-disc list-inside">
+            <li>fotky (min. 6),</li>
+            <li>region + přesnější lokalita,</li>
+            <li>výbava a "vibe" (sauna, krb, samota…),</li>
+            <li>cena od / noc + pravidla (min. nocí),</li>
+            <li>kontakt (mail / telefon / IG) – podle volby.</li>
+          </ul>
+        </div>
+
+        <div class="rounded-4xl bg-white/4 ringline p-5">
+          <div class="font-semibold">Co z toho máš</div>
+          <ul class="mt-3 grid gap-2 text-sm text-cream/70 list-disc list-inside">
+            <li>nový kanál poptávek,</li>
+            <li>lidí si tě ukládají a vrací se,</li>
+            <li>předvybraný termín (méně zbytečných zpráv),</li>
+            <li>v ostré verzi statistiky a doporučení.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex flex-wrap gap-2">
+      <a href="/pridat-chatu.html" class="px-6 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition">Přidat chatu</a>
+      <a href="/" class="px-6 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Zpět na feed</a>
+    </div>
+  </section>
+
+  <!-- Footer (ostrý režim – stejné jako index) -->
+  <footer id="siteFooter" class="mt-14 md:mt-20">
+    <div class="mx-auto max-w-7xl px-4 md:px-6 pb-10">
+      <div class="rounded-4xl bg-black/32 backdrop-blur-sm ringline overflow-hidden">
+        <div class="p-6 md:p-8 grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">🏡</div>
+              <div class="leading-tight">
+                <div class="font-semibold tracking-wide">CHATAO.cz</div>
+                <div class="text-sm text-cream/70">Najdi chatu podle pocitu.</div>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-cream/70 max-w-prose">
+              Vizuální prohlížeč chat a chalup s rezervací přes jednoduchý chat. Ukládej, porovnávej a vybírej termín bez zbytečných formulářů.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-2 text-xs text-cream/60">
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">❤️ Uložené</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🔖 Kolekce</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">📆 Dostupnost</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <div class="text-sm font-medium">Navigace</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/">Feed</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pridat-chatu.html">Přidat chatu</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pro-majitele.html">Pro majitele</a>
+              </nav>
+            </div>
+
+            <div>
+              <div class="text-sm font-medium">Právní</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/podminky.html">Podmínky</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/ochrana-udaju.html">Ochrana údajů</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/kontakt.html">Kontakt</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 md:px-8 py-4 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+          <div class="text-xs text-cream/55">
+            © <span id="yearNow">2026</span> CHATAO.cz • Všechna práva vyhrazena.
+          </div>
+          <div class="text-xs text-cream/55">
+            E‑mail: <a class="text-cream/70 hover:text-cream transition allow-cursor" href="mailto:info@chatao.cz">info@chatao.cz</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      var y = document.getElementById('yearNow');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+  </script>
+
+</body>
+</html>
