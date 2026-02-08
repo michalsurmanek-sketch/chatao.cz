@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Kontakt • CHATAO.cz</title>
+  <meta name="description" content="Kontakt na CHATAO.cz – dotazy, spolupráce, přidání chaty, nápady a hlášení problémů." />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#568B71" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {
+              50: "#F3F7F5",
+              100: "#E3EEE8",
+              200: "#C5DCD1",
+              300: "#9FC3B2",
+              400: "#78A78F",
+              500: "#568B71",
+              600: "#3E6D58",
+              700: "#2E5344",
+              800: "#213D33",
+              900: "#172A23",
+            },
+            ember: {
+              50: "#FFF7ED",
+              100: "#FFEDD5",
+              200: "#FED7AA",
+              300: "#FDBA74",
+              400: "#FB923C",
+              500: "#F97316",
+              600: "#EA580C",
+              700: "#C2410C",
+              800: "#9A3412",
+              900: "#7C2D12",
+            },
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+            fog: {
+              500: "#6E7A95",
+              800: "#31384A",
+            }
+          },
+          boxShadow: {
+            soft: "0 22px 60px rgba(0,0,0,0.45)",
+            lift: "0 18px 40px rgba(0,0,0,0.30)",
+          },
+          borderRadius: { "4xl": "2rem" },
+          fontFamily: {
+            sans: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    .ringline{ box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset; }
+    .glass{ background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .grain::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');
+      mix-blend-mode: overlay;
+    }
+
+    /* HARD MODE: kurzor jen tam, kde se píše */
+    html, body{ caret-color: transparent; -webkit-user-select:none; user-select:none; }
+    input, textarea, [contenteditable="true"], .allow-cursor{ caret-color:auto; -webkit-user-select:text; user-select:text; }
+    button, a, article, header, section, main, footer, div, span, p, h1, h2, h3, h4, h5, h6{ caret-color: transparent; }
+
+    :focus-visible{ outline: 2px solid rgba(249,115,22,0.55); outline-offset: 3px; border-radius: 18px; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
+
+  <!-- Background layers (stejné jako index) -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%),radial-gradient(circle_at_60%_95%,rgba(142,154,178,0.14),transparent_46%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <a href="/" class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">
+              <span class="text-lg">🏡</span>
+            </div>
+            <div class="leading-tight">
+              <div class="font-semibold tracking-wide">CHATAO</div>
+              <div class="text-xs text-cream/70">Kontakt</div>
+            </div>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <a href="/pridat-chatu.html" class="px-3 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/20 ringline transition flex items-center gap-2 hover:scale-[1.03] active:scale-[0.97]">
+              <span>🏡</span><span class="text-sm">Přidat chatu</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8 md:pt-10">
+    <div class="relative overflow-hidden rounded-4xl bg-black/32 backdrop-blur-sm ringline shadow-soft grain">
+      <div class="absolute -top-40 -right-40 h-[420px] w-[420px] rounded-full bg-pine-600/25 blur-3xl"></div>
+      <div class="absolute -bottom-44 -left-32 h-[420px] w-[420px] rounded-full bg-ember-500/15 blur-3xl"></div>
+
+      <div class="relative p-6 md:p-10 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
+        <div>
+          <h1 class="text-3xl md:text-5xl font-semibold tracking-tight">Kontakt</h1>
+          <p class="mt-3 text-cream/75 max-w-xl">
+            Napiš nám dotaz, nápad nebo problém. Odpovíme co nejdřív.
+          </p>
+
+          <div class="mt-6 flex flex-wrap gap-2 text-xs text-cream/60">
+            <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">💬 Spolupráce</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🏡 Přidání chaty</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🐞 Chyba / nahlášení</span>
+          </div>
+
+          <div class="mt-6 grid gap-3">
+            <div class="rounded-4xl bg-white/4 ringline p-5">
+              <div class="text-sm text-cream/60">E‑mail</div>
+              <a class="allow-cursor mt-1 inline-flex items-center gap-2 text-lg font-semibold hover:opacity-90" href="mailto:info@chatao.cz">
+                <span>✉️</span> info@chatao.cz
+              </a>
+              <div class="mt-2 text-xs text-cream/55">(v ostrém režimu: připojíme i support@ / partners@ podle potřeby)</div>
+            </div>
+
+            <div class="rounded-4xl bg-white/4 ringline p-5">
+              <div class="text-sm text-cream/60">Rychlé odkazy</div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <a class="px-4 py-2 rounded-3xl bg-black/32 backdrop-blur-sm ringline hover:bg-black/38 transition" href="/pro-majitele.html">Pro majitele</a>
+                <a class="px-4 py-2 rounded-3xl bg-black/32 backdrop-blur-sm ringline hover:bg-black/38 transition" href="/pridat-chatu.html">Přidat chatu</a>
+                <a class="px-4 py-2 rounded-3xl bg-black/32 backdrop-blur-sm ringline hover:bg-black/38 transition" href="/">Zpět na feed</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="rounded-4xl bg-white/4 ringline p-6 md:p-7">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <div class="text-lg font-semibold">Napiš zprávu</div>
+              <div class="text-sm text-cream/65">V prototypu se zpráva uloží lokálně (LocalStorage).</div>
+            </div>
+            <div class="text-xs text-cream/55">demo</div>
+          </div>
+
+          <form id="contactForm" class="mt-6 grid gap-3" autocomplete="on">
+            <label class="grid gap-2">
+              <span class="text-xs text-cream/60">Jméno</span>
+              <input required name="name" class="allow-cursor w-full px-4 py-3 rounded-3xl bg-black/32 backdrop-blur-sm ringline placeholder:text-cream/40 text-sm" placeholder="Jak ti máme říkat" />
+            </label>
+
+            <label class="grid gap-2">
+              <span class="text-xs text-cream/60">E‑mail</span>
+              <input required type="email" name="email" class="allow-cursor w-full px-4 py-3 rounded-3xl bg-black/32 backdrop-blur-sm ringline placeholder:text-cream/40 text-sm" placeholder="kam ti odpovědět" />
+            </label>
+
+            <label class="grid gap-2">
+              <span class="text-xs text-cream/60">Téma</span>
+              <select name="topic" class="allow-cursor w-full px-4 py-3 rounded-3xl bg-black/32 backdrop-blur-sm ringline text-sm">
+                <option value="obecne">Obecný dotaz</option>
+                <option value="majitel">Jsem majitel chaty</option>
+                <option value="spoluprace">Spolupráce / partnerství</option>
+                <option value="chyba">Nahlásit chybu</option>
+              </select>
+            </label>
+
+            <label class="grid gap-2">
+              <span class="text-xs text-cream/60">Zpráva</span>
+              <textarea required name="message" rows="6" class="allow-cursor w-full px-4 py-3 rounded-3xl bg-black/32 backdrop-blur-sm ringline placeholder:text-cream/40 text-sm" placeholder="Napiš nám co potřebuješ…"></textarea>
+            </label>
+
+            <div class="mt-2 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center justify-between">
+              <div class="text-xs text-cream/55">
+                Odesláním souhlasíš s tím, že ti můžeme odpovědět na e‑mail.
+              </div>
+              <button type="submit" class="px-6 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition">
+                Odeslat
+              </button>
+            </div>
+
+            <div id="formNote" class="hidden mt-2 rounded-3xl bg-black/32 backdrop-blur-sm ringline p-4 text-sm text-cream/80"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (ostrý režim – stejné jako index) -->
+  <footer id="siteFooter" class="mt-14 md:mt-20">
+    <div class="mx-auto max-w-7xl px-4 md:px-6 pb-10">
+      <div class="rounded-4xl bg-black/32 backdrop-blur-sm ringline overflow-hidden">
+        <div class="p-6 md:p-8 grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">🏡</div>
+              <div class="leading-tight">
+                <div class="font-semibold tracking-wide">CHATAO.cz</div>
+                <div class="text-sm text-cream/70">Najdi chatu podle pocitu.</div>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-cream/70 max-w-prose">
+              Vizuální prohlížeč chat a chalup s rezervací přes jednoduchý chat. Ukládej, porovnávej a vybírej termín bez zbytečných formulářů.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-2 text-xs text-cream/60">
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">❤️ Uložené</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🔖 Kolekce</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">📆 Dostupnost</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <div class="text-sm font-medium">Navigace</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/">Feed</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pridat-chatu.html">Přidat chatu</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pro-majitele.html">Pro majitele</a>
+              </nav>
+            </div>
+
+            <div>
+              <div class="text-sm font-medium">Právní</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/podminky.html">Podmínky</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/ochrana-udaju.html">Ochrana údajů</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/kontakt.html">Kontakt</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 md:px-8 py-4 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+          <div class="text-xs text-cream/55">
+            © <span id="yearNow">2026</span> CHATAO.cz • Všechna práva vyhrazena.
+          </div>
+          <div class="text-xs text-cream/55">
+            E‑mail: <a class="text-cream/70 hover:text-cream transition allow-cursor" href="mailto:info@chatao.cz">info@chatao.cz</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast (mini, ostrý, bez závislosti na indexu) -->
+  <div id="toast" class="fixed top-20 right-4 z-[70] hidden">
+    <div class="px-4 py-3 rounded-3xl bg-white/8 ringline shadow-lift text-sm"></div>
+  </div>
+
+  <script>
+    (function(){
+      var y = document.getElementById('yearNow');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+
+    function showToast(text){
+      var t = document.getElementById('toast');
+      var box = t.querySelector('div');
+      box.textContent = text;
+      t.classList.remove('hidden');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(function(){ t.classList.add('hidden'); }, 1700);
+    }
+
+    // Demo submit: uloží do LocalStorage a nabídne mailto fallback
+    (function(){
+      var form = document.getElementById('contactForm');
+      var note = document.getElementById('formNote');
+      if (!form) return;
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var fd = new FormData(form);
+        var payload = {
+          name: String(fd.get('name')||''),
+          email: String(fd.get('email')||''),
+          topic: String(fd.get('topic')||''),
+          message: String(fd.get('message')||''),
+          createdAt: new Date().toISOString(),
+        };
+
+        try {
+          var arr = JSON.parse(localStorage.getItem('chatao_contact') || '[]');
+          if (!Array.isArray(arr)) arr = [];
+          arr.unshift(payload);
+          localStorage.setItem('chatao_contact', JSON.stringify(arr));
+        } catch(_){}
+
+        var subject = encodeURIComponent('[CHATAO] ' + payload.topic + ' – ' + payload.name);
+        var body = encodeURIComponent(payload.message + '\n\n—\n' + payload.name + ' (' + payload.email + ')');
+        var mailto = 'mailto:info@chatao.cz?subject=' + subject + '&body=' + body;
+
+        note.classList.remove('hidden');
+        note.innerHTML = 'Zpráva uložena ✅ (demo).\n\nChceš to poslat e‑mailem? <a class="underline allow-cursor" href="' + mailto + '">Klikni sem</a>.';
+        showToast('Uloženo ✅ (demo)');
+        form.reset();
+      });
+    })();
+  </script>
+
+</body>
+</html>
