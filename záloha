@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>CHATAO.cz – Instagramový booking chat</title>
+  <title>CHATAO.cz Feedový booking chat</title>
   
   <!-- SEO Meta Tags -->
-  <meta name="description" content="CHATAO.cz - Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb bez složitých formulářů." />
-  <meta name="keywords" content="booking, rezervace, instagram chat, chata, chalupa, rezervační systém, CHATAO" />
+  <meta name="description" content="CHATAO.cz - Moderní booking systém přímo přes Feedový booking chat. Jednoduché rezervace chat, chalup a dalších služeb bez složitých formulářů." />
+  <meta name="keywords" content="booking, rezervace, feed chat, chata, chalupa, rezervační systém, CHATAO" />
   <meta name="author" content="CHATAO.cz" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://chatao.cz/" />
@@ -16,8 +16,8 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://chatao.cz/" />
-  <meta property="og:title" content="CHATAO.cz – Instagramový booking chat" />
-  <meta property="og:description" content="Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb." />
+  <meta property="og:title" content="CHATAO.cz Feedový booking chat" />
+  <meta property="og:description" content="Moderní booking systém přímo přes Feedový booking chat. Jednoduché rezervace chat, chalup a dalších služeb." />
   <meta property="og:image" content="https://chatao.cz/og-image.jpg" />
   <meta property="og:locale" content="cs_CZ" />
   <meta property="og:site_name" content="CHATAO.cz" />
@@ -165,11 +165,11 @@
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">
-              <span class="text-lg">🌲</span>
+              <span class="text-lg">🏡</span>
             </div>
             <div class="leading-tight">
               <div class="font-semibold tracking-wide">CHATAO</div>
-              <div class="text-xs text-cream/70">Instagramový booking chat & chalup</div>
+              <div class="text-xs text-cream/70">Feedový booking chat</div>
             </div>
           </div>
 
