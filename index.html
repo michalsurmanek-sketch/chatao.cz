@@ -147,7 +147,27 @@
 
     /* Fokus bez agresivity */
     :focus-visible{ outline: 2px solid rgba(249,115,22,0.55); outline-offset: 3px; border-radius: 18px; }
-  </style>
+
+    /* ===== HARD MODE: kurzor jen tam, kde se píše =====
+       - vypne blikající kurzor/selektování v kartách/hero/textu
+       - povolí kurzor + výběr jen pro input/textarea + explicitní .allow-cursor
+    */
+    html, body{
+      caret-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    /* povolit psaní + kurzor jen ve formulářích */
+    input, textarea, [contenteditable="true"], .allow-cursor{
+      caret-color: auto;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+    /* ať se u klikatelného textu nikdy neukáže caret */
+    button, a, article, header, section, main, footer, div, span, p, h1, h2, h3, h4, h5, h6{
+      caret-color: transparent;
+    }
+</style>
 </head>
 
 <body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
@@ -183,16 +203,16 @@
               <span id="savedCount" class="ml-1 text-xs px-2 py-0.5 rounded-full bg-ember-500/20 ringline">0</span>
             </button>
             <a
-  href="pridat-chatu.html?return=/index.html"
-  class="px-3 py-2 rounded-2xl
-         bg-ember-500/15 hover:bg-ember-500/20
-         ringline transition
-         flex items-center gap-2
-         hover:scale-[1.03] active:scale-[0.97]">
+              href="pridat-chatu.html?return=/index.html"
+              class="px-3 py-2 rounded-2xl
+                     bg-ember-500/15 hover:bg-ember-500/20
+                     ringline transition
+                     flex items-center gap-2
+                     hover:scale-[1.03] active:scale-[0.97]">
 
-  <span>🏡</span>
-  <span class="text-sm">Přidat chatu</span>
-</a>
+              <span>🏡</span>
+              <span class="text-sm">Přidat chatu</span>
+            </a>
 
           </div>
 
@@ -215,8 +235,8 @@
         </div>
 
         <!-- Emotion chips (always visible) -->
-        <div class="mt-3 -mx-2 px-2 overflow-x-auto hide-scrollbar">
-          <div id="chips" class="flex items-center gap-2 min-w-max pb-2"></div>
+        <div class="mt-3 -mx-2 px-2 overflow-x-auto md:overflow-x-visible hide-scrollbar">
+          <div id="chips" class="flex flex-nowrap md:flex-wrap items-center gap-2 min-w-max md:min-w-0 pb-2 md:pb-0"></div>
         </div>
       </div>
     </div>
@@ -446,21 +466,22 @@
       features: ["Krb", "Velká kuchyň", "Zahrada", "Parkování"],
     },
   ];
-  // ===== CHATAO: import publikovaných chat z "Přidat chatu" =====
-// Stránka pridat-chatu.html ukládá feed do localStorage("chatao_feed")
-try {
-  const added = JSON.parse(localStorage.getItem("chatao_feed") || "[]") || [];
-  const ids = new Set(CABINS.map(c => c.id));
 
-  added.forEach(item => {
-    if (!item || !item.id) return;
-    if (!ids.has(item.id)) {
-      CABINS.unshift(item); // nová chata se objeví nahoře
-    }
-  });
-} catch (e) {
-  console.warn("CHATAO feed import fail:", e);
-}
+  // ===== CHATAO: import publikovaných chat z "Přidat chatu" =====
+  // Stránka pridat-chatu.html ukládá feed do localStorage("chatao_feed")
+  try {
+    const added = JSON.parse(localStorage.getItem("chatao_feed") || "[]") || [];
+    const ids = new Set(CABINS.map(c => c.id));
+
+    added.forEach(item => {
+      if (!item || !item.id) return;
+      if (!ids.has(item.id)) {
+        CABINS.unshift(item); // nová chata se objeví nahoře
+      }
+    });
+  } catch (e) {
+    console.warn("CHATAO feed import fail:", e);
+  }
 
   const EMOTION_CHIPS = [
     { key: "samota", label: "Chci samotu", icon: "🌲" },
@@ -507,13 +528,6 @@ try {
   const money = (n) => new Intl.NumberFormat("cs-CZ").format(n);
 
   function showToast(text){
-    // návrat z pridat-chatu.html → zobrazit potvrzení
-const __newListingId = new URLSearchParams(location.search).get("newListing");
-if (__newListingId) {
-  history.replaceState({}, "", location.pathname); // uklidí URL
-  setTimeout(() => showToast("Chata přidána ✅"), 500);
-}
-
     toastBox.textContent = text;
     toast.classList.remove("hidden");
     toastBox.classList.add("fade-up");
@@ -524,6 +538,15 @@ if (__newListingId) {
       setTimeout(()=>toast.classList.add("hidden"), 220);
     }, 1600);
   }
+
+  // návrat z pridat-chatu.html → zobrazit potvrzení
+  (function(){
+    const __newListingId = new URLSearchParams(location.search).get("newListing");
+    if (__newListingId) {
+      history.replaceState({}, "", location.pathname); // uklidí URL
+      setTimeout(() => showToast("Chata přidána ✅"), 500);
+    }
+  })();
 
   function persist(){
     localStorage.setItem("chatao_saved", JSON.stringify([...state.saved]));
@@ -551,9 +574,9 @@ if (__newListingId) {
 
   function cabinMatches(c){
     const q = state.query.trim().toLowerCase();
-    const hay = (c.name + " " + c.region + " " + c.tags.join(" ") + " " + c.features.join(" ") + " " + c.vibe).toLowerCase();
+    const hay = (c.name + " " + c.region + " " + c.tags.join(" ") + " " + (c.features||[]).join(" ") + " " + (c.vibe||"")).toLowerCase();
     const qOK = !q || hay.includes(q);
-    const tagsOK = [...state.activeTags].every(t => c.tags.includes(t));
+    const tagsOK = [...state.activeTags].every(t => (c.tags||[]).includes(t));
     return qOK && tagsOK;
   }
 
@@ -571,7 +594,7 @@ if (__newListingId) {
     EMOTION_CHIPS.forEach(ch => {
       const active = state.activeTags.has(ch.key);
       const btn = document.createElement("button");
-      btn.className = `px-4 py-2 rounded-3xl ringline transition text-sm flex items-center gap-2 ${active ? "bg-ember-500/18" : "bg-white/5 hover:bg-white/8"}`;
+      btn.className = `px-3.5 py-2 md:px-2.5 md:py-1 rounded-3xl ringline transition text-xs md:text-[12px] flex items-center gap-1.5 w-auto whitespace-nowrap shrink-0 ${active ? "bg-ember-500/18" : "bg-white/5 hover:bg-white/8"}`;
       btn.innerHTML = `<span>${ch.icon}</span><span>${ch.label}</span>`;
       btn.addEventListener("click", ()=>{
         if (state.activeTags.has(ch.key)) state.activeTags.delete(ch.key);
@@ -585,7 +608,8 @@ if (__newListingId) {
 
   function cardHTML(c){
     const isSaved = state.saved.has(c.id);
-    const icons = c.icons.map(i=>`<span class="px-2 py-1 rounded-full bg-white/7 ringline text-xs">${i}</span>`).join("");
+    const iconsArr = (c.icons && c.icons.length) ? c.icons : (c.tags||[]).slice(0,4).map(t=>"#"+t);
+    const icons = iconsArr.map(i=>`<span class="px-2 py-1 rounded-full bg-white/7 ringline text-xs">${i}</span>`).join("");
 
     return `
       <article data-id="${c.id}" class="group relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift hover:shadow-soft transition">
@@ -598,7 +622,7 @@ if (__newListingId) {
           <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">${c.region}</span>
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">⭐ ${c.rating.toFixed(1)}</span>
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">⭐ ${Number(c.rating||0).toFixed(1)}</span>
             </div>
             <div class="flex items-center gap-2">
               <button data-action="save" class="h-10 w-10 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Uložit">
@@ -621,9 +645,9 @@ if (__newListingId) {
         </div>
 
         <div class="relative p-4">
-          <p class="text-sm text-cream/75 line-clamp-2">${c.vibe}</p>
+          <p class="text-sm text-cream/75 line-clamp-2">${c.vibe||""}</p>
           <div class="mt-3 flex flex-wrap gap-1.5">
-            ${c.tags.slice(0,4).map(t=>`<span class="text-xs px-2.5 py-1 rounded-full bg-white/5 ringline">${t}</span>`).join("")}
+            ${(c.tags||[]).slice(0,4).map(t=>`<span class="text-xs px-2.5 py-1 rounded-full bg-white/5 ringline">${t}</span>`).join("")}
           </div>
         </div>
       </article>
@@ -641,13 +665,13 @@ if (__newListingId) {
             <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent"></div>
             <div class="absolute left-4 right-4 bottom-4">
               <div class="text-2xl font-semibold tracking-tight">${c.name}</div>
-              <div class="mt-1 text-sm text-cream/75">${c.region} • ⭐ ${c.rating.toFixed(1)} • od ${money(c.priceFrom)} Kč/noc</div>
+              <div class="mt-1 text-sm text-cream/75">${c.region} • ⭐ ${Number(c.rating||0).toFixed(1)} • od ${money(c.priceFrom)} Kč/noc</div>
             </div>
           </div>
           <div class="relative p-5 md:p-6 flex flex-col">
-            <p class="text-cream/80 text-base">${c.vibe}</p>
+            <p class="text-cream/80 text-base">${c.vibe||""}</p>
             <div class="mt-4 flex flex-wrap gap-2">
-              ${c.features.slice(0,5).map(f=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${f}</span>`).join("")}
+              ${(c.features||[]).slice(0,5).map(f=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${f}</span>`).join("")}
             </div>
 
             <div class="mt-auto pt-5 flex items-center justify-between gap-2">
@@ -719,7 +743,8 @@ if (__newListingId) {
     const c = CABINS.find(x=>x.id===id);
     if (!c) return;
 
-    const gallery = c.gallery.map((src,idx)=>`
+    const galleryArr = c.gallery && c.gallery.length ? c.gallery : [c.cover];
+    const gallery = galleryArr.map((src,idx)=>`
       <button data-g="${idx}" class="relative overflow-hidden rounded-3xl ringline bg-white/5">
         <img src="${src}" alt="${c.name} ${idx+1}" class="h-32 md:h-40 w-full object-cover" />
       </button>
@@ -743,7 +768,7 @@ if (__newListingId) {
             <div class="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <div class="text-2xl md:text-4xl font-semibold tracking-tight">${c.name}</div>
-                <div class="mt-1 text-sm md:text-base text-cream/75">${c.region} • ⭐ ${c.rating.toFixed(1)} • od ${money(c.priceFrom)} Kč / noc</div>
+                <div class="mt-1 text-sm md:text-base text-cream/75">${c.region} • ⭐ ${Number(c.rating||0).toFixed(1)} • od ${money(c.priceFrom)} Kč / noc</div>
               </div>
               <button id="wantGo" class="px-6 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Chci sem jet →</button>
             </div>
@@ -752,24 +777,26 @@ if (__newListingId) {
 
         <div class="p-5 md:p-7 grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
           <div>
-            <p class="text-base md:text-lg text-cream/85">${c.vibe}</p>
+            <p class="text-base md:text-lg text-cream/85">${c.vibe||""}</p>
 
             <div class="mt-5">
               <div class="text-sm text-cream/60">Galerie</div>
               <div class="mt-3 grid grid-cols-3 gap-2">${gallery}</div>
             </div>
 
+            ${c.forWho ? `
             <div class="mt-6">
               <div class="text-sm text-cream/60">Pro koho je ideální</div>
               <div class="mt-2 flex flex-wrap gap-2">
                 ${c.forWho.map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${x}</span>`).join("")}
               </div>
             </div>
+            ` : ""}
 
             <div class="mt-6">
               <div class="text-sm text-cream/60">Výbava & vibe</div>
               <div class="mt-2 flex flex-wrap gap-2">
-                ${c.features.map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${x}</span>`).join("")}
+                ${(c.features||[]).map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${x}</span>`).join("")}
               </div>
             </div>
           </div>
@@ -808,7 +835,7 @@ if (__newListingId) {
     modalPanel.querySelectorAll("button[data-g]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const idx = parseInt(btn.getAttribute("data-g"), 10);
-        const src = c.gallery[idx];
+        const src = galleryArr[idx];
         document.getElementById("heroImg").src = src;
       });
     });
@@ -947,7 +974,7 @@ if (__newListingId) {
         <div class="mt-6 grid md:grid-cols-2 gap-4">
           ${names.length ? names.map(n=>{
             const items = state.collections[n] || [];
-const cover=(CABINS.find(c=>c.id===items[0])||{}).cover||"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80";
+            const cover=(CABINS.find(c=>c.id===items[0])||{}).cover||"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80";
             return `
               <button data-colopen="${escapeHtml(n)}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
                 <div class="aspect-[16/9] overflow-hidden relative">
@@ -1105,98 +1132,6 @@ const cover=(CABINS.find(c=>c.id===items[0])||{}).cover||"https://images.unsplas
   updateCounters();
   renderChips();
   render();
-// === FINALIZACE APLIKACE ===
-
-// ZAJIŠTĚNÍ: neduplikovat funkce
-if (typeof window.__chatao_finalized === "undefined") {
-  window.__chatao_finalized = true;
-
-  // ===== ULOŽENÉ =====
-  function openSaved(){
-    const list = CABINS.filter(c=>state.saved.has(c.id));
-    openModal(`
-      <div class="p-6 md:p-8">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <div class="text-xl md:text-2xl font-semibold">Uložené ❤️</div>
-            <div class="mt-1 text-sm text-cream/70">${list.length} chat</div>
-          </div>
-          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline grid place-items-center">✕</button>
-        </div>
-        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          ${list.length ? list.map(c=>`
-            <button data-open="${c.id}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
-              <div class="aspect-[4/3] overflow-hidden">
-                <img src="${c.cover}" class="h-full w-full object-cover" />
-              </div>
-              <div class="p-4">
-                <div class="font-semibold">${c.name}</div>
-                <div class="text-xs text-cream/60">${c.region} • od ${money(c.priceFrom)} Kč</div>
-              </div>
-            </button>
-          `).join("") : `<div class="text-sm text-cream/55">Zatím nemáš nic uložené.</div>`}
-        </div>
-      </div>
-    `);
-    document.getElementById("closeModal").addEventListener("click", closeModal);
-    modalPanel.querySelectorAll("button[data-open]").forEach(b=>b.addEventListener("click",()=>openCabin(b.dataset.open)));
-  }
-
-  // ===== DETAIL CHATY =====
-  function openCabin(id){
-    const c = CABINS.find(x=>x.id===id);
-    if(!c) return;
-    openModal(`
-      <div class="p-6 md:p-8">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <div class="text-2xl md:text-3xl font-semibold">${c.name}</div>
-            <div class="mt-1 text-sm text-cream/70">${c.region} • ⭐ ${c.rating}</div>
-          </div>
-          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline grid place-items-center">✕</button>
-        </div>
-        <div class="mt-6 grid lg:grid-cols-2 gap-6">
-          <div class="space-y-4">
-            <img src="${c.cover}" class="rounded-4xl ringline" />
-            <p class="text-cream/80">${c.vibe}</p>
-            <div class="flex flex-wrap gap-2">${c.features.map(f=>`<span class="px-3 py-1.5 rounded-full bg-white/5 ringline text-xs">${f}</span>`).join("")}</div>
-          </div>
-          <aside class="rounded-4xl bg-white/4 ringline p-5">
-            <div class="text-sm text-cream/60">Cena od</div>
-            <div class="text-2xl font-semibold">${money(c.priceFrom)} Kč / noc</div>
-            <button class="mt-6 w-full px-5 py-3 rounded-3xl bg-ember-500/20 hover:bg-ember-500/30 ringline shimmer">Poptat pobyt</button>
-          </aside>
-        </div>
-      </div>
-    `);
-    document.getElementById("closeModal").addEventListener("click", closeModal);
-  }
-
-  // ===== FOOTER =====
-  if(!document.getElementById("chatao-footer")){
-    const footer=document.createElement("footer");
-    footer.id="chatao-footer";
-    footer.className="mt-20 py-12 text-center text-sm text-cream/50";
-    footer.innerHTML=`
-      <div class="mb-2">CHATAO.cz – Najdi chatu podle pocitu 🌲</div>
-      <div class="space-x-4">
-        <a href="#" class="hover:text-cream">O projektu</a>
-        <a href="#" class="hover:text-cream">Pro majitele chat</a>
-        <a href="#" class="hover:text-cream">Kontakt</a>
-      </div>`;
-    document.body.appendChild(footer);
-  }
-
-  // ===== FINÁLNÍ BIND =====
-  document.getElementById("openSaved")?.addEventListener("click", openSaved);
-  document.getElementById("mobileOpenSaved")?.addEventListener("click", openSaved);
-  document.getElementById("mSaved")?.addEventListener("click", openSaved);
-
-  console.log("CHATAO – APLIKACE JE KOMPLETNÍ");
-}
-
-// === KONEC LOGIKY APLIKACE ===
-
 </script>
 
 <!-- Google Analytics (placeholder - nahraďte svým GA4 Measurement ID) -->
