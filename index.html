@@ -237,7 +237,7 @@
           <div class="flex-1 relative">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cream/60">🔎</span>
             <input id="searchInput" type="text" placeholder="Hledej podle nálady, místa, výbavy… (např. samota, sauna, Šumava)"
-              class="w-full pl-11 pr-4 py-3 rounded-3xl bg-white/5 ringline placeholder:text-cream/40 text-sm focus:bg-white/6 transition" />
+              class="w-full pl-11 pr-4 py-3 rounded-3xl bg-black/32 backdrop-blur-sm ringline placeholder:text-cream/40 text-sm focus:bg-white/6 transition" />
           </div>
           <button id="openFilters" class="hidden md:flex px-4 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition items-center gap-2">
             <span>🎛️</span><span class="text-sm">Filtry</span>
@@ -254,7 +254,7 @@
 
   <!-- Hero strip -->
   <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8 md:pt-10">
-    <div class="relative overflow-hidden rounded-4xl bg-white/5 ringline shadow-soft grain">
+    <div class="relative overflow-hidden rounded-4xl bg-black/32 backdrop-blur-sm ringline shadow-soft grain">
       <div class="absolute -top-40 -right-40 h-[420px] w-[420px] rounded-full bg-pine-600/25 blur-3xl"></div>
       <div class="absolute -bottom-44 -left-32 h-[420px] w-[420px] rounded-full bg-ember-500/15 blur-3xl"></div>
 
@@ -274,10 +274,10 @@
           </div>
 
           <div class="mt-6 flex items-center gap-3 text-xs text-cream/60">
-            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">❤️ Ukládání</span>
-            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">🔖 Kolekce</span>
-            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">📆 Dostupnost</span>
-            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">🌲 Emoce</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/32 backdrop-blur-sm ringline">❤️ Ukládání</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/32 backdrop-blur-sm ringline">🔖 Kolekce</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/32 backdrop-blur-sm ringline">📆 Dostupnost</span>
+            <span class="px-3 py-1.5 rounded-full bg-black/32 backdrop-blur-sm ringline">🌲 Emoce</span>
           </div>
         </div>
 
@@ -317,7 +317,7 @@
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <div class="text-sm text-cream/70">Feed</div>
-        <div id="resultsMeta" class="text-xs px-2.5 py-1 rounded-full bg-white/5 ringline">—</div>
+        <div id="resultsMeta" class="text-xs px-2.5 py-1 rounded-full bg-black/32 backdrop-blur-sm ringline">—</div>
       </div>
       <div class="flex items-center gap-2">
         <button id="toggleView" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Mřížka</button>
@@ -339,10 +339,10 @@
   <div class="md:hidden fixed bottom-0 left-0 right-0 z-50">
     <div class="glass ringline">
       <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-around">
-        <button id="mHome" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">🌲</button>
-        <button id="mFilters" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">🎛️</button>
-        <button id="mSaved" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">❤️</button>
-        <button id="mCollections" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">🔖</button>
+        <button id="mHome" class="text-sm px-4 py-2 rounded-2xl bg-black/32 backdrop-blur-sm ringline">🌲</button>
+        <button id="mFilters" class="text-sm px-4 py-2 rounded-2xl bg-black/32 backdrop-blur-sm ringline">🎛️</button>
+        <button id="mSaved" class="text-sm px-4 py-2 rounded-2xl bg-black/32 backdrop-blur-sm ringline">❤️</button>
+        <button id="mCollections" class="text-sm px-4 py-2 rounded-2xl bg-black/32 backdrop-blur-sm ringline">🔖</button>
       </div>
     </div>
   </div>
@@ -350,7 +350,7 @@
   <!-- Modals -->
   <div id="modal" class="fixed inset-0 z-[60] hidden">
     <div id="modalBackdrop" class="absolute inset-0 bg-black/70"></div>
-    <div class="absolute inset-0 overflow-y-auto">
+    <div class="absolute inset-0 overflow-y-auto" data-modal-scroll>
       <div class="min-h-full flex items-end md:items-center justify-center p-4 md:p-8">
         <div id="modalPanel" class="w-full max-w-4xl rounded-4xl bg-ink/95 ringline shadow-soft overflow-hidden">
           <!-- Content injected -->
@@ -619,7 +619,7 @@
   function cardHTML(c){
     const isSaved = state.saved.has(c.id);
     const iconsArr = (c.icons && c.icons.length) ? c.icons : (c.tags||[]).slice(0,4).map(t=>"#"+t);
-    const icons = iconsArr.map(i=>`<span class="px-2 py-1 rounded-full bg-white/7 ringline text-xs">${i}</span>`).join("");
+    const icons = iconsArr.map(i=>`<span class="px-2 py-1 rounded-full bg-black/38 backdrop-blur-sm ringline text-xs">${i}</span>`).join("");
 
     return `
       <article data-id="${c.id}" class="group relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift hover:shadow-soft transition">
@@ -631,14 +631,14 @@
 
           <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">${c.region}</span>
-              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">⭐ ${Number(c.rating||0).toFixed(1)}</span>
+              <span class="text-xs px-3 py-1.5 rounded-full bg-black/38 backdrop-blur-sm ringline">${c.region}</span>
+              <span class="text-xs px-3 py-1.5 rounded-full bg-black/38 backdrop-blur-sm ringline">⭐ ${Number(c.rating||0).toFixed(1)}</span>
             </div>
             <div class="flex items-center gap-2">
-              <button data-action="save" class="h-10 w-10 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Uložit">
+              <button data-action="save" class="h-10 w-10 rounded-2xl bg-black/42 hover:bg-black/52 backdrop-blur-sm ringline transition grid place-items-center" title="Uložit">
                 ${isSaved ? "❤️" : "🤍"}
               </button>
-              <button data-action="collect" class="h-10 w-10 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Přidat do kolekce">🔖</button>
+              <button data-action="collect" class="h-10 w-10 rounded-2xl bg-black/42 hover:bg-black/52 backdrop-blur-sm ringline transition grid place-items-center" title="Přidat do kolekce">🔖</button>
             </div>
           </div>
 
@@ -657,7 +657,7 @@
         <div class="relative p-4">
           <p class="text-sm text-cream/75 line-clamp-2">${c.vibe||""}</p>
           <div class="mt-3 flex flex-wrap gap-1.5">
-            ${(c.tags||[]).slice(0,4).map(t=>`<span class="text-xs px-2.5 py-1 rounded-full bg-white/5 ringline">${t}</span>`).join("")}
+            ${(c.tags||[]).slice(0,4).map(t=>`<span class="text-xs px-2.5 py-1 rounded-full bg-black/32 backdrop-blur-sm ringline">${t}</span>`).join("")}
           </div>
         </div>
       </article>
@@ -681,7 +681,7 @@
           <div class="relative p-5 md:p-6 flex flex-col">
             <p class="text-cream/80 text-base">${c.vibe||""}</p>
             <div class="mt-4 flex flex-wrap gap-2">
-              ${(c.features||[]).slice(0,5).map(f=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${f}</span>`).join("")}
+              ${(c.features||[]).slice(0,5).map(f=>`<span class="text-xs px-3 py-1.5 rounded-full bg-black/32 backdrop-blur-sm ringline">${f}</span>`).join("")}
             </div>
 
             <div class="mt-auto pt-5 flex items-center justify-between gap-2">
@@ -767,10 +767,10 @@
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"></div>
 
           <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
-            <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Zavřít">✕</button>
+            <button id="closeModal" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center" title="Zavřít">✕</button>
             <div class="flex items-center gap-2">
-              <button id="detailSave" class="px-4 py-2 rounded-3xl bg-white/10 hover:bg-white/15 ringline transition">${state.saved.has(c.id) ? "❤️ Uloženo" : "🤍 Uložit"}</button>
-              <button id="detailCollect" class="px-4 py-2 rounded-3xl bg-white/10 hover:bg-white/15 ringline transition">🔖 Kolekce</button>
+              <button id="detailSave" class="px-4 py-2 rounded-3xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition">${state.saved.has(c.id) ? "❤️ Uloženo" : "🤍 Uložit"}</button>
+              <button id="detailCollect" class="px-4 py-2 rounded-3xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition">🔖 Kolekce</button>
             </div>
           </div>
 
@@ -798,7 +798,7 @@
             <div class="mt-6">
               <div class="text-sm text-cream/60">Pro koho je ideální</div>
               <div class="mt-2 flex flex-wrap gap-2">
-                ${c.forWho.map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${x}</span>`).join("")}
+                ${c.forWho.map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-black/32 backdrop-blur-sm ringline">${x}</span>`).join("")}
               </div>
             </div>
             ` : ""}
@@ -806,24 +806,28 @@
             <div class="mt-6">
               <div class="text-sm text-cream/60">Výbava & vibe</div>
               <div class="mt-2 flex flex-wrap gap-2">
-                ${(c.features||[]).map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${x}</span>`).join("")}
+                ${(c.features||[]).map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-black/32 backdrop-blur-sm ringline">${x}</span>`).join("")}
               </div>
             </div>
           </div>
 
-          <aside class="rounded-4xl bg-white/4 ringline p-5 md:p-6">
+          <aside id="reserveSection" class="rounded-4xl bg-white/4 ringline p-5 md:p-6">
             <div class="flex items-center justify-between">
               <div class="font-medium">Dostupnost</div>
-              <div class="text-xs text-cream/60">demo</div>
+              <div class="text-xs text-cream/60" id="calMeta">Vyber termín</div>
             </div>
-            <div class="mt-3 grid grid-cols-7 gap-1 text-xs">
-              ${renderCalendar()}
-            </div>
-            <div class="mt-4 text-xs text-cream/60">Tip: rezervace je schválně klidná. Žádný nátlak, jen jasný další krok.</div>
 
-            <div class="mt-5 grid gap-2">
-              <button class="w-full px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Poptat pobyt</button>
-              <button class="w-full px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Napsat majiteli</button>
+            <div class="mt-3 grid grid-cols-7 gap-1 text-xs" id="calendarGrid">
+              ${renderCalendar(c.id)}
+            </div>
+
+            <div id="bookingSummary" class="mt-4 rounded-3xl bg-black/32 backdrop-blur-sm ringline p-4 text-sm text-cream/80">
+              Klikni na <span class="font-semibold">příjezd</span> a pak na <span class="font-semibold">odjezd</span>.
+            </div>
+
+            <div class="mt-4 grid gap-2">
+              <button id="bookingPrimary" class="w-full px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer disabled:opacity-40 disabled:cursor-not-allowed" disabled>Poptat pobyt</button>
+              <button id="bookingChat" class="w-full px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Napsat majiteli</button>
             </div>
 
             <div class="mt-5 rounded-3xl bg-white/3 ringline p-4">
@@ -840,7 +844,143 @@
     document.getElementById("closeModal").addEventListener("click", closeModal);
     document.getElementById("detailSave").addEventListener("click", ()=>toggleSave(c.id));
     document.getElementById("detailCollect").addEventListener("click", ()=>openCollect(c.id));
-    document.getElementById("wantGo").addEventListener("click", ()=>showToast("Ok – tady bude rezervace / poptávka"));
+
+    // ===== REZERVACE (demo logika) =====
+    const calGrid = document.getElementById("calendarGrid");
+    const summary = document.getElementById("bookingSummary");
+    const meta = document.getElementById("calMeta");
+    const primary = document.getElementById("bookingPrimary");
+    const chatBtn = document.getElementById("bookingChat");
+
+    let startDay = null;
+    let endDay = null;
+
+    function clearSelectedUI(){
+      calGrid?.querySelectorAll("button[data-day]").forEach(b=>{
+        b.classList.remove("bg-ember-500/25","ring-2","ring-ember-400/60");
+        b.classList.add("ringline");
+      });
+    }
+
+    function paintSelection(){
+      clearSelectedUI();
+      if (!calGrid) return;
+      if (!startDay) return;
+
+      const btns = [...calGrid.querySelectorAll("button[data-day]")];
+      const mark = (d)=>{
+        const b = btns.find(x=>Number(x.getAttribute("data-day"))===d);
+        if (!b || b.disabled) return;
+        b.classList.add("bg-ember-500/25","ring-2","ring-ember-400/60");
+      };
+
+      if (startDay && !endDay){
+        mark(startDay);
+        return;
+      }
+      if (startDay && endDay){
+        for (let d=startDay; d<=endDay; d++) mark(d);
+      }
+    }
+
+    function updateSummary(){
+      if (!summary || !meta || !primary) return;
+      const minNights = Number(c.minNights || 1);
+
+      if (!startDay){
+        meta.textContent = "Vyber termín";
+        summary.innerHTML = `Klikni na <span class="font-semibold">příjezd</span> a pak na <span class="font-semibold">odjezd</span>.`;
+        primary.disabled = true;
+        return;
+      }
+
+      if (startDay && !endDay){
+        meta.textContent = `Příjezd: den ${startDay}`;
+        summary.innerHTML = `Příjezd nastaven na <span class="font-semibold">den ${startDay}</span>. Teď vyber <span class="font-semibold">odjezd</span>.`;
+        primary.disabled = true;
+        return;
+      }
+
+      const nights = Math.max(0, endDay - startDay);
+      const ok = nights >= minNights;
+      meta.textContent = `${startDay} → ${endDay} (${nights} nocí)`;
+      summary.innerHTML = `Termín: <span class="font-semibold">den ${startDay}</span> → <span class="font-semibold">den ${endDay}</span> 
+        <span class="text-cream/60">(${nights} nocí, min. ${minNights})</span>
+        <div class="mt-2 text-xs text-cream/60">Cena v prototypu nepočítáme – v produkci bude výpočet podle sezóny.</div>`;
+      primary.disabled = !ok;
+    }
+
+    function selectionIsValid(){
+      if (!startDay || !endDay) return false;
+      // zkontrolovat, že v rozsahu není busy den
+      for (let d=startDay; d<endDay; d++){
+        if (isBusyDay(c.id, d)) return false;
+      }
+      return true;
+    }
+
+    calGrid?.addEventListener("click", (e)=>{
+      const b = e.target.closest("button[data-day]");
+      if (!b || b.disabled) return;
+      const d = Number(b.getAttribute("data-day"));
+
+      if (!startDay){
+        startDay = d;
+        endDay = null;
+      } else if (startDay && !endDay){
+        if (d < startDay){
+          startDay = d;
+          endDay = null;
+        } else if (d === startDay){
+          startDay = d;
+          endDay = null;
+        } else {
+          endDay = d;
+        }
+      } else {
+        // třetí klik = reset na nový příjezd
+        startDay = d;
+        endDay = null;
+      }
+
+      paintSelection();
+      updateSummary();
+    });
+
+    // init
+    paintSelection();
+    updateSummary();
+
+    primary?.addEventListener("click", ()=>{
+      if (!selectionIsValid()) return showToast("Termín obsahuje obsazený den");
+      const minNights = Number(c.minNights || 1);
+      const nights = Math.max(0, endDay - startDay);
+      if (nights < minNights) return showToast(`Minimálně ${minNights} nocí`);
+      saveBooking(c.id, startDay, endDay);
+      showToast("Termín uložen ✅ (demo)");
+      closeModal();
+    });
+
+    chatBtn?.addEventListener("click", ()=>{
+      showToast("Chat s majitelem bude další stránka / modal");
+    });
+
+    document.getElementById("wantGo").addEventListener("click", ()=>{
+      // plynule srolovat na „rezervaci“ uvnitř modalu
+      const sc = modal.querySelector('[data-modal-scroll]');
+      const t = document.getElementById('reserveSection');
+      if (sc && t){
+        const top = t.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - 18;
+        sc.scrollTo({ top, behavior: 'smooth' });
+        // jemný „ping“
+        t.classList.add('ring-2','ring-ember-400/40');
+        setTimeout(()=>t.classList.remove('ring-2','ring-ember-400/40'), 900);
+        setTimeout(()=>{
+          const firstBtn = t.querySelector('button');
+          firstBtn && firstBtn.focus && firstBtn.focus({ preventScroll: true });
+        }, 420);
+      }
+    });
 
     modalPanel.querySelectorAll("button[data-g]").forEach(btn=>{
       btn.addEventListener("click", ()=>{
@@ -851,15 +991,39 @@
     });
   }
 
-  function renderCalendar(){
-    // jednoduchý demo kalendář: některé dny dostupné / nedostupné
+  function getBookings(){
+    // struktura: { [cabinId]: [ {from:1,to:4}, ... ] }
+    try { return JSON.parse(localStorage.getItem("chatao_bookings")||"{}"); }
+    catch { return {}; }
+  }
+
+  function saveBooking(cabinId, fromDay, toDay){
+    const all = getBookings();
+    all[cabinId] = Array.isArray(all[cabinId]) ? all[cabinId] : [];
+    all[cabinId].push({ from: fromDay, to: toDay, createdAt: new Date().toISOString() });
+    localStorage.setItem("chatao_bookings", JSON.stringify(all));
+  }
+
+  function isBusyDay(cabinId, day){
+    // demo busy + uložené rezervace
+    const demoBusy = [3,4,5,11,12,18,19,25,26];
+    if (demoBusy.includes(day)) return true;
+    const all = getBookings();
+    const arr = Array.isArray(all[cabinId]) ? all[cabinId] : [];
+    return arr.some(b => day >= b.from && day < b.to);
+  }
+
+  function renderCalendar(cabinId){
+    // jednoduchý demo kalendář 28 dní + busy z localStorage
     const days = Array.from({length: 28}, (_,i)=>i+1);
     return days.map(d=>{
-      const busy = [3,4,5,11,12,18,19,25,26].includes(d);
+      const busy = isBusyDay(cabinId, d);
       return `
-        <div class="h-9 rounded-2xl grid place-items-center ringline ${busy ? "bg-white/6 text-cream/35" : "bg-pine-700/28 hover:bg-pine-700/38 transition"}">
+        <button type="button" data-day="${d}" ${busy ? "disabled" : ""}
+          class="h-9 rounded-2xl grid place-items-center ringline transition
+                 ${busy ? "bg-white/6 text-cream/35 cursor-not-allowed" : "bg-pine-700/28 hover:bg-pine-700/38"}">
           ${d}
-        </div>
+        </button>
       `;
     }).join("");
   }
@@ -875,14 +1039,14 @@
             <div class="text-xl md:text-2xl font-semibold">Přidat do kolekce</div>
             <div class="mt-1 text-sm text-cream/70">${c ? c.name : ""}</div>
           </div>
-          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
         </div>
 
         <div class="mt-6 grid md:grid-cols-2 gap-4">
           <div class="rounded-4xl bg-white/4 ringline p-5">
             <div class="text-sm text-cream/70">Vytvořit novou</div>
             <div class="mt-3 flex gap-2">
-              <input id="newColName" class="flex-1 px-4 py-3 rounded-3xl bg-white/5 ringline placeholder:text-cream/40" placeholder="např. Zimní útěk" />
+              <input id="newColName" class="flex-1 px-4 py-3 rounded-3xl bg-black/32 backdrop-blur-sm ringline placeholder:text-cream/40" placeholder="např. Zimní útěk" />
               <button id="createCol" class="px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Vytvořit</button>
             </div>
             <div class="mt-3 text-xs text-cream/55">Kolekce fungují jako uložení na Instagramu/Pinterestu. Vysoká návratnost uživatelů.</div>
@@ -945,7 +1109,7 @@
             <div class="text-xl md:text-2xl font-semibold">Uložené ❤️</div>
             <div class="mt-1 text-sm text-cream/70">${list.length} položek</div>
           </div>
-          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
         </div>
 
         <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -978,7 +1142,7 @@
             <div class="text-xl md:text-2xl font-semibold">Kolekce 🔖</div>
             <div class="mt-1 text-sm text-cream/70">${names.length} kolekcí</div>
           </div>
-          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
         </div>
 
         <div class="mt-6 grid md:grid-cols-2 gap-4">
@@ -1027,7 +1191,7 @@
             <div class="text-xl md:text-2xl font-semibold">🔖 ${escapeHtml(name)}</div>
             <div class="mt-1 text-sm text-cream/70">${list.length} chat</div>
           </div>
-          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
         </div>
 
         <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1071,7 +1235,7 @@
             <div class="text-xl md:text-2xl font-semibold">Filtry 🎛️</div>
             <div class="mt-1 text-sm text-cream/70">Vyber vibe a feed se přizpůsobí.</div>
           </div>
-          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
         </div>
 
         <div class="mt-6 grid sm:grid-cols-2 gap-3">
@@ -1143,6 +1307,71 @@
   renderChips();
   render();
 </script>
+
+  <!-- Footer (ostrý režim) -->
+  <footer id="siteFooter" class="mt-14 md:mt-20">
+    <div class="mx-auto max-w-7xl px-4 md:px-6 pb-10">
+      <div class="rounded-4xl bg-black/32 backdrop-blur-sm ringline overflow-hidden">
+        <div class="p-6 md:p-8 grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">🏡</div>
+              <div class="leading-tight">
+                <div class="font-semibold tracking-wide">CHATAO.cz</div>
+                <div class="text-sm text-cream/70">Najdi chatu podle pocitu.</div>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-cream/70 max-w-prose">
+              Vizuální prohlížeč chat a chalup s rezervací přes jednoduchý chat. Ukládej, porovnávej a vybírej termín bez zbytečných formulářů.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-2 text-xs text-cream/60">
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">❤️ Uložené</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">🔖 Kolekce</span>
+              <span class="px-3 py-1.5 rounded-full bg-black/28 backdrop-blur-sm ringline">📆 Dostupnost</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <div class="text-sm font-medium">Navigace</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/">Feed</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pridat-chatu.html">Přidat chatu</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/pro-majitele.html">Pro majitele</a>
+              </nav>
+            </div>
+
+            <div>
+              <div class="text-sm font-medium">Právní</div>
+              <nav class="mt-3 grid gap-2 text-sm">
+                <a class="text-cream/75 hover:text-cream transition" href="/podminky.html">Podmínky</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/ochrana-udaju.html">Ochrana údajů</a>
+                <a class="text-cream/75 hover:text-cream transition" href="/kontakt.html">Kontakt</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 md:px-8 py-4 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+          <div class="text-xs text-cream/55">
+            © <span id="yearNow">2026</span> CHATAO.cz • Všechna práva vyhrazena.
+          </div>
+          <div class="text-xs text-cream/55">
+            E‑mail: <a class="text-cream/70 hover:text-cream transition" href="mailto:info@chatao.cz">info@chatao.cz</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // rok do footeru (ostrý režim)
+    (function(){
+      var y = document.getElementById('yearNow');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+  </script>
 
 <!-- Google Analytics (placeholder - nahraďte svým GA4 Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
