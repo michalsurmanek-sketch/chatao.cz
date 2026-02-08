@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>CHATAO.cz – Instagramový booking chat</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="CHATAO.cz - Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb bez složitých formulářů." />
+  <meta name="keywords" content="booking, rezervace, instagram chat, chata, chalupa, rezervační systém, CHATAO" />
+  <meta name="author" content="CHATAO.cz" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://chatao.cz/" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://chatao.cz/" />
+  <meta property="og:title" content="CHATAO.cz – Instagramový booking chat" />
+  <meta property="og:description" content="Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb." />
+  <meta property="og:image" content="https://chatao.cz/og-image.jpg" />
+  <meta property="og:locale" content="cs_CZ" />
+  <meta property="og:site_name" content="CHATAO.cz" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://chatao.cz/" />
+  <meta name="twitter:title" content="CHATAO.cz – Instagramový booking chat" />
+  <meta name="twitter:description" content="Moderní booking systém přímo přes Instagram chat. Jednoduché rezervace chat, chalup a dalších služeb." />
+  <meta name="twitter:image" content="https://chatao.cz/og-image.jpg" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#568B71" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/supabase-config.js"></script>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {
+              50: "#F3F7F5",
+              100: "#E3EEE8",
+              200: "#C5DCD1",
+              300: "#9FC3B2",
+              400: "#78A78F",
+              500: "#568B71",
+              600: "#3E6D58",
+              700: "#2E5344",
+              800: "#213D33",
+              900: "#172A23",
+            },
+            ember: {
+              50: "#FFF7ED",
+              100: "#FFEDD5",
+              200: "#FED7AA",
+              300: "#FDBA74",
+              400: "#FB923C",
+              500: "#F97316",
+              600: "#EA580C",
+              700: "#C2410C",
+              800: "#9A3412",
+              900: "#7C2D12",
+            },
+            fog: {
+              50: "#F6F7F9",
+              100: "#ECEEF2",
+              200: "#D7DBE4",
+              300: "#B7BECE",
+              400: "#8F9AB2",
+              500: "#6E7A95",
+              600: "#56607A",
+              700: "#434C62",
+              800: "#31384A",
+              900: "#232838",
+            },
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+            wood: "#2A211A",
+          },
+          boxShadow: {
+            soft: "0 22px 60px rgba(0,0,0,0.45)",
+            lift: "0 18px 40px rgba(0,0,0,0.30)",
+          },
+          borderRadius: {
+            "4xl": "2rem",
+          },
+          fontFamily: {
+            sans: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Nadčasové mikro detaily */
+    :root{ color-scheme: dark; }
+    .grain::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.08;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');
+      mix-blend-mode: overlay;
+    }
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .ringline{
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset;
+    }
+    .shimmer{
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer::after{
+      content:"";
+      position:absolute;
+      inset:-60% -20%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+      animation: shimmer 4.8s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes shimmer{ 0%{ transform: translateX(-20%) rotate(18deg);} 100%{ transform: translateX(60%) rotate(18deg);} }
+
+    .fade-up{ opacity: 0; transform: translateY(10px); transition: all .7s cubic-bezier(.2,.8,.2,1); }
+    .fade-up.is-visible{ opacity: 1; transform: translateY(0); }
+
+    .hide-scrollbar::-webkit-scrollbar{ height: 0; width: 0; }
+
+    /* Lehké „dýchání“ UI */
+    @keyframes breathe { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-2px);} }
+    .breathe{ animation: breathe 3.4s ease-in-out infinite; }
+
+    /* Fokus bez agresivity */
+    :focus-visible{ outline: 2px solid rgba(249,115,22,0.55); outline-offset: 3px; border-radius: 18px; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
+
+  <!-- Background layers -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%),radial-gradient(circle_at_60%_95%,rgba(142,154,178,0.14),transparent_46%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center">
+              <span class="text-lg">🌲</span>
+            </div>
+            <div class="leading-tight">
+              <div class="font-semibold tracking-wide">CHATAO</div>
+              <div class="text-xs text-cream/70">Instagramový booking chat & chalup</div>
+            </div>
+          </div>
+
+          <div class="hidden md:flex items-center gap-2">
+            <button id="openCollections" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition flex items-center gap-2">
+              <span>🔖</span><span class="text-sm">Kolekce</span>
+              <span id="collectionsCount" class="ml-1 text-xs px-2 py-0.5 rounded-full bg-ember-500/20 ringline">0</span>
+            </button>
+            <button id="openSaved" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition flex items-center gap-2">
+              <span>❤️</span><span class="text-sm">Uložené</span>
+              <span id="savedCount" class="ml-1 text-xs px-2 py-0.5 rounded-full bg-ember-500/20 ringline">0</span>
+            </button>
+            <a
+  href="pridat-chatu.html?return=/index.html"
+  class="px-3 py-2 rounded-2xl
+         bg-ember-500/15 hover:bg-ember-500/20
+         ringline transition
+         flex items-center gap-2
+         hover:scale-[1.03] active:scale-[0.97]">
+
+  <span>🏡</span>
+  <span class="text-sm">Přidat chatu</span>
+</a>
+
+          </div>
+
+          <div class="md:hidden flex items-center gap-2">
+            <button id="mobileOpenFilters" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition">🎛️</button>
+            <button id="mobileOpenSaved" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition">❤️</button>
+          </div>
+        </div>
+
+        <!-- Search bar -->
+        <div class="mt-3 flex items-center gap-2">
+          <div class="flex-1 relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cream/60">🔎</span>
+            <input id="searchInput" type="text" placeholder="Hledej podle nálady, místa, výbavy… (např. samota, sauna, Šumava)"
+              class="w-full pl-11 pr-4 py-3 rounded-3xl bg-white/5 ringline placeholder:text-cream/40 text-sm focus:bg-white/6 transition" />
+          </div>
+          <button id="openFilters" class="hidden md:flex px-4 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition items-center gap-2">
+            <span>🎛️</span><span class="text-sm">Filtry</span>
+          </button>
+        </div>
+
+        <!-- Emotion chips (always visible) -->
+        <div class="mt-3 -mx-2 px-2 overflow-x-auto hide-scrollbar">
+          <div id="chips" class="flex items-center gap-2 min-w-max pb-2"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero strip -->
+  <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8 md:pt-10">
+    <div class="relative overflow-hidden rounded-4xl bg-white/5 ringline shadow-soft grain">
+      <div class="absolute -top-40 -right-40 h-[420px] w-[420px] rounded-full bg-pine-600/25 blur-3xl"></div>
+      <div class="absolute -bottom-44 -left-32 h-[420px] w-[420px] rounded-full bg-ember-500/15 blur-3xl"></div>
+
+      <div class="relative p-6 md:p-10 grid lg:grid-cols-[1.2fr_0.8fr] gap-8 items-center">
+        <div>
+          <h1 class="text-3xl md:text-5xl font-semibold tracking-tight">Najdi chatu podle pocitu.</h1>
+          <p class="mt-3 text-cream/75 max-w-xl">
+            CHATAO je vizuální prohlížeč chat. Nekonečný feed, kolekce, ukládání, dostupnost a rezervace – bez stresu.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <button id="ctaExplore" class="px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">
+              Procházet feed ✨
+            </button>
+            <button id="ctaCollection" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">
+              Vytvořit kolekci 🔖
+            </button>
+          </div>
+
+          <div class="mt-6 flex items-center gap-3 text-xs text-cream/60">
+            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">❤️ Ukládání</span>
+            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">🔖 Kolekce</span>
+            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">📆 Dostupnost</span>
+            <span class="px-3 py-1.5 rounded-full bg-white/5 ringline">🌲 Emoce</span>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="rounded-4xl overflow-hidden ringline bg-gradient-to-b from-white/6 to-white/2 shadow-lift">
+            <div class="p-4">
+              <div class="flex items-center justify-between">
+                <div class="text-sm font-medium">Chata týdne</div>
+                <div class="text-xs text-cream/60">Premium</div>
+              </div>
+              <div class="mt-3 aspect-[4/3] rounded-3xl overflow-hidden ringline relative">
+                <img class="h-full w-full object-cover" alt="Chata týdne" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=80" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+                <div class="absolute left-4 right-4 bottom-4">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-base font-semibold">Samota u lesa</div>
+                      <div class="text-xs text-cream/75">Šumava • sauna • krb</div>
+                    </div>
+                    <button class="px-3 py-2 rounded-2xl bg-white/10 hover:bg-white/14 ringline transition">Chci sem jet →</button>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 text-xs text-cream/60">Tip: Ukládej si chaty do kolekcí jako na Instagramu.</div>
+            </div>
+          </div>
+          <div class="absolute -bottom-6 -right-6 hidden md:block">
+            <div class="h-20 w-20 rounded-4xl bg-pine-700/35 ringline grid place-items-center breathe">🔥</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feed controls -->
+  <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8">
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <div class="text-sm text-cream/70">Feed</div>
+        <div id="resultsMeta" class="text-xs px-2.5 py-1 rounded-full bg-white/5 ringline">—</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="toggleView" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Mřížka</button>
+        <button id="sortBtn" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Řazení: Doporučeno</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feed -->
+  <main class="mx-auto max-w-7xl px-4 md:px-6 py-6 md:py-8">
+    <div id="feed" class="grid gap-5 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+
+    <div class="mt-10 text-center text-xs text-cream/50">
+      Prototyp UI pro CHATAO.cz • Všechny akce jsou lokální (bez backendu).
+    </div>
+  </main>
+
+  <!-- Bottom bar (mobile) -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-50">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-around">
+        <button id="mHome" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">🌲</button>
+        <button id="mFilters" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">🎛️</button>
+        <button id="mSaved" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">❤️</button>
+        <button id="mCollections" class="text-sm px-4 py-2 rounded-2xl bg-white/5 ringline">🔖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="modal" class="fixed inset-0 z-[60] hidden">
+    <div id="modalBackdrop" class="absolute inset-0 bg-black/70"></div>
+    <div class="absolute inset-0 overflow-y-auto">
+      <div class="min-h-full flex items-end md:items-center justify-center p-4 md:p-8">
+        <div id="modalPanel" class="w-full max-w-4xl rounded-4xl bg-ink/95 ringline shadow-soft overflow-hidden">
+          <!-- Content injected -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed top-20 right-4 z-[70] hidden">
+    <div class="px-4 py-3 rounded-3xl bg-white/8 ringline shadow-lift text-sm"></div>
+  </div>
+
+<script>
+  // ---------- Data (demo) ----------
+  const CABINS = [
+    {
+      id: "samota-u-lesa",
+      name: "Samota u lesa",
+      region: "Šumava",
+      priceFrom: 2490,
+      rating: 4.9,
+      tags: ["samota","oheň","sauna","ticho","les"],
+      icons: ["🌲","🔥","🧖","🌌"],
+      cover: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80",
+      gallery: [
+        "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1600&q=80",
+      ],
+      vibe: "Chata, kde slyšíš jen vítr. Krb praská a svět se zpomalí.",
+      forWho: ["Páry", "Únik z města", "Milovníci lesa"],
+      features: ["Sauna", "Krb", "Samota", "Bez sousedů", "Výhled do lesa"],
+    },
+    {
+      id: "u-jezera",
+      name: "U jezera",
+      region: "Jižní Čechy",
+      priceFrom: 1990,
+      rating: 4.7,
+      tags: ["voda","rodina","klid","pes"],
+      icons: ["🏞️","🐕","👨‍👩‍👧‍👦"],
+      cover: "https://images.unsplash.com/photo-1499696010181-39a7b8b1d2b0?auto=format&fit=crop&w=1600&q=80",
+      gallery: [
+        "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1600&q=80",
+      ],
+      vibe: "Ranní káva u hladiny, večer oheň a ticho kolem.",
+      forWho: ["Rodiny", "Pejskaři", "Pohoda u vody"],
+      features: ["Koupání", "Molo", "Gril", "Pes vítán", "Krb"],
+    },
+    {
+      id: "zimni-unik",
+      name: "Zimní únik",
+      region: "Krkonoše",
+      priceFrom: 2890,
+      rating: 4.8,
+      tags: ["zima","sauna","hory","ticho","oheň"],
+      icons: ["❄️","🧖","🏔️","🔥"],
+      cover: "https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=1600&q=80",
+      gallery: [
+        "https://images.unsplash.com/photo-1487847263472-aa5338d178b8?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1600&q=80",
+      ],
+      vibe: "Sníh, sauna, čaj a klid. Noc je tady nejhezčí.",
+      forWho: ["Páry", "Lyžování", "Zimní romantika"],
+      features: ["Sauna", "Sněhová atmosféra", "Krb", "Blízko sjezdovky"],
+    },
+    {
+      id: "glamping",
+      name: "Glamping pod hvězdami",
+      region: "Morava",
+      priceFrom: 1590,
+      rating: 4.6,
+      tags: ["glamping","hvezdy","romantika","ticho"],
+      icons: ["🌌","✨","💛"],
+      cover: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
+      gallery: [
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1600&q=80",
+      ],
+      vibe: "Minimalismus, světýlka a nebe plné hvězd.",
+      forWho: ["Romantika", "Netradiční zážitek"],
+      features: ["Výhled na hvězdy", "Soukromí", "Design"],
+    },
+    {
+      id: "tiny-house",
+      name: "Tiny House ticho",
+      region: "Vysočina",
+      priceFrom: 1790,
+      rating: 4.5,
+      tags: ["tiny","design","samota","les"],
+      icons: ["🏡","🌲","🧘"],
+      cover: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1600&q=80",
+      gallery: [
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1600&q=80",
+      ],
+      vibe: "Malé místo. Velký klid. A všechno, co potřebuješ.",
+      forWho: ["Minimalisti", "Solo", "Psaní a tvorba"],
+      features: ["Design", "Samota", "Les", "Kávovar"],
+    },
+    {
+      id: "rodinna-chalupa",
+      name: "Rodinná chalupa",
+      region: "Beskydy",
+      priceFrom: 2190,
+      rating: 4.7,
+      tags: ["rodina","hory","krb","pes"],
+      icons: ["👨‍👩‍👧‍👦","🏔️","🔥","🐕"],
+      cover: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80",
+      gallery: [
+        "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1600&q=80",
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1600&q=80",
+      ],
+      vibe: "Dřevo, teplo a prostor pro společné chvíle.",
+      forWho: ["Rodiny", "Výšlapy", "Pejskaři"],
+      features: ["Krb", "Velká kuchyň", "Zahrada", "Parkování"],
+    },
+  ];
+  // ===== CHATAO: import publikovaných chat z "Přidat chatu" =====
+// Stránka pridat-chatu.html ukládá feed do localStorage("chatao_feed")
+try {
+  const added = JSON.parse(localStorage.getItem("chatao_feed") || "[]") || [];
+  const ids = new Set(CABINS.map(c => c.id));
+
+  added.forEach(item => {
+    if (!item || !item.id) return;
+    if (!ids.has(item.id)) {
+      CABINS.unshift(item); // nová chata se objeví nahoře
+    }
+  });
+} catch (e) {
+  console.warn("CHATAO feed import fail:", e);
+}
+
+  const EMOTION_CHIPS = [
+    { key: "samota", label: "Chci samotu", icon: "🌲" },
+    { key: "oheň", label: "Chci oheň", icon: "🔥" },
+    { key: "sauna", label: "Chci saunu", icon: "🧖" },
+    { key: "pes", label: "Chci psa", icon: "🐕" },
+    { key: "ticho", label: "Chci ticho", icon: "🌌" },
+    { key: "hory", label: "Chci hory", icon: "🏔️" },
+    { key: "voda", label: "Chci vodu", icon: "🏞️" },
+    { key: "glamping", label: "Chci glamping", icon: "✨" },
+    { key: "design", label: "Chci design", icon: "🏡" },
+    { key: "zima", label: "Chci zimu", icon: "❄️" },
+  ];
+
+  // ---------- State ----------
+  const state = {
+    query: "",
+    activeTags: new Set(),
+    view: "grid", // grid | feed
+    sort: "recommended", // recommended | priceAsc | priceDesc | rating
+    saved: new Set(JSON.parse(localStorage.getItem("chatao_saved") || "[]")),
+    collections: JSON.parse(localStorage.getItem("chatao_collections") || "{}"),
+  };
+
+  // ---------- Elements ----------
+  const feedEl = document.getElementById("feed");
+  const chipsEl = document.getElementById("chips");
+  const searchInput = document.getElementById("searchInput");
+  const resultsMeta = document.getElementById("resultsMeta");
+  const toggleViewBtn = document.getElementById("toggleView");
+  const sortBtn = document.getElementById("sortBtn");
+
+  const modal = document.getElementById("modal");
+  const modalPanel = document.getElementById("modalPanel");
+  const modalBackdrop = document.getElementById("modalBackdrop");
+
+  const savedCount = document.getElementById("savedCount");
+  const collectionsCount = document.getElementById("collectionsCount");
+
+  const toast = document.getElementById("toast");
+  const toastBox = toast.querySelector("div");
+
+  // ---------- Helpers ----------
+  const money = (n) => new Intl.NumberFormat("cs-CZ").format(n);
+
+  function showToast(text){
+    // návrat z pridat-chatu.html → zobrazit potvrzení
+const __newListingId = new URLSearchParams(location.search).get("newListing");
+if (__newListingId) {
+  history.replaceState({}, "", location.pathname); // uklidí URL
+  setTimeout(() => showToast("Chata přidána ✅"), 500);
+}
+
+    toastBox.textContent = text;
+    toast.classList.remove("hidden");
+    toastBox.classList.add("fade-up");
+    requestAnimationFrame(()=>toastBox.classList.add("is-visible"));
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>{
+      toastBox.classList.remove("is-visible");
+      setTimeout(()=>toast.classList.add("hidden"), 220);
+    }, 1600);
+  }
+
+  function persist(){
+    localStorage.setItem("chatao_saved", JSON.stringify([...state.saved]));
+    localStorage.setItem("chatao_collections", JSON.stringify(state.collections));
+    updateCounters();
+  }
+
+  function updateCounters(){
+    savedCount.textContent = state.saved.size;
+    const cCount = Object.keys(state.collections || {}).length;
+    collectionsCount.textContent = cCount;
+  }
+
+  function openModal(html){
+    modalPanel.innerHTML = html;
+    modal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+  }
+
+  function closeModal(){
+    modal.classList.add("hidden");
+    modalPanel.innerHTML = "";
+    document.body.classList.remove("overflow-hidden");
+  }
+
+  function cabinMatches(c){
+    const q = state.query.trim().toLowerCase();
+    const hay = (c.name + " " + c.region + " " + c.tags.join(" ") + " " + c.features.join(" ") + " " + c.vibe).toLowerCase();
+    const qOK = !q || hay.includes(q);
+    const tagsOK = [...state.activeTags].every(t => c.tags.includes(t));
+    return qOK && tagsOK;
+  }
+
+  function sortCabins(list){
+    const arr = [...list];
+    if (state.sort === "priceAsc") arr.sort((a,b)=>a.priceFrom-b.priceFrom);
+    if (state.sort === "priceDesc") arr.sort((a,b)=>b.priceFrom-a.priceFrom);
+    if (state.sort === "rating") arr.sort((a,b)=>b.rating-a.rating);
+    // recommended: keep original order
+    return arr;
+  }
+
+  function renderChips(){
+    chipsEl.innerHTML = "";
+    EMOTION_CHIPS.forEach(ch => {
+      const active = state.activeTags.has(ch.key);
+      const btn = document.createElement("button");
+      btn.className = `px-4 py-2 rounded-3xl ringline transition text-sm flex items-center gap-2 ${active ? "bg-ember-500/18" : "bg-white/5 hover:bg-white/8"}`;
+      btn.innerHTML = `<span>${ch.icon}</span><span>${ch.label}</span>`;
+      btn.addEventListener("click", ()=>{
+        if (state.activeTags.has(ch.key)) state.activeTags.delete(ch.key);
+        else state.activeTags.add(ch.key);
+        renderChips();
+        render();
+      });
+      chipsEl.appendChild(btn);
+    });
+  }
+
+  function cardHTML(c){
+    const isSaved = state.saved.has(c.id);
+    const icons = c.icons.map(i=>`<span class="px-2 py-1 rounded-full bg-white/7 ringline text-xs">${i}</span>`).join("");
+
+    return `
+      <article data-id="${c.id}" class="group relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift hover:shadow-soft transition">
+        <div class="absolute inset-0 grain"></div>
+
+        <div class="relative aspect-[4/3] overflow-hidden">
+          <img src="${c.cover}" alt="${c.name}" class="h-full w-full object-cover scale-[1.02] group-hover:scale-[1.06] transition duration-[1200ms] ease-out" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+
+          <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">${c.region}</span>
+              <span class="text-xs px-3 py-1.5 rounded-full bg-white/10 ringline">⭐ ${c.rating.toFixed(1)}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button data-action="save" class="h-10 w-10 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Uložit">
+                ${isSaved ? "❤️" : "🤍"}
+              </button>
+              <button data-action="collect" class="h-10 w-10 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Přidat do kolekce">🔖</button>
+            </div>
+          </div>
+
+          <div class="absolute left-4 right-4 bottom-4">
+            <div class="flex items-end justify-between gap-3">
+              <div>
+                <div class="text-lg font-semibold tracking-tight">${c.name}</div>
+                <div class="mt-1 text-xs text-cream/75">od <span class="font-semibold text-cream">${money(c.priceFrom)} Kč</span> / noc</div>
+              </div>
+              <button data-action="open" class="px-4 py-2 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer text-sm">Detail →</button>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5">${icons}</div>
+          </div>
+        </div>
+
+        <div class="relative p-4">
+          <p class="text-sm text-cream/75 line-clamp-2">${c.vibe}</p>
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            ${c.tags.slice(0,4).map(t=>`<span class="text-xs px-2.5 py-1 rounded-full bg-white/5 ringline">${t}</span>`).join("")}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function feedRowHTML(c){
+    const isSaved = state.saved.has(c.id);
+    return `
+      <article data-id="${c.id}" class="group relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift hover:shadow-soft transition">
+        <div class="absolute inset-0 grain"></div>
+        <div class="relative grid md:grid-cols-[1.1fr_0.9fr]">
+          <div class="relative aspect-[16/10] md:aspect-auto md:min-h-[280px] overflow-hidden">
+            <img src="${c.cover}" alt="${c.name}" class="h-full w-full object-cover scale-[1.02] group-hover:scale-[1.06] transition duration-[1200ms] ease-out" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent"></div>
+            <div class="absolute left-4 right-4 bottom-4">
+              <div class="text-2xl font-semibold tracking-tight">${c.name}</div>
+              <div class="mt-1 text-sm text-cream/75">${c.region} • ⭐ ${c.rating.toFixed(1)} • od ${money(c.priceFrom)} Kč/noc</div>
+            </div>
+          </div>
+          <div class="relative p-5 md:p-6 flex flex-col">
+            <p class="text-cream/80 text-base">${c.vibe}</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              ${c.features.slice(0,5).map(f=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${f}</span>`).join("")}
+            </div>
+
+            <div class="mt-auto pt-5 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <button data-action="save" class="px-4 py-2 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition">${isSaved ? "❤️ Uloženo" : "🤍 Uložit"}</button>
+                <button data-action="collect" class="px-4 py-2 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition">🔖 Kolekce</button>
+              </div>
+              <button data-action="open" class="px-5 py-2.5 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Detail →</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function render(){
+    const filtered = CABINS.filter(cabinMatches);
+    const sorted = sortCabins(filtered);
+
+    resultsMeta.textContent = `${sorted.length} výsledků • ${state.activeTags.size ? ("filtry: " + [...state.activeTags].join(", ")) : "bez filtrů"}`;
+
+    // Layout
+    if (state.view === "grid"){
+      feedEl.className = "grid gap-5 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+      feedEl.innerHTML = sorted.map(cardHTML).join("");
+    } else {
+      feedEl.className = "grid gap-5 md:gap-6 grid-cols-1";
+      feedEl.innerHTML = sorted.map(feedRowHTML).join("");
+    }
+
+    // Animate in
+    requestAnimationFrame(()=>{
+      feedEl.querySelectorAll("article").forEach((el,i)=>{
+        el.classList.add("fade-up");
+        setTimeout(()=>el.classList.add("is-visible"), 40 + i*45);
+      });
+    });
+
+    // Bind card actions
+    feedEl.querySelectorAll("article").forEach(card => {
+      const id = card.getAttribute("data-id");
+      card.addEventListener("click", (e)=>{
+        const btn = e.target.closest("button");
+        const action = btn?.getAttribute("data-action");
+        if (!action) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (action === "open") openCabin(id);
+        if (action === "save") toggleSave(id);
+        if (action === "collect") openCollect(id);
+      });
+    });
+  }
+
+  function toggleSave(id){
+    if (state.saved.has(id)){
+      state.saved.delete(id);
+      showToast("Odebráno z uložených");
+    } else {
+      state.saved.add(id);
+      showToast("Uloženo ❤️");
+    }
+    persist();
+    render();
+  }
+
+  function openCabin(id){
+    const c = CABINS.find(x=>x.id===id);
+    if (!c) return;
+
+    const gallery = c.gallery.map((src,idx)=>`
+      <button data-g="${idx}" class="relative overflow-hidden rounded-3xl ringline bg-white/5">
+        <img src="${src}" alt="${c.name} ${idx+1}" class="h-32 md:h-40 w-full object-cover" />
+      </button>
+    `).join("");
+
+    openModal(`
+      <div class="relative">
+        <div class="relative aspect-[16/10] md:aspect-[21/9] overflow-hidden">
+          <img id="heroImg" src="${c.cover}" alt="${c.name}" class="h-full w-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"></div>
+
+          <div class="absolute top-4 left-4 right-4 flex items-center justify-between">
+            <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center" title="Zavřít">✕</button>
+            <div class="flex items-center gap-2">
+              <button id="detailSave" class="px-4 py-2 rounded-3xl bg-white/10 hover:bg-white/15 ringline transition">${state.saved.has(c.id) ? "❤️ Uloženo" : "🤍 Uložit"}</button>
+              <button id="detailCollect" class="px-4 py-2 rounded-3xl bg-white/10 hover:bg-white/15 ringline transition">🔖 Kolekce</button>
+            </div>
+          </div>
+
+          <div class="absolute left-6 right-6 bottom-6">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <div class="text-2xl md:text-4xl font-semibold tracking-tight">${c.name}</div>
+                <div class="mt-1 text-sm md:text-base text-cream/75">${c.region} • ⭐ ${c.rating.toFixed(1)} • od ${money(c.priceFrom)} Kč / noc</div>
+              </div>
+              <button id="wantGo" class="px-6 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Chci sem jet →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 md:p-7 grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
+          <div>
+            <p class="text-base md:text-lg text-cream/85">${c.vibe}</p>
+
+            <div class="mt-5">
+              <div class="text-sm text-cream/60">Galerie</div>
+              <div class="mt-3 grid grid-cols-3 gap-2">${gallery}</div>
+            </div>
+
+            <div class="mt-6">
+              <div class="text-sm text-cream/60">Pro koho je ideální</div>
+              <div class="mt-2 flex flex-wrap gap-2">
+                ${c.forWho.map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${x}</span>`).join("")}
+              </div>
+            </div>
+
+            <div class="mt-6">
+              <div class="text-sm text-cream/60">Výbava & vibe</div>
+              <div class="mt-2 flex flex-wrap gap-2">
+                ${c.features.map(x=>`<span class="text-xs px-3 py-1.5 rounded-full bg-white/5 ringline">${x}</span>`).join("")}
+              </div>
+            </div>
+          </div>
+
+          <aside class="rounded-4xl bg-white/4 ringline p-5 md:p-6">
+            <div class="flex items-center justify-between">
+              <div class="font-medium">Dostupnost</div>
+              <div class="text-xs text-cream/60">demo</div>
+            </div>
+            <div class="mt-3 grid grid-cols-7 gap-1 text-xs">
+              ${renderCalendar()}
+            </div>
+            <div class="mt-4 text-xs text-cream/60">Tip: rezervace je schválně klidná. Žádný nátlak, jen jasný další krok.</div>
+
+            <div class="mt-5 grid gap-2">
+              <button class="w-full px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Poptat pobyt</button>
+              <button class="w-full px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Napsat majiteli</button>
+            </div>
+
+            <div class="mt-5 rounded-3xl bg-white/3 ringline p-4">
+              <div class="text-xs text-cream/60">Transparentně</div>
+              <div class="mt-1 text-sm">od <span class="font-semibold">${money(c.priceFrom)} Kč</span> / noc</div>
+              <div class="mt-2 text-xs text-cream/60">Bez skrytých poplatků v UI (řeší se až v rezervaci).</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    `);
+
+    // Bind modal actions
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("detailSave").addEventListener("click", ()=>toggleSave(c.id));
+    document.getElementById("detailCollect").addEventListener("click", ()=>openCollect(c.id));
+    document.getElementById("wantGo").addEventListener("click", ()=>showToast("Ok – tady bude rezervace / poptávka"));
+
+    modalPanel.querySelectorAll("button[data-g]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const idx = parseInt(btn.getAttribute("data-g"), 10);
+        const src = c.gallery[idx];
+        document.getElementById("heroImg").src = src;
+      });
+    });
+  }
+
+  function renderCalendar(){
+    // jednoduchý demo kalendář: některé dny dostupné / nedostupné
+    const days = Array.from({length: 28}, (_,i)=>i+1);
+    return days.map(d=>{
+      const busy = [3,4,5,11,12,18,19,25,26].includes(d);
+      return `
+        <div class="h-9 rounded-2xl grid place-items-center ringline ${busy ? "bg-white/6 text-cream/35" : "bg-pine-700/28 hover:bg-pine-700/38 transition"}">
+          ${d}
+        </div>
+      `;
+    }).join("");
+  }
+
+  function openCollect(cabinId){
+    const c = CABINS.find(x=>x.id===cabinId);
+    const keys = Object.keys(state.collections || {});
+
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Přidat do kolekce</div>
+            <div class="mt-1 text-sm text-cream/70">${c ? c.name : ""}</div>
+          </div>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-4">
+          <div class="rounded-4xl bg-white/4 ringline p-5">
+            <div class="text-sm text-cream/70">Vytvořit novou</div>
+            <div class="mt-3 flex gap-2">
+              <input id="newColName" class="flex-1 px-4 py-3 rounded-3xl bg-white/5 ringline placeholder:text-cream/40" placeholder="např. Zimní útěk" />
+              <button id="createCol" class="px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Vytvořit</button>
+            </div>
+            <div class="mt-3 text-xs text-cream/55">Kolekce fungují jako uložení na Instagramu/Pinterestu. Vysoká návratnost uživatelů.</div>
+          </div>
+
+          <div class="rounded-4xl bg-white/4 ringline p-5">
+            <div class="text-sm text-cream/70">Vybrat existující</div>
+            <div class="mt-3 grid gap-2">
+              ${keys.length ? keys.map(k=>`
+                <button data-col="${escapeHtml(k)}" class="w-full text-left px-4 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">
+                  🔖 ${escapeHtml(k)} <span class="text-xs text-cream/50">(${(state.collections[k]||[]).length})</span>
+                </button>
+              `).join("") : `<div class="text-sm text-cream/55">Zatím nemáš žádné kolekce.</div>`}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex items-center justify-between">
+          <button id="back" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">← Zpět</button>
+          <div class="text-xs text-cream/50">Ukládá se do LocalStorage (demo)</div>
+        </div>
+      </div>
+    `);
+
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("back").addEventListener("click", ()=>{ if (c) openCabin(c.id); else closeModal(); });
+
+    document.getElementById("createCol").addEventListener("click", ()=>{
+      const name = document.getElementById("newColName").value.trim();
+      if (!name) return showToast("Zadej název kolekce");
+      if (!state.collections[name]) state.collections[name] = [];
+      if (c && !state.collections[name].includes(c.id)) state.collections[name].push(c.id);
+      persist();
+      showToast("Přidáno do kolekce 🔖");
+      closeModal();
+    });
+
+    modalPanel.querySelectorAll("button[data-col]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const name = btn.getAttribute("data-col");
+        if (!state.collections[name]) state.collections[name] = [];
+        if (c && !state.collections[name].includes(c.id)) state.collections[name].push(c.id);
+        persist();
+        showToast("Přidáno do kolekce 🔖");
+        closeModal();
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>\"']/g, (c)=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  }
+
+  function openSaved(){
+    const list = CABINS.filter(c=>state.saved.has(c.id));
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Uložené ❤️</div>
+            <div class="mt-1 text-sm text-cream/70">${list.length} položek</div>
+          </div>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${list.length ? list.map(c=>`
+            <button data-open="${c.id}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
+              <div class="aspect-[4/3] overflow-hidden">
+                <img src="${c.cover}" alt="${c.name}" class="h-full w-full object-cover" />
+              </div>
+              <div class="p-4">
+                <div class="font-semibold">${c.name}</div>
+                <div class="text-xs text-cream/60">${c.region} • od ${money(c.priceFrom)} Kč</div>
+              </div>
+            </button>
+          `).join("") : `<div class="text-sm text-cream/55">Zatím nic uloženého. Ukládej ❤️ v feedu.</div>`}
+        </div>
+      </div>
+    `);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    modalPanel.querySelectorAll("button[data-open]").forEach(btn=>{
+      btn.addEventListener("click", ()=>openCabin(btn.getAttribute("data-open")));
+    });
+  }
+
+  function openCollections(){
+    const names = Object.keys(state.collections || {});
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Kolekce 🔖</div>
+            <div class="mt-1 text-sm text-cream/70">${names.length} kolekcí</div>
+          </div>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-4">
+          ${names.length ? names.map(n=>{
+            const items = state.collections[n] || [];
+const cover=(CABINS.find(c=>c.id===items[0])||{}).cover||"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80";
+            return `
+              <button data-colopen="${escapeHtml(n)}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
+                <div class="aspect-[16/9] overflow-hidden relative">
+                  <img src="${cover}" alt="${escapeHtml(n)}" class="h-full w-full object-cover" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+                  <div class="absolute left-4 right-4 bottom-4">
+                    <div class="text-lg font-semibold">${escapeHtml(n)}</div>
+                    <div class="text-xs text-cream/70">${items.length} uložených chat</div>
+                  </div>
+                </div>
+              </button>
+            `;
+          }).join("") : `<div class="text-sm text-cream/55">Zatím žádné kolekce. Klikni 🔖 u chaty a vytvoř si je.</div>`}
+        </div>
+
+        <div class="mt-6">
+          <button id="clearCols" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Smazat všechny kolekce (demo)</button>
+        </div>
+      </div>
+    `);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("clearCols").addEventListener("click", ()=>{
+      state.collections = {};
+      persist();
+      showToast("Kolekce smazány (demo)");
+      closeModal();
+    });
+    modalPanel.querySelectorAll("button[data-colopen]").forEach(btn=>{
+      btn.addEventListener("click", ()=>openCollectionDetail(btn.getAttribute("data-colopen")));
+    });
+  }
+
+  function openCollectionDetail(name){
+    const ids = state.collections[name] || [];
+    const list = CABINS.filter(c=>ids.includes(c.id));
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">🔖 ${escapeHtml(name)}</div>
+            <div class="mt-1 text-sm text-cream/70">${list.length} chat</div>
+          </div>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${list.length ? list.map(c=>`
+            <button data-open="${c.id}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
+              <div class="aspect-[4/3] overflow-hidden">
+                <img src="${c.cover}" alt="${c.name}" class="h-full w-full object-cover" />
+              </div>
+              <div class="p-4">
+                <div class="font-semibold">${c.name}</div>
+                <div class="text-xs text-cream/60">${c.region} • od ${money(c.priceFrom)} Kč</div>
+              </div>
+            </button>
+          `).join("") : `<div class="text-sm text-cream/55">Kolekce je prázdná.</div>`}
+        </div>
+
+        <div class="mt-6 flex items-center justify-between">
+          <button id="back" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">← Zpět</button>
+          <button id="removeCol" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Smazat kolekci</button>
+        </div>
+      </div>
+    `);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("back").addEventListener("click", openCollections);
+    document.getElementById("removeCol").addEventListener("click", ()=>{
+      delete state.collections[name];
+      persist();
+      showToast("Kolekce smazána");
+      closeModal();
+    });
+    modalPanel.querySelectorAll("button[data-open]").forEach(btn=>{
+      btn.addEventListener("click", ()=>openCabin(btn.getAttribute("data-open")));
+    });
+  }
+
+  function openFiltersModal(){
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Filtry 🎛️</div>
+            <div class="mt-1 text-sm text-cream/70">Vyber vibe a feed se přizpůsobí.</div>
+          </div>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid sm:grid-cols-2 gap-3">
+          ${EMOTION_CHIPS.map(ch=>{
+            const on = state.activeTags.has(ch.key);
+            return `
+              <button data-t="${ch.key}" class="px-4 py-4 rounded-4xl ringline transition text-left flex items-center justify-between ${on ? "bg-ember-500/18" : "bg-white/5 hover:bg-white/8"}">
+                <div class="flex items-center gap-3">
+                  <div class="h-11 w-11 rounded-3xl bg-white/6 ringline grid place-items-center">${ch.icon}</div>
+                  <div>
+                    <div class="font-medium">${ch.label}</div>
+                    <div class="text-xs text-cream/55">tag: ${ch.key}</div>
+                  </div>
+                </div>
+                <div class="text-lg">${on ? "✓" : "+"}</div>
+              </button>
+            `;
+          }).join("")}
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center justify-between gap-2">
+          <button id="clear" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Vymazat filtry</button>
+          <button id="apply" class="px-6 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Použít</button>
+        </div>
+      </div>
+    `);
+
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    modalPanel.querySelectorAll("button[data-t]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const t = btn.getAttribute("data-t");
+        state.activeTags.has(t) ? state.activeTags.delete(t) : state.activeTags.add(t);
+        openFiltersModal();
+      });
+    });
+    document.getElementById("clear").addEventListener("click", ()=>{
+      state.activeTags.clear();
+      closeModal();
+      renderChips();
+      render();
+    });
+    document.getElementById("apply").addEventListener("click", ()=>{
+      closeModal();
+      renderChips();
+      render();
+    });
+  }
+
+  // Bind UI
+  searchInput.addEventListener("input", e=>{ state.query = e.target.value; render(); });
+  toggleViewBtn.addEventListener("click", ()=>{ state.view = state.view === "grid" ? "feed" : "grid"; toggleViewBtn.textContent = state.view === "grid" ? "Mřížka" : "Feed"; render(); });
+  sortBtn.addEventListener("click", ()=>{ const order=["recommended","rating","priceAsc","priceDesc"]; state.sort=order[(order.indexOf(state.sort)+1)%order.length]; const map={recommended:"Řazení: Doporučeno",rating:"Řazení: Hodnocení",priceAsc:"Řazení: Cena ↑",priceDesc:"Řazení: Cena ↓"}; sortBtn.textContent=map[state.sort]; render(); });
+
+  document.getElementById("ctaExplore")?.addEventListener("click", ()=>window.scrollTo({top:document.querySelector("main").offsetTop-90,behavior:"smooth"}));
+  document.getElementById("ctaCollection")?.addEventListener("click", openCollections);
+  document.getElementById("openSaved")?.addEventListener("click", openSaved);
+  document.getElementById("openCollections")?.addEventListener("click", openCollections);
+  document.getElementById("openFilters")?.addEventListener("click", openFiltersModal);
+  document.getElementById("mobileOpenFilters")?.addEventListener("click", openFiltersModal);
+  document.getElementById("mobileOpenSaved")?.addEventListener("click", openSaved);
+  document.getElementById("mFilters")?.addEventListener("click", openFiltersModal);
+  document.getElementById("mSaved")?.addEventListener("click", openSaved);
+  document.getElementById("mCollections")?.addEventListener("click", openCollections);
+
+  modalBackdrop.addEventListener("click", closeModal);
+  window.addEventListener("keydown", e=>{ if(e.key==="Escape"&&!modal.classList.contains("hidden")) closeModal(); });
+
+  updateCounters();
+  renderChips();
+  render();
+// === FINALIZACE APLIKACE ===
+
+// ZAJIŠTĚNÍ: neduplikovat funkce
+if (typeof window.__chatao_finalized === "undefined") {
+  window.__chatao_finalized = true;
+
+  // ===== ULOŽENÉ =====
+  function openSaved(){
+    const list = CABINS.filter(c=>state.saved.has(c.id));
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Uložené ❤️</div>
+            <div class="mt-1 text-sm text-cream/70">${list.length} chat</div>
+          </div>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline grid place-items-center">✕</button>
+        </div>
+        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${list.length ? list.map(c=>`
+            <button data-open="${c.id}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
+              <div class="aspect-[4/3] overflow-hidden">
+                <img src="${c.cover}" class="h-full w-full object-cover" />
+              </div>
+              <div class="p-4">
+                <div class="font-semibold">${c.name}</div>
+                <div class="text-xs text-cream/60">${c.region} • od ${money(c.priceFrom)} Kč</div>
+              </div>
+            </button>
+          `).join("") : `<div class="text-sm text-cream/55">Zatím nemáš nic uložené.</div>`}
+        </div>
+      </div>
+    `);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    modalPanel.querySelectorAll("button[data-open]").forEach(b=>b.addEventListener("click",()=>openCabin(b.dataset.open)));
+  }
+
+  // ===== DETAIL CHATY =====
+  function openCabin(id){
+    const c = CABINS.find(x=>x.id===id);
+    if(!c) return;
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-2xl md:text-3xl font-semibold">${c.name}</div>
+            <div class="mt-1 text-sm text-cream/70">${c.region} • ⭐ ${c.rating}</div>
+          </div>
+          <button id="closeModal" class="h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/15 ringline grid place-items-center">✕</button>
+        </div>
+        <div class="mt-6 grid lg:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <img src="${c.cover}" class="rounded-4xl ringline" />
+            <p class="text-cream/80">${c.vibe}</p>
+            <div class="flex flex-wrap gap-2">${c.features.map(f=>`<span class="px-3 py-1.5 rounded-full bg-white/5 ringline text-xs">${f}</span>`).join("")}</div>
+          </div>
+          <aside class="rounded-4xl bg-white/4 ringline p-5">
+            <div class="text-sm text-cream/60">Cena od</div>
+            <div class="text-2xl font-semibold">${money(c.priceFrom)} Kč / noc</div>
+            <button class="mt-6 w-full px-5 py-3 rounded-3xl bg-ember-500/20 hover:bg-ember-500/30 ringline shimmer">Poptat pobyt</button>
+          </aside>
+        </div>
+      </div>
+    `);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+  }
+
+  // ===== FOOTER =====
+  if(!document.getElementById("chatao-footer")){
+    const footer=document.createElement("footer");
+    footer.id="chatao-footer";
+    footer.className="mt-20 py-12 text-center text-sm text-cream/50";
+    footer.innerHTML=`
+      <div class="mb-2">CHATAO.cz – Najdi chatu podle pocitu 🌲</div>
+      <div class="space-x-4">
+        <a href="#" class="hover:text-cream">O projektu</a>
+        <a href="#" class="hover:text-cream">Pro majitele chat</a>
+        <a href="#" class="hover:text-cream">Kontakt</a>
+      </div>`;
+    document.body.appendChild(footer);
+  }
+
+  // ===== FINÁLNÍ BIND =====
+  document.getElementById("openSaved")?.addEventListener("click", openSaved);
+  document.getElementById("mobileOpenSaved")?.addEventListener("click", openSaved);
+  document.getElementById("mSaved")?.addEventListener("click", openSaved);
+
+  console.log("CHATAO – APLIKACE JE KOMPLETNÍ");
+}
+
+// === KONEC LOGIKY APLIKACE ===
+
+</script>
+
+<!-- Google Analytics (placeholder - nahraďte svým GA4 Measurement ID) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "CHATAO.cz",
+  "description": "Moderní booking systém přímo přes Instagram chat pro rezervace chat, chalup a dalších služeb",
+  "url": "https://chatao.cz/",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "category": "Booking Service"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "CHATAO.cz",
+    "url": "https://chatao.cz/"
+  }
+}
+</script>
+
+</body>
+</html>
