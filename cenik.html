@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>CHATAO.cz – Ceník</title>
+
+  <meta name="description" content="Ceník CHATAO.cz – plány pro majitele chat a chalup. Základ zdarma, Premium pro vyšší viditelnost a více rezervací." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://chatao.cz/cenik.html" />
+  <meta name="theme-color" content="#568B71" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {
+              50: "#F3F7F5",
+              100: "#E3EEE8",
+              200: "#C5DCD1",
+              300: "#9FC3B2",
+              400: "#78A78F",
+              500: "#568B71",
+              600: "#3E6D58",
+              700: "#2E5344",
+              800: "#213D33",
+              900: "#172A23",
+            },
+            ember: {
+              50: "#FFF7ED",
+              100: "#FFEDD5",
+              200: "#FED7AA",
+              300: "#FDBA74",
+              400: "#FB923C",
+              500: "#F97316",
+              600: "#EA580C",
+              700: "#C2410C",
+              800: "#9A3412",
+              900: "#7C2D12",
+            },
+            fog: {
+              50: "#F6F7F9",
+              100: "#ECEEF2",
+              200: "#D7DBE4",
+              300: "#B7BECE",
+              400: "#8F9AB2",
+              500: "#6E7A95",
+              600: "#56607A",
+              700: "#434C62",
+              800: "#31384A",
+              900: "#232838",
+            },
+            cream: "#F5F1E8",
+            ink: "#0B0F0E",
+            wood: "#2A211A",
+          },
+          boxShadow: {
+            soft: "0 22px 60px rgba(0,0,0,0.45)",
+            lift: "0 18px 40px rgba(0,0,0,0.30)",
+          },
+          borderRadius: {
+            "4xl": "2rem",
+          },
+          fontFamily: {
+            sans: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+    .grain::before{
+      content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');
+      mix-blend-mode: overlay;
+    }
+    .glass{
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .ringline{ box-shadow: 0 0 0 1px rgba(255,255,255,0.10) inset; }
+    .shimmer{ position: relative; overflow: hidden; }
+    .shimmer::after{
+      content:"";position:absolute;inset:-60% -20%;transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+      animation: shimmer 4.8s linear infinite; pointer-events:none;
+    }
+    @keyframes shimmer{ 0%{ transform: translateX(-20%) rotate(18deg);} 100%{ transform: translateX(60%) rotate(18deg);} }
+    :focus-visible{ outline: 2px solid rgba(249,115,22,0.55); outline-offset: 3px; border-radius: 18px; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-ink text-cream selection:bg-ember-500/30 selection:text-cream">
+
+  <!-- Background layers -->
+  <div class="fixed inset-0 -z-20">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(86,139,113,0.22),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(249,115,22,0.14),transparent_42%),radial-gradient(circle_at_60%_95%,rgba(142,154,178,0.14),transparent_46%)]"></div>
+    <div class="absolute inset-0 opacity-40 bg-[linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.86))]"></div>
+  </div>
+
+  <!-- Top Nav -->
+  <header class="sticky top-0 z-40">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3">
+        <div class="flex items-center justify-between gap-3">
+          <a href="/index.html" class="flex items-center gap-3 group">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center group-hover:bg-pine-700/55 transition">
+              <span class="text-lg">🏡</span>
+            </div>
+            <div class="leading-tight">
+              <div class="font-semibold tracking-wide">CHATAO</div>
+              <div class="text-xs text-cream/70">Feedový booking chat</div>
+            </div>
+          </a>
+
+          <nav class="hidden md:flex items-center gap-2 text-sm">
+            <a href="/pro-majitele.html" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition">Pro majitele</a>
+            <a href="/cenik.html" aria-current="page" class="px-3 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition">Ceník</a>
+            <a href="/kontakt.html" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition">Kontakt</a>
+            <a href="/pridat-chatu.html?return=/index.html" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition">Přidat chatu</a>
+          </nav>
+
+          <div class="md:hidden flex items-center gap-2">
+            <a href="/pridat-chatu.html?return=/index.html" class="px-3 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition">+ 🏡</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8 md:pt-10">
+    <div class="relative overflow-hidden rounded-4xl bg-white/5 ringline shadow-soft grain">
+      <div class="absolute -top-40 -right-40 h-[420px] w-[420px] rounded-full bg-pine-600/25 blur-3xl"></div>
+      <div class="absolute -bottom-44 -left-32 h-[420px] w-[420px] rounded-full bg-ember-500/15 blur-3xl"></div>
+
+      <div class="relative p-6 md:p-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 ringline text-xs text-cream/70">
+            <span>💸</span><span>Ceník pro majitele</span>
+          </div>
+          <h1 class="mt-4 text-3xl md:text-5xl font-semibold tracking-tight">Plány, které zvednou rezervace.</h1>
+          <p class="mt-3 text-cream/75 max-w-xl">
+            Hosté mají CHATAO zdarma. Majitelé si vybírají podle toho, jak rychle chtějí růst. Vždy férově, bez skrytých poplatků v UI.
+          </p>
+
+          <div class="mt-6 flex flex-wrap gap-2">
+            <button id="toggleBilling" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">
+              <span class="text-sm">Zobrazit: <span id="billingLabel" class="font-semibold">měsíčně</span></span>
+            </button>
+            <a href="/pridat-chatu.html?return=/index.html" class="px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">
+              Přidat chatu →
+            </a>
+          </div>
+
+          <div class="mt-6 grid sm:grid-cols-3 gap-3 text-xs text-cream/60">
+            <div class="px-4 py-3 rounded-3xl bg-white/4 ringline">
+              <div class="text-cream/80 font-medium">Bez závazků</div>
+              <div class="mt-1">Kdykoliv změna plánu.</div>
+            </div>
+            <div class="px-4 py-3 rounded-3xl bg-white/4 ringline">
+              <div class="text-cream/80 font-medium">Férové priority</div>
+              <div class="mt-1">Premium = víc viditelnosti.</div>
+            </div>
+            <div class="px-4 py-3 rounded-3xl bg-white/4 ringline">
+              <div class="text-cream/80 font-medium">Booking chat</div>
+              <div class="mt-1">Cílem je konverze.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-4xl bg-white/4 ringline p-5 md:p-6">
+          <div class="flex items-center justify-between">
+            <div class="font-medium">Rychlé srovnání</div>
+            <div class="text-xs text-cream/60">MVP</div>
+          </div>
+          <div class="mt-4 grid gap-2 text-sm">
+            <div class="flex items-center justify-between px-4 py-3 rounded-3xl bg-white/5 ringline"><span>Vložení nabídky</span><span class="text-cream/80">✅</span></div>
+            <div class="flex items-center justify-between px-4 py-3 rounded-3xl bg-white/5 ringline"><span>Uložení ❤️ / kolekce 🔖</span><span class="text-cream/80">✅</span></div>
+            <div class="flex items-center justify-between px-4 py-3 rounded-3xl bg-white/5 ringline"><span>Zvýraznění ve feedu</span><span class="text-cream/80">Premium</span></div>
+            <div class="flex items-center justify-between px-4 py-3 rounded-3xl bg-white/5 ringline"><span>Provize z rezervace</span><span class="text-cream/80">volitelné</span></div>
+          </div>
+          <div class="mt-4 text-xs text-cream/60">Pozn.: V ostré verzi přidáme i sezonní ceny, skutečný kalendář a platby.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing cards -->
+  <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8 md:pt-10">
+    <div class="grid lg:grid-cols-3 gap-4 md:gap-5">
+
+      <!-- Free -->
+      <article class="relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift">
+        <div class="absolute inset-0 grain"></div>
+        <div class="relative p-6 md:p-7">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-sm text-cream/70">Pro majitele</div>
+              <div class="mt-1 text-2xl font-semibold">Start</div>
+              <div class="mt-2 text-cream/70 text-sm">Základ pro nové nabídky.</div>
+            </div>
+            <div class="px-3 py-1.5 rounded-full bg-white/5 ringline text-xs">Zdarma</div>
+          </div>
+
+          <div class="mt-5">
+            <div class="text-4xl font-semibold">0 Kč</div>
+            <div class="mt-1 text-xs text-cream/60">navždy</div>
+          </div>
+
+          <ul class="mt-6 space-y-2 text-sm text-cream/80">
+            <li class="flex gap-2"><span>✅</span><span>1 aktivní nabídka</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Uložené ❤️ / kolekce 🔖</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Základní pořadí ve feedu</span></li>
+            <li class="flex gap-2"><span>⏳</span><span>Bez zvýraznění / bez top pozic</span></li>
+          </ul>
+
+          <a href="/pridat-chatu.html?return=/index.html" class="mt-6 inline-flex w-full justify-center px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">
+            Začít zdarma
+          </a>
+        </div>
+      </article>
+
+      <!-- Pro -->
+      <article class="relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift">
+        <div class="absolute inset-0 grain"></div>
+        <div class="relative p-6 md:p-7">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-sm text-cream/70">Nejlepší poměr</div>
+              <div class="mt-1 text-2xl font-semibold">Pro</div>
+              <div class="mt-2 text-cream/70 text-sm">Více viditelnosti + lepší konverze.</div>
+            </div>
+            <div class="px-3 py-1.5 rounded-full bg-ember-500/18 ringline text-xs">Doporučeno</div>
+          </div>
+
+          <div class="mt-5">
+            <div class="text-4xl font-semibold"><span data-price="pro">299</span> Kč</div>
+            <div class="mt-1 text-xs text-cream/60"><span data-billing="pro">měsíčně</span> • bez závazků</div>
+          </div>
+
+          <ul class="mt-6 space-y-2 text-sm text-cream/80">
+            <li class="flex gap-2"><span>✅</span><span>3 aktivní nabídky</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Lehké zvýraznění ve feedu</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Více prostor pro fotky/atributy</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Priorita v doporučení (jemná)</span></li>
+          </ul>
+
+          <a href="/kontakt.html" class="mt-6 inline-flex w-full justify-center px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">
+            Chci Pro
+          </a>
+        </div>
+      </article>
+
+      <!-- Premium -->
+      <article class="relative overflow-hidden rounded-4xl bg-white/4 ringline shadow-lift">
+        <div class="absolute inset-0 grain"></div>
+        <div class="absolute -top-24 -right-24 h-56 w-56 rounded-full bg-ember-500/15 blur-3xl"></div>
+        <div class="relative p-6 md:p-7">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-sm text-cream/70">Max viditelnost</div>
+              <div class="mt-1 text-2xl font-semibold">Premium</div>
+              <div class="mt-2 text-cream/70 text-sm">Pro ty, co chtějí být vidět.</div>
+            </div>
+            <div class="px-3 py-1.5 rounded-full bg-white/5 ringline text-xs">Top</div>
+          </div>
+
+          <div class="mt-5">
+            <div class="text-4xl font-semibold"><span data-price="premium">699</span> Kč</div>
+            <div class="mt-1 text-xs text-cream/60"><span data-billing="premium">měsíčně</span> • zvýraznění + top sloty</div>
+          </div>
+
+          <ul class="mt-6 space-y-2 text-sm text-cream/80">
+            <li class="flex gap-2"><span>✅</span><span>10 aktivních nabídek</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Top pozice ve feedu (časově)</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Badge „Premium“</span></li>
+            <li class="flex gap-2"><span>✅</span><span>Priorita podpory</span></li>
+          </ul>
+
+          <a href="/kontakt.html" class="mt-6 inline-flex w-full justify-center px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">
+            Chci Premium
+          </a>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Add-ons / commission -->
+    <div class="mt-6 grid lg:grid-cols-2 gap-4">
+      <div class="rounded-4xl bg-white/4 ringline p-6">
+        <div class="flex items-center justify-between gap-3">
+          <div class="text-lg font-semibold">Doplňky</div>
+          <div class="text-xs text-cream/60">volitelné</div>
+        </div>
+        <div class="mt-4 grid gap-2 text-sm">
+          <div class="flex items-center justify-between px-4 py-3 rounded-3xl bg-white/5 ringline">
+            <span>🚀 Boost ve feedu (24h)</span>
+            <span class="text-cream/80">od 149 Kč</span>
+          </div>
+          <div class="flex items-center justify-between px-4 py-3 rounded-3xl bg-white/5 ringline">
+            <span>⭐ Chata týdne (7 dní)</span>
+            <span class="text-cream/80">od 999 Kč</span>
+          </div>
+          <div class="flex items-center justify-between px-4 py-3 rounded-3xl bg-white/5 ringline">
+            <span>🧠 AI texty + tagy</span>
+            <span class="text-cream/80">od 199 Kč</span>
+          </div>
+        </div>
+        <div class="mt-4 text-xs text-cream/60">Doplňky jsou ideální, když chceš rychle zaplnit volné termíny.</div>
+      </div>
+
+      <div class="rounded-4xl bg-white/4 ringline p-6">
+        <div class="flex items-center justify-between gap-3">
+          <div class="text-lg font-semibold">Provize z rezervace</div>
+          <div class="text-xs text-cream/60">v ostré verzi</div>
+        </div>
+        <p class="mt-3 text-sm text-cream/75">Chceme mít dvě cesty: buď měsíční plán, nebo nízká provize pouze z reálné rezervace.</p>
+        <div class="mt-4 grid gap-2 text-sm">
+          <div class="px-4 py-3 rounded-3xl bg-white/5 ringline flex items-center justify-between"><span>Bez plánu</span><span class="text-cream/80">5–8 % z rezervace</span></div>
+          <div class="px-4 py-3 rounded-3xl bg-white/5 ringline flex items-center justify-between"><span>S plánem Pro/Premium</span><span class="text-cream/80">nižší / 0 %</span></div>
+        </div>
+        <div class="mt-4 text-xs text-cream/60">Cílem je férovost: platíš jen když je to vidět nebo když to vydělá.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="mx-auto max-w-7xl px-4 md:px-6 py-10 md:py-12">
+    <div class="flex items-end justify-between gap-3">
+      <div>
+        <div class="text-sm text-cream/60">FAQ</div>
+        <h2 class="mt-2 text-2xl md:text-3xl font-semibold">Časté otázky</h2>
+      </div>
+      <a href="/kontakt.html" class="hidden md:inline-flex px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Napsat dotaz</a>
+    </div>
+
+    <div class="mt-6 grid md:grid-cols-2 gap-4">
+      <details class="rounded-4xl bg-white/4 ringline p-5">
+        <summary class="cursor-pointer font-medium">Můžu začít zdarma a pak přejít na Premium?</summary>
+        <p class="mt-3 text-sm text-cream/75">Ano. Kdykoliv. V ostré verzi to bude jedním klikem v profilu majitele.</p>
+      </details>
+      <details class="rounded-4xl bg-white/4 ringline p-5">
+        <summary class="cursor-pointer font-medium">Jak funguje zvýraznění ve feedu?</summary>
+        <p class="mt-3 text-sm text-cream/75">Premium dostane prioritu v doporučení a časové sloty na top pozicích. Nechceme spam – jen férovou viditelnost.</p>
+      </details>
+      <details class="rounded-4xl bg-white/4 ringline p-5">
+        <summary class="cursor-pointer font-medium">Je to jako Booking/Airbnb?</summary>
+        <p class="mt-3 text-sm text-cream/75">CHATAO je víc „Instagram feed + booking chat“. Ukládání, kolekce, vibe a jednoduchá rezervace bez stresu.</p>
+      </details>
+      <details class="rounded-4xl bg-white/4 ringline p-5">
+        <summary class="cursor-pointer font-medium">Co když mám více chat / spravuju apartmány?</summary>
+        <p class="mt-3 text-sm text-cream/75">Pro a Premium jsou na to dělané. Později přidáme i „správa více objektů“ a týmové role.</p>
+      </details>
+    </div>
+
+    <div class="mt-8 rounded-4xl bg-white/5 ringline p-6 md:p-7">
+      <div class="grid md:grid-cols-[1.2fr_0.8fr] gap-6 items-center">
+        <div>
+          <div class="text-xl font-semibold">Chceš nacenit individuálně?</div>
+          <div class="mt-2 text-sm text-cream/75">Máte agenturu / více objektů / chcete napojení na kalendář? Napiš a dáme ti férový plán.</div>
+        </div>
+        <div class="flex flex-wrap gap-2 md:justify-end">
+          <a href="/kontakt.html" class="px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition shimmer">Kontaktovat →</a>
+          <a href="/pro-majitele.html" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Jak to funguje</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (ostrý režim) -->
+  <footer class="mt-10 border-t border-white/10">
+    <div class="mx-auto max-w-7xl px-4 md:px-6 py-10">
+      <div class="grid md:grid-cols-4 gap-6">
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center"><span class="text-lg">🏡</span></div>
+            <div>
+              <div class="font-semibold tracking-wide">CHATAO.cz</div>
+              <div class="text-xs text-cream/60">Najdi chatu podle pocitu.</div>
+            </div>
+          </div>
+          <p class="mt-4 text-sm text-cream/70 max-w-xl">Feedový booking chat pro chaty, chalupy a zážitky. Ukládání jako na Instagramu, výběr podle emocí, a jednoduchá rezervace bez stresu.</p>
+        </div>
+
+        <div>
+          <div class="text-sm font-medium text-cream/80">Odkazy</div>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><a class="text-cream/70 hover:text-cream transition" href="/index.html">Domů</a></li>
+            <li><a class="text-cream/70 hover:text-cream transition" href="/pro-majitele.html">Pro majitele</a></li>
+            <li><a class="text-cream/70 hover:text-cream transition" href="/cenik.html">Ceník</a></li>
+            <li><a class="text-cream/70 hover:text-cream transition" href="/kontakt.html">Kontakt</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="text-sm font-medium text-cream/80">Právo</div>
+          <ul class="mt-3 space-y-2 text-sm">
+            <li><a class="text-cream/70 hover:text-cream transition" href="/podminky.html">Podmínky</a></li>
+            <li><a class="text-cream/70 hover:text-cream transition" href="/ochrana-udaju.html">Ochrana údajů</a></li>
+            <li><a class="text-cream/70 hover:text-cream transition" href="/ochrana-udaju.html#cookies">Cookies</a></li>
+          </ul>
+          <div class="mt-4 text-xs text-cream/50">© <span id="y"></span> CHATAO.cz</div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div class="text-xs text-cream/50">Transparentní ceník. Bez skrytých poplatků v UI. Rezervace je vždy klidný krok.</div>
+        <a href="/pridat-chatu.html?return=/index.html" class="inline-flex justify-center px-4 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Přidat chatu</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // footer year
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // billing toggle (month/year)
+    const state = { yearly: false };
+    const btn = document.getElementById('toggleBilling');
+    const billingLabel = document.getElementById('billingLabel');
+
+    // ceny – upravitelné
+    const PRICES = {
+      pro: { m: 299, y: 2990 },
+      premium: { m: 699, y: 6990 },
+    };
+
+    function applyBilling(){
+      billingLabel.textContent = state.yearly ? 'ročně' : 'měsíčně';
+      document.querySelectorAll('[data-price="pro"]').forEach(el => el.textContent = state.yearly ? PRICES.pro.y : PRICES.pro.m);
+      document.querySelectorAll('[data-price="premium"]').forEach(el => el.textContent = state.yearly ? PRICES.premium.y : PRICES.premium.m);
+      document.querySelectorAll('[data-billing="pro"],[data-billing="premium"]').forEach(el => el.textContent = state.yearly ? 'ročně' : 'měsíčně');
+    }
+
+    btn?.addEventListener('click', ()=>{ state.yearly = !state.yearly; applyBilling(); });
+    applyBilling();
+  </script>
+
+</body>
+</html>
