@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CHATAO.cz • Reels</title>
+
+  <meta name="description" content="Nekonečný reels feed chat a chalup – ukládání, kolekce, 'Chci sem jet'." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#568B71" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pine: {50:"#F3F7F5",100:"#E3EEE8",200:"#C5DCD1",300:"#9FC3B2",400:"#78A78F",500:"#568B71",600:"#3E6D58",700:"#2E5344",800:"#213D33",900:"#172A23"},
+            ember:{50:"#FFF7ED",100:"#FFEDD5",200:"#FED7AA",300:"#FDBA74",400:"#FB923C",500:"#F97316",600:"#EA580C",700:"#C2410C",800:"#9A3412",900:"#7C2D12"},
+            fog:  {50:"#F6F7F9",100:"#ECEEF2",200:"#D7DBE4",300:"#B7BECE",400:"#8F9AB2",500:"#6E7A95",600:"#56607A",700:"#434C62",800:"#31384A",900:"#232838"},
+            cream:"#F5F1E8",
+            ink:"#0B0F0E",
+          },
+          borderRadius:{"4xl":"2rem"},
+          boxShadow:{soft:"0 22px 60px rgba(0,0,0,0.45)",lift:"0 18px 40px rgba(0,0,0,0.30)"},
+          fontFamily:{sans:["ui-sans-serif","system-ui","-apple-system","Segoe UI","Roboto","Arial"]},
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{ color-scheme: dark; }
+
+    .grain::before{
+      content:"";position:absolute;inset:0;pointer-events:none;opacity:.08;
+      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="180" height="180" filter="url(%23n)" opacity=".35"/></svg>');
+      mix-blend-mode:overlay;
+    }
+    .glass{background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+    .ringline{ box-shadow:0 0 0 1px rgba(255,255,255,.10) inset; }
+    .hide-scrollbar::-webkit-scrollbar{ height:0;width:0; }
+
+    /* kurzor jen tam, kde se píše */
+    html, body{ caret-color: transparent; -webkit-user-select:none; user-select:none; }
+    input, textarea, [contenteditable="true"], .allow-cursor{ caret-color:auto; -webkit-user-select:text; user-select:text; }
+
+    /* Reels container */
+    #reels{ height: 100dvh; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior-y: contain; }
+    .reel{ height: 100dvh; scroll-snap-align: start; scroll-snap-stop: always; position: relative; overflow: hidden; background: #0B0F0E; }
+
+    /* Ken Burns */
+    .kb{ position:absolute; inset:-2%; transform: scale(1.06); animation: kb 10s ease-in-out infinite alternate; will-change: transform; }
+    @keyframes kb{ 0%{ transform: scale(1.06) translate3d(0,0,0);} 100%{ transform: scale(1.14) translate3d(-1.5%,-1.5%,0);} }
+    @media (prefers-reduced-motion: reduce){ .kb{ animation:none; transform: scale(1.08);} #reels{ scroll-behavior:auto; } }
+
+    .vignette{
+      background:
+        radial-gradient(circle at 15% 15%, rgba(86,139,113,.18), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(249,115,22,.12), transparent 42%),
+        linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.85));
+    }
+
+    :focus-visible{ outline:2px solid rgba(249,115,22,.55); outline-offset:3px; border-radius:18px; }
+  </style>
+</head>
+
+<body class="bg-ink text-cream">
+  <!-- top bar -->
+  <header class="fixed top-0 left-0 right-0 z-50">
+    <div class="glass ringline">
+      <div class="mx-auto max-w-7xl px-4 md:px-6 py-3 flex items-center justify-between gap-3">
+        <a href="/index.html" class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-2xl bg-pine-700/40 ringline grid place-items-center"><span class="text-lg">🏡</span></div>
+          <div class="leading-tight">
+            <div class="font-semibold tracking-wide">CHATAO</div>
+            <div class="text-xs text-cream/70">Reels (nekonečný feed)</div>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-2">
+          <button id="btnSaved" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm flex items-center gap-2">
+            ❤️ <span class="hidden sm:inline">Uložené</span>
+            <span id="savedCount" class="text-xs px-2 py-0.5 rounded-full bg-ember-500/20 ringline">0</span>
+          </button>
+          <button id="btnCollections" class="px-3 py-2 rounded-2xl bg-white/5 hover:bg-white/8 ringline transition text-sm flex items-center gap-2">
+            🔖 <span class="hidden sm:inline">Kolekce</span>
+            <span id="collectionsCount" class="text-xs px-2 py-0.5 rounded-full bg-ember-500/20 ringline">0</span>
+          </button>
+          <a href="/pridat-chatu.html?return=/chatao-reels.html" class="px-3 py-2 rounded-2xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition text-sm">Přidat chatu</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- reels -->
+  <main id="reels" class="hide-scrollbar"></main>
+
+  <!-- bottom hint -->
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+    <div class="px-4 py-2 rounded-3xl bg-black/45 backdrop-blur-md ringline text-xs text-cream/75">
+      Swipe/scroll ↑ ↓ • ❤️ uložit • 🔖 kolekce • Enter = „Chci sem jet“
+    </div>
+  </div>
+
+  <!-- toast -->
+  <div id="toast" class="fixed top-20 right-4 z-[70] hidden">
+    <div class="px-4 py-3 rounded-3xl bg-white/8 ringline shadow-lift text-sm"></div>
+  </div>
+
+  <!-- modal -->
+  <div id="modal" class="fixed inset-0 z-[80] hidden">
+    <div id="modalBackdrop" class="absolute inset-0 bg-black/70"></div>
+    <div class="absolute inset-0 overflow-y-auto">
+      <div class="min-h-full flex items-end md:items-center justify-center p-4 md:p-8">
+        <div id="modalPanel" class="w-full max-w-4xl rounded-4xl bg-ink/95 ringline shadow-soft overflow-hidden"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // =========================
+  // CHATAO REELS (MVP)
+  // =========================
+
+  // ---------- Data (demo) ----------
+  const CABINS_BASE = [
+    { id:"samota-u-lesa", name:"Samota u lesa", region:"Šumava", priceFrom:2490, rating:4.9, tags:["samota","oheň","sauna","ticho","les"], cover:"https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1800&q=80", gallery:["https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1800&q=80"], vibe:"Chata, kde slyšíš jen vítr. Krb praská a svět se zpomalí.", features:["Sauna","Krb","Samota","Bez sousedů","Výhled do lesa"], minNights:2 },
+    { id:"u-jezera", name:"U jezera", region:"Jižní Čechy", priceFrom:1990, rating:4.7, tags:["voda","rodina","klid","pes"], cover:"https://images.unsplash.com/photo-1499696010181-39a7b8b1d2b0?auto=format&fit=crop&w=1800&q=80", gallery:["https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1800&q=80"], vibe:"Ranní káva u hladiny, večer oheň a ticho kolem.", features:["Koupání","Molo","Gril","Pes vítán","Krb"], minNights:1 },
+    { id:"zimni-unik", name:"Zimní únik", region:"Krkonoše", priceFrom:2890, rating:4.8, tags:["zima","sauna","hory","ticho","oheň"], cover:"https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=1800&q=80", gallery:["https://images.unsplash.com/photo-1487847263472-aa5338d178b8?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1800&q=80"], vibe:"Sníh, sauna, čaj a klid. Noc je tady nejhezčí.", features:["Sauna","Sněhová atmosféra","Krb","Blízko sjezdovky"], minNights:2 },
+    { id:"glamping", name:"Glamping pod hvězdami", region:"Morava", priceFrom:1590, rating:4.6, tags:["glamping","hvezdy","romantika","ticho"], cover:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80", gallery:["https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1800&q=80"], vibe:"Minimalismus, světýlka a nebe plné hvězd.", features:["Výhled na hvězdy","Soukromí","Design"], minNights:1 },
+    { id:"tiny-house", name:"Tiny House ticho", region:"Vysočina", priceFrom:1790, rating:4.5, tags:["tiny","design","samota","les"], cover:"https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1800&q=80", gallery:["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=1800&q=80"], vibe:"Malé místo. Velký klid. A všechno, co potřebuješ.", features:["Design","Samota","Les","Kávovar"], minNights:2 },
+    { id:"rodinna-chalupa", name:"Rodinná chalupa", region:"Beskydy", priceFrom:2190, rating:4.7, tags:["rodina","hory","krb","pes"], cover:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1800&q=80", gallery:["https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1800&q=80","https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1800&q=80"], vibe:"Dřevo, teplo a prostor pro společné chvíle.", features:["Krb","Velká kuchyň","Zahrada","Parkování"], minNights:2 },
+  ];
+
+  // import z "Přidat chatu" (localStorage chatao_feed)
+  const CABINS = [...CABINS_BASE];
+  try{
+    const added = JSON.parse(localStorage.getItem("chatao_feed") || "[]") || [];
+    const ids = new Set(CABINS.map(c=>c.id));
+    added.forEach(item=>{ if(item && item.id && !ids.has(item.id)) CABINS.unshift(item); });
+  }catch(e){ console.warn("CHATAO reels import fail:", e); }
+
+  // ---------- State ----------
+  const state = {
+    saved: new Set(JSON.parse(localStorage.getItem("chatao_saved") || "[]")),
+    collections: JSON.parse(localStorage.getItem("chatao_collections") || "{}"),
+    pool: CABINS,
+    cursor: 0,
+  };
+
+  // ---------- Elements (musí existovat) ----------
+  const reelsEl = document.getElementById("reels");
+  const savedCountEl = document.getElementById("savedCount");
+  const collectionsCountEl = document.getElementById("collectionsCount");
+  const toast = document.getElementById("toast");
+  const toastBox = toast ? toast.querySelector("div") : null;
+  const modal = document.getElementById("modal");
+  const modalPanel = document.getElementById("modalPanel");
+  const modalBackdrop = document.getElementById("modalBackdrop");
+
+  // ---------- Mini testy (aby se nevrátil null error) ----------
+  console.assert(!!reelsEl, "TEST: #reels musí existovat");
+  console.assert(!!modal && !!modalPanel && !!modalBackdrop, "TEST: modal prvky musí existovat");
+
+  // ---------- Helpers ----------
+  const money = (n)=>new Intl.NumberFormat("cs-CZ").format(n||0);
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>\"']/g, (c)=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  }
+
+  function showToast(t){
+    if(!toast || !toastBox) return;
+    toastBox.textContent = t;
+    toast.classList.remove("hidden");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>toast.classList.add("hidden"), 1400);
+  }
+
+  function persist(){
+    localStorage.setItem("chatao_saved", JSON.stringify([...state.saved]));
+    localStorage.setItem("chatao_collections", JSON.stringify(state.collections));
+    updateCounters();
+  }
+
+  function updateCounters(){
+    if(savedCountEl) savedCountEl.textContent = String(state.saved.size);
+    const cCount = Object.keys(state.collections||{}).length;
+    if(collectionsCountEl) collectionsCountEl.textContent = String(cCount);
+  }
+
+  function openModal(html){
+    modalPanel.innerHTML = html;
+    modal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+  }
+  function closeModal(){
+    modal.classList.add("hidden");
+    modalPanel.innerHTML = "";
+    document.body.classList.remove("overflow-hidden");
+  }
+  modalBackdrop.addEventListener("click", closeModal);
+  window.addEventListener("keydown", (e)=>{ if(e.key==="Escape" && !modal.classList.contains("hidden")) closeModal(); });
+
+  // ---------- Collections ----------
+  function openCollect(cabinId){
+    const c = state.pool.find(x=>x.id===cabinId);
+    const keys = Object.keys(state.collections||{});
+
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Přidat do kolekce</div>
+            <div class="mt-1 text-sm text-cream/70">${c ? escapeHtml(c.name) : ""}</div>
+          </div>
+          <button id="close" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-4">
+          <div class="rounded-4xl bg-white/4 ringline p-5">
+            <div class="text-sm text-cream/70">Vytvořit novou</div>
+            <div class="mt-3 flex gap-2">
+              <input id="newColName" class="allow-cursor flex-1 px-4 py-3 rounded-3xl bg-black/32 backdrop-blur-sm ringline placeholder:text-cream/40" placeholder="např. Zimní útěk" />
+              <button id="createCol" class="px-5 py-3 rounded-3xl bg-ember-500/15 hover:bg-ember-500/22 ringline transition">Vytvořit</button>
+            </div>
+          </div>
+
+          <div class="rounded-4xl bg-white/4 ringline p-5">
+            <div class="text-sm text-cream/70">Vybrat existující</div>
+            <div class="mt-3 grid gap-2">
+              ${keys.length ? keys.map(k=>`
+                <button data-col="${escapeHtml(k)}" class="w-full text-left px-4 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">
+                  🔖 ${escapeHtml(k)} <span class="text-xs text-cream/50">(${(state.collections[k]||[]).length})</span>
+                </button>
+              `).join("") : `<div class="text-sm text-cream/55">Zatím nemáš žádné kolekce.</div>`}
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+
+    document.getElementById("close").addEventListener("click", closeModal);
+
+    document.getElementById("createCol").addEventListener("click", ()=>{
+      const name = (document.getElementById("newColName").value||"").trim();
+      if(!name) return showToast("Zadej název kolekce");
+      if(!state.collections[name]) state.collections[name] = [];
+      if(c && !state.collections[name].includes(c.id)) state.collections[name].push(c.id);
+      persist();
+      showToast("Přidáno do kolekce 🔖");
+      closeModal();
+    });
+
+    modalPanel.querySelectorAll("button[data-col]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const name = btn.getAttribute("data-col");
+        if(!state.collections[name]) state.collections[name] = [];
+        if(c && !state.collections[name].includes(c.id)) state.collections[name].push(c.id);
+        persist();
+        showToast("Přidáno do kolekce 🔖");
+        closeModal();
+      });
+    });
+  }
+
+  function openSaved(){
+    const list = state.pool.filter(c=>state.saved.has(c.id));
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Uložené ❤️</div>
+            <div class="mt-1 text-sm text-cream/70">${list.length} položek</div>
+          </div>
+          <button id="close" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${list.length ? list.map(c=>`
+            <button data-jump="${c.id}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
+              <div class="aspect-[4/3] overflow-hidden">
+                <img src="${c.cover}" alt="${escapeHtml(c.name)}" class="h-full w-full object-cover" />
+              </div>
+              <div class="p-4">
+                <div class="font-semibold">${escapeHtml(c.name)}</div>
+                <div class="text-xs text-cream/60">${escapeHtml(c.region)} • od ${money(c.priceFrom)} Kč</div>
+              </div>
+            </button>
+          `).join("") : `<div class="text-sm text-cream/55">Zatím nic uloženého. Ukládej ❤️ v reels.</div>`}
+        </div>
+      </div>
+    `);
+
+    document.getElementById("close").addEventListener("click", closeModal);
+    modalPanel.querySelectorAll("button[data-jump]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{ closeModal(); jumpToFirst(btn.getAttribute("data-jump")); });
+    });
+  }
+
+  function openCollections(){
+    const names = Object.keys(state.collections || {});
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">Kolekce 🔖</div>
+            <div class="mt-1 text-sm text-cream/70">${names.length} kolekcí</div>
+          </div>
+          <button id="close" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-4">
+          ${names.length ? names.map(n=>{
+            const ids = state.collections[n] || [];
+            const first = state.pool.find(c=>c.id===ids[0]);
+            const cover = first?.cover || "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=80";
+            return `
+              <button data-open="${escapeHtml(n)}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
+                <div class="aspect-[16/9] overflow-hidden relative">
+                  <img src="${cover}" alt="${escapeHtml(n)}" class="h-full w-full object-cover" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+                  <div class="absolute left-4 right-4 bottom-4">
+                    <div class="text-lg font-semibold">${escapeHtml(n)}</div>
+                    <div class="text-xs text-cream/70">${ids.length} chat</div>
+                  </div>
+                </div>
+              </button>
+            `;
+          }).join("") : `<div class="text-sm text-cream/55">Zatím žádné kolekce. Klikni 🔖 u chaty.</div>`}
+        </div>
+
+        <div class="mt-6 flex items-center justify-between gap-2">
+          <button id="clear" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition text-sm">Smazat kolekce (demo)</button>
+          <div class="text-xs text-cream/50">Ukládá se do LocalStorage</div>
+        </div>
+      </div>
+    `);
+
+    document.getElementById("close").addEventListener("click", closeModal);
+    document.getElementById("clear").addEventListener("click", ()=>{ state.collections = {}; persist(); showToast("Kolekce smazány"); closeModal(); });
+
+    modalPanel.querySelectorAll("button[data-open]").forEach(btn=>{
+      btn.addEventListener("click", ()=>openCollectionDetail(btn.getAttribute("data-open")));
+    });
+  }
+
+  function openCollectionDetail(name){
+    const ids = state.collections[name] || [];
+    const list = state.pool.filter(c=>ids.includes(c.id));
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">🔖 ${escapeHtml(name)}</div>
+            <div class="mt-1 text-sm text-cream/70">${list.length} chat</div>
+          </div>
+          <button id="close" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${list.length ? list.map(c=>`
+            <button data-jump="${c.id}" class="text-left rounded-4xl overflow-hidden bg-white/4 ringline hover:bg-white/6 transition">
+              <div class="aspect-[4/3] overflow-hidden">
+                <img src="${c.cover}" alt="${escapeHtml(c.name)}" class="h-full w-full object-cover" />
+              </div>
+              <div class="p-4">
+                <div class="font-semibold">${escapeHtml(c.name)}</div>
+                <div class="text-xs text-cream/60">${escapeHtml(c.region)} • od ${money(c.priceFrom||0)} Kč</div>
+              </div>
+            </button>
+          `).join("") : `<div class="text-sm text-cream/55">Kolekce je prázdná.</div>`}
+        </div>
+
+        <div class="mt-6 flex items-center justify-between gap-2">
+          <button id="back" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">← Zpět</button>
+          <button id="remove" class="px-5 py-3 rounded-3xl bg-white/5 hover:bg-white/8 ringline transition">Smazat kolekci</button>
+        </div>
+      </div>
+    `);
+
+    document.getElementById("close").addEventListener("click", closeModal);
+    document.getElementById("back").addEventListener("click", openCollections);
+    document.getElementById("remove").addEventListener("click", ()=>{ delete state.collections[name]; persist(); showToast("Kolekce smazána"); closeModal(); });
+
+    modalPanel.querySelectorAll("button[data-jump]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{ closeModal(); jumpToFirst(btn.getAttribute("data-jump")); });
+    });
+  }
+
+  // ---------- Reels rendering ----------
+  function pickNext(){
+    if(!state.pool.length) return null;
+    const item = state.pool[state.cursor % state.pool.length];
+    state.cursor++;
+    return { ...item, __rid: `${item.id}__${Date.now()}__${Math.random().toString(16).slice(2)}` };
+  }
+
+  function renderOne(item){
+    const isSaved = state.saved.has(item.id);
+    const tags = (item.tags||[]).slice(0,5).map(t=>`<span class="text-xs px-3 py-1.5 rounded-full bg-black/35 backdrop-blur-sm ringline">${escapeHtml(t)}</span>`).join("");
+    const feats = (item.features||[]).slice(0,4).map(f=>`<span class="text-xs px-3 py-1.5 rounded-full bg-black/35 backdrop-blur-sm ringline">${escapeHtml(f)}</span>`).join("");
+
+    const gallery = (item.gallery && item.gallery.length) ? item.gallery : [item.cover];
+    const first = gallery[0];
+
+    return `
+      <section class="reel" data-id="${escapeHtml(item.id)}" data-rid="${escapeHtml(item.__rid)}">
+        <div class="absolute inset-0">
+          <img src="${first}" alt="${escapeHtml(item.name)}" class="kb h-full w-full object-cover" />
+          <div class="absolute inset-0 vignette"></div>
+          <div class="absolute inset-0 grain"></div>
+        </div>
+
+        <div class="absolute top-0 left-0 right-0 pt-20 md:pt-[76px] px-4 md:px-6">
+          <div class="mx-auto max-w-3xl">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm ringline">${escapeHtml(item.region||"")}</span>
+                <span class="text-xs px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm ringline">⭐ ${Number(item.rating||0).toFixed(1)}</span>
+                <span class="text-xs px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm ringline">od <b>${money(item.priceFrom)}</b> Kč / noc</span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button data-action="save" class="h-11 w-11 rounded-2xl bg-black/40 hover:bg-black/50 backdrop-blur-sm ringline transition grid place-items-center" title="Uložit">
+                  ${isSaved ? "❤️" : "🤍"}
+                </button>
+                <button data-action="collect" class="h-11 w-11 rounded-2xl bg-black/40 hover:bg-black/50 backdrop-blur-sm ringline transition grid place-items-center" title="Kolekce">🔖</button>
+                <button data-action="more" class="h-11 w-11 rounded-2xl bg-black/40 hover:bg-black/50 backdrop-blur-sm ringline transition grid place-items-center" title="Další">⋯</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute left-0 right-0 bottom-0 px-4 md:px-6 pb-7 md:pb-10">
+          <div class="mx-auto max-w-3xl">
+            <div class="rounded-4xl bg-black/35 backdrop-blur-md ringline shadow-soft overflow-hidden">
+              <div class="p-5 md:p-6">
+                <div class="text-2xl md:text-3xl font-semibold tracking-tight">${escapeHtml(item.name||"")}</div>
+                <p class="mt-2 text-sm md:text-base text-cream/85">${escapeHtml(item.vibe||"")}</p>
+
+                <div class="mt-4 flex flex-wrap gap-2">${tags}</div>
+                <div class="mt-3 flex flex-wrap gap-2">${feats}</div>
+
+                <div class="mt-5 flex flex-wrap items-center gap-2">
+                  <button data-action="want" class="px-6 py-3 rounded-3xl bg-ember-500/18 hover:bg-ember-500/24 ringline transition text-sm">Chci sem jet →</button>
+                  <button data-action="detail" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition text-sm">Detail</button>
+                  <button data-action="next" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition text-sm">Další ↓</button>
+                </div>
+
+                <div class="mt-3 text-xs text-cream/60">Tip: Ulož ❤️ a udělej si kolekci 🔖</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function appendBatch(n=6){
+    if(!reelsEl) return;
+    const frag = document.createDocumentFragment();
+    let html = "";
+    for(let i=0;i<n;i++){
+      const it = pickNext();
+      if(!it) break;
+      html += renderOne(it);
+    }
+    const wrap = document.createElement("div");
+    wrap.innerHTML = html;
+    while(wrap.firstElementChild) frag.appendChild(wrap.firstElementChild);
+    reelsEl.appendChild(frag);
+    bindReelEvents();
+    ensureTrim();
+  }
+
+  function ensureTrim(){
+    const MAX = 26;
+    const keepFromTop = 8;
+    const nodes = [...reelsEl.querySelectorAll(".reel")];
+    if(nodes.length <= MAX) return;
+    const idx = getActiveIndex();
+    if(idx < keepFromTop) return;
+
+    const removeCount = Math.min(idx - keepFromTop, nodes.length - MAX);
+    if(removeCount <= 0) return;
+
+    let removedHeight = 0;
+    for(let i=0;i<removeCount;i++){
+      removedHeight += nodes[i].getBoundingClientRect().height;
+      nodes[i].remove();
+    }
+    reelsEl.scrollTop -= removedHeight;
+  }
+
+  function getActiveIndex(){
+    const reels = [...reelsEl.querySelectorAll(".reel")];
+    if(!reels.length) return 0;
+    const center = reelsEl.scrollTop + (reelsEl.clientHeight/2);
+    let bestIdx = 0, bestDist = Infinity;
+    reels.forEach((el,i)=>{
+      const mid = el.offsetTop + el.offsetHeight/2;
+      const d = Math.abs(mid - center);
+      if(d < bestDist){ bestDist = d; bestIdx = i; }
+    });
+    return bestIdx;
+  }
+
+  function scrollToNext(dir=1){
+    const reels = [...reelsEl.querySelectorAll(".reel")];
+    if(!reels.length) return;
+    const idx = getActiveIndex();
+    const next = reels[Math.max(0, Math.min(reels.length-1, idx + dir))];
+    next?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function toggleSave(id, btn){
+    const was = state.saved.has(id);
+    if(was){ state.saved.delete(id); showToast("Odebráno z uložených"); }
+    else { state.saved.add(id); showToast("Uloženo ❤️"); }
+    persist();
+    if(btn) btn.textContent = state.saved.has(id) ? "❤️" : "🤍";
+  }
+
+  function openDetailMini(id){
+    const c = state.pool.find(x=>x.id===id);
+    if(!c) return;
+    const gallery = (c.gallery && c.gallery.length) ? c.gallery : [c.cover];
+    openModal(`
+      <div class="p-6 md:p-8">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl md:text-2xl font-semibold">${escapeHtml(c.name)}</div>
+            <div class="mt-1 text-sm text-cream/70">${escapeHtml(c.region)} • ⭐ ${Number(c.rating||0).toFixed(1)} • od ${money(c.priceFrom)} Kč/noc</div>
+          </div>
+          <button id="close" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
+        </div>
+
+        <div class="mt-6 grid md:grid-cols-3 gap-2">
+          ${gallery.slice(0,6).map(src=>`
+            <div class="rounded-3xl overflow-hidden ringline bg-white/5">
+              <img src="${src}" class="h-28 md:h-32 w-full object-cover" />
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="mt-5 rounded-4xl bg-white/4 ringline p-5">
+          <div class="text-sm text-cream/70">Vibe</div>
+          <div class="mt-2 text-base text-cream/85">${escapeHtml(c.vibe||"")}</div>
+        </div>
+
+        <div class="mt-5 flex flex-wrap gap-2">
+          <button id="want" class="px-6 py-3 rounded-3xl bg-ember-500/18 hover:bg-ember-500/24 ringline transition">Chci sem jet →</button>
+          <button id="save" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition">${state.saved.has(id) ? "❤️ Uloženo" : "🤍 Uložit"}</button>
+          <button id="collect" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition">🔖 Kolekce</button>
+          <a href="/index.html" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition">Otevřít feed</a>
+        </div>
+      </div>
+    `);
+
+    document.getElementById("close").addEventListener("click", closeModal);
+    document.getElementById("save").addEventListener("click", ()=>{ toggleSave(id); document.getElementById("save").textContent = state.saved.has(id) ? "❤️ Uloženo" : "🤍 Uložit"; });
+    document.getElementById("collect").addEventListener("click", ()=>openCollect(id));
+    document.getElementById("want").addEventListener("click", ()=>{ showToast("Rezervace napojíme jako další krok"); closeModal(); });
+  }
+
+  function jumpToFirst(id){
+    const find = ()=>reelsEl.querySelector(`.reel[data-id="${CSS.escape(id)}"]`);
+    let tries = 0;
+    while(!find() && tries < 6){ appendBatch(6); tries++; }
+    const el = find();
+    if(el) el.scrollIntoView({behavior:"smooth"});
+    else showToast("Nenalezeno (demo)");
+  }
+
+  function bindReelEvents(){
+    reelsEl.querySelectorAll(".reel").forEach(el=>{
+      if(el.__bound) return;
+      el.__bound = true;
+
+      el.addEventListener("click", (e)=>{
+        const btn = e.target.closest("button[data-action]");
+        if(!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const id = el.getAttribute("data-id");
+        const action = btn.getAttribute("data-action");
+
+        if(action === "save") return toggleSave(id, btn);
+        if(action === "collect") return openCollect(id);
+        if(action === "detail") return openDetailMini(id);
+        if(action === "want") return showToast("Rezervace napojíme jako další krok");
+        if(action === "next") return scrollToNext(1);
+
+        if(action === "more"){
+          openModal(`
+            <div class="p-6 md:p-8">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="text-xl md:text-2xl font-semibold">Akce</div>
+                  <div class="mt-1 text-sm text-cream/70">${escapeHtml(id)}</div>
+                </div>
+                <button id="close" class="h-11 w-11 rounded-2xl bg-black/38 hover:bg-black/45 backdrop-blur-sm ringline transition grid place-items-center">✕</button>
+              </div>
+              <div class="mt-6 grid gap-2">
+                <button id="share" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition text-left">📤 Sdílet (demo)</button>
+                <button id="report" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition text-left">🚩 Nahlásit (demo)</button>
+                <button id="openFeed" class="px-5 py-3 rounded-3xl bg-white/6 hover:bg-white/10 ringline transition text-left">🌲 Otevřít feed</button>
+              </div>
+            </div>
+          `);
+          document.getElementById("close").addEventListener("click", closeModal);
+          document.getElementById("openFeed").addEventListener("click", ()=>location.href="/index.html");
+          document.getElementById("share").addEventListener("click", ()=>{ showToast("Sdílení doplníme"); closeModal(); });
+          document.getElementById("report").addEventListener("click", ()=>{ showToast("Nahlášení doplníme"); closeModal(); });
+          return;
+        }
+      });
+    });
+  }
+
+  // ---------- Infinite loading ----------
+  function nearEnd(){
+    const pad = 1.6 * reelsEl.clientHeight;
+    return (reelsEl.scrollTop + reelsEl.clientHeight + pad) >= reelsEl.scrollHeight;
+  }
+
+  reelsEl.addEventListener("scroll", ()=>{ if(nearEnd()) appendBatch(6); }, { passive: true });
+
+  // swipe
+  let touchY = null;
+  reelsEl.addEventListener("touchstart", (e)=>{ touchY = e.touches?.[0]?.clientY ?? null; }, {passive:true});
+  reelsEl.addEventListener("touchend", (e)=>{
+    if(touchY == null) return;
+    const y2 = e.changedTouches?.[0]?.clientY ?? null;
+    if(y2 == null) return;
+    const dy = y2 - touchY;
+    if(Math.abs(dy) < 40) return;
+    if(dy < 0) scrollToNext(1);
+    else scrollToNext(-1);
+    touchY = null;
+  }, {passive:true});
+
+  // keyboard
+  window.addEventListener("keydown", (e)=>{
+    if(!modal.classList.contains("hidden")) return;
+    if(e.key === "ArrowDown" || e.key === "PageDown"){ e.preventDefault(); scrollToNext(1); }
+    if(e.key === "ArrowUp" || e.key === "PageUp"){ e.preventDefault(); scrollToNext(-1); }
+    if(e.key === "Enter"){ showToast("Rezervace napojíme jako další krok"); }
+  });
+
+  // top buttons
+  document.getElementById("btnSaved").addEventListener("click", openSaved);
+  document.getElementById("btnCollections").addEventListener("click", openCollections);
+
+  // init
+  updateCounters();
+  appendBatch(8);
+
+  // návrat z pridat-chatu.html → potvrzení
+  (function(){
+    const __newListingId = new URLSearchParams(location.search).get("newListing");
+    if(__newListingId){
+      history.replaceState({}, "", location.pathname);
+      setTimeout(()=>showToast("Chata přidána ✅"), 450);
+    }
+  })();
+</script>
+</body>
+</html>
