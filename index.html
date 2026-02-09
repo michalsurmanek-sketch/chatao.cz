@@ -1484,6 +1484,14 @@
       }
 
       // ===== GA loader (pouze po souhlasu) =====
+      // ===== GA event helper (bezpečné měření) =====
+function gaEvent(name, params = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", name, {
+    ...params,
+    page_location: location.href
+  });
+}
       // TODO: nahraď svoje GA4 ID
       const GA_ID = 'G-MZLWRWVV99';
       function enableGA(){
