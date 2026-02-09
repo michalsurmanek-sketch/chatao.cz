@@ -744,6 +744,22 @@
     persist();
     render();
   }
+  function toggleSave(id){
+  const wasSaved = state.saved.has(id);
+
+  if (wasSaved){
+    state.saved.delete(id);
+    showToast("Odebráno z uložených");
+    gaEvent('saved_remove', { item_id: id });
+  } else {
+    state.saved.add(id);
+    showToast("Uloženo ❤️");
+    gaEvent('saved_add', { item_id: id });
+  }
+
+  persist();
+  render();
+}
 
   function openCabin(id){
     const c = CABINS.find(x=>x.id===id);
