@@ -177,6 +177,20 @@
     button, a, article, header, section, main, footer, div, span, p, h1, h2, h3, h4, h5, h6{
       caret-color: transparent;
     }
+    .hero-bg{
+  position: relative;
+  background-image: url("chatao.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:white;
+  opacity:0.7; /* 70% překrytí = obrázek vidět cca 30% */
+}
 </style>
 
   <style>
@@ -316,7 +330,12 @@
       </div>
     </div>
   </section>
+ <section class="hero-bg">
 
+<h1>Najdi svou vysněnou chatu</h1>
+<p>Inspirace na víkend v přírodě</p>
+
+</section>
   <!-- Feed controls -->
   <section class="mx-auto max-w-7xl px-4 md:px-6 pt-8">
     <div class="flex items-center justify-between gap-3">
